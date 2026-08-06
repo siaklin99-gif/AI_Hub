@@ -212,8 +212,6 @@ hr { border: 0; border-top: 0.5px solid var(--border); margin: 40px 0; }
 .tag-green { background: var(--green-bg); color: var(--green); }
 .tag-red   { background: var(--red-bg);   color: var(--red); }
 .tag-amber { background: var(--amber-bg); color: var(--amber); }
-.tag-blue  { background: var(--blue-bg);  color: var(--blue); }
-.tag-row { display: flex; flex-wrap: wrap; gap: 7px; margin: 10px 0 0; }
 
 /* ---------- accordion (progressive disclosure) ---------- */
 
@@ -309,16 +307,27 @@ tbody tr:last-child td { border-bottom: 0; }
   border-radius: var(--radius-sm); padding: 14px 16px; margin: 0 0 12px;
   font-size: 14px; line-height: 1.55; white-space: pre-wrap; word-wrap: break-word;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  position: relative;
 }
 .prompt-wrap { position: relative; }
+/* No opacity games. This was opacity:0 revealed on :hover — 11 dead buttons
+   on any phone, on a site whose front page promises "Works on a phone". The
+   first fix used opacity:0.45 on hover-capable pointers, which was just as
+   unreadable: white on #f1f0ec. A control is either there or it isn't, so it
+   is always fully opaque and simply styled quietly. */
 .copy-btn {
-  position: absolute; top: 8px; right: 8px; font: inherit; font-size: 11.5px;
+  position: absolute; top: 8px; right: 8px; font: inherit; font-size: 12px;
   background: var(--surface); border: 0.5px solid var(--border-med);
   color: var(--text-sec); border-radius: var(--radius-sm);
-  padding: 3px 9px; cursor: pointer; opacity: 0; transition: opacity .15s;
+  padding: 5px 11px; cursor: pointer; box-shadow: var(--shadow);
+  transition: background .15s, color .15s;
+  /* .prompt used to be position:relative and follows this button in the DOM,
+     so it painted straight over it — a fully opaque, correctly sized, utterly
+     unclickable button. Explicit stacking so DOM order cannot bury it again. */
+  z-index: 2;
 }
-.prompt-wrap:hover .copy-btn, .copy-btn:focus { opacity: 1; }
+.copy-btn:hover, .copy-btn:focus { background: var(--surface2); color: var(--text); }
+/* keep the button clear of the first line of a long prompt */
+.prompt-wrap .prompt { padding-right: 78px; }
 
 /* ---------- steps ---------- */
 

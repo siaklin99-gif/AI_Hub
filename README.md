@@ -62,44 +62,46 @@ Don't take any of the above on trust — that would be a strange way to run this
 ./selfcheck --full
 ```
 
-Three harnesses, **1,580 checks**, all re-runnable and all yours:
+Three harnesses, **1,979 checks**, all re-runnable and all yours.
 
 **`test.js` — 26 adversarial unit tests.** Not happy paths. A page missing its title, two
-pages sharing a nav label, a description outside 60–260 chars, a reorder that leaves a page
-calling itself "Track 3" from slot 5, an `idPrefix` that would collide in localStorage, an
-unknown `note()` kind, accordion numbering past 9, a quote in a description trying to break
-out of the `content="…"` attribute, a pager pointing a page at itself.
+pages sharing a nav label, a reorder that leaves a page calling itself "Track 3" from slot 5,
+an `idPrefix` that would collide in localStorage, an unknown `note()` kind, accordion
+numbering past 9, a quote in a description trying to break out of `content="…"`.
 
-**`verify.js` — 734 static checks, offline, zero dependencies.** Config validation; every
-`.html` byte-identical to what the source renders; every link *and anchor* resolving; the
-nav byte-identical across pages; every checklist counter matching its real box count; every
-CSS class used in HTML having a rule; `app.js` referencing every hook the HTML depends on;
-the mobile media query genuinely last in the stylesheet; every colour token having a dark
-value; the one borrowed term attributed; no price or model version anywhere; and a
-repo-wide leak sweep across all 23 text files.
+**`verify.js` — 745 static checks, offline, zero dependencies.** Config validation; every
+`.html` byte-identical to what the source renders; every link *and anchor* resolving; the nav
+byte-identical across pages; every checklist counter matching its real box count; tag balance
+including `div`; every table actually inside a `.tscroll`; every CSS class used in HTML having
+a rule **and** every rule matching something; every `localStorage` access brace-matched inside
+a real try block; the mobile media query genuinely last; the one-source-of-truth site date;
+borrowed terms keeping their attribution; no price or model version; a repo-wide leak sweep.
 
-**`render.js` — 820 rendered checks.** Real Chromium, 6 pages × {desktop, mobile} ×
-{light, dark}. Measures the DOM rather than reading the CSS:
+**`render.js` — 1,208 rendered checks.** Real Chromium, 6 pages × 5 combos —
+{desktop, mobile, 320px narrow} × {light, dark}, with the mobile combos declaring
+`hasTouch`/`isMobile` so hover-gated CSS resolves the way a phone resolves it.
 
-- **Source ⇄ DOM parity.** An independent parser counts sections, headings, checkboxes,
-  accordions, tables, cards, track cards and prompts in the *source*, then asserts the
-  browser renders exactly that many. If the code says 16 checkboxes and the page shows 15,
-  this fails. The nav is compared against `site.config.js` label-for-label, in order.
-- **Desktop ⇄ mobile parity.** The visible text at 390px must be *character-identical* to
-  the text at 1280px. A media query may re-arrange the page; it may never drop content.
-  Light and dark are compared the same way.
-- **Layout invariants.** No horizontal overflow, every `.wrap` sharing one left edge, the
-  nav aligned to the content, no collapsed cards, no clipped text, no console errors.
-- **WCAG AA contrast** on every piece of rendered text, in both themes.
-- **The interactive parts actually exercised** — an accordion really opens, a tick really
-  updates the counter and really survives a reload.
+- **Source ⇄ DOM parity.** Counts are read from `src/pages/*.js` + `site.config.js` +
+  `src/layout.js` — never from the built HTML — so a build bug that drops content from every
+  layer still fails. The nav is compared to the config label-for-label, in order.
+- **Desktop ⇄ mobile ⇄ 320px ⇄ dark parity.** Visible text must be character-identical across
+  all of them. A media query may re-arrange; it may never drop content.
+- **Layout invariants.** No horizontal overflow, one shared left edge, nav aligned to content,
+  no collapsed cards (measured with everything expanded), no text clipped by a box that hides
+  overflow, no console errors.
+- **WCAG AA contrast**, with alpha composited down the ancestor chain and cumulative
+  `opacity` folded in, so semi-transparent and invisible text fail instead of passing.
+- **Control usability.** Every button, link-button and checkbox must be at least 14px, above
+  0.6 effective opacity, and — via `elementFromPoint` — not painted over by anything.
+- **The interactive parts exercised.** *Every* checklist on a page (not just the first): tick
+  it, confirm its own counter and bar update, reload, confirm it persisted.
 
-Because closed accordions are legitimately zero-height, `render.js` measures twice: once as
-shipped, once with every accordion forced open. Skipping the closed ones would have left a
-blind spot over most of the content.
+Screenshots are taken **immediately after load**, before any harness mutation, so the PNGs are
+the page a visitor actually gets.
 
-Playwright is borrowed from `a local install` so this repo stays dependency-free.
-If it can't load, `selfcheck --full` **blocks** — it does not pass quietly.
+Playwright is borrowed from `a local install` so this repo stays dependency-free. If it
+can't load, `selfcheck --full` **blocks**. An unrecognised argument is rejected with exit 2
+rather than silently degrading to static-only.
 
 ### The pre-commit hook
 
@@ -108,29 +110,41 @@ If it can't load, `selfcheck --full` **blocks** — it does not pass quietly.
 stays behind `--full`, because blocking a commit on a browser launch would be worse than
 useless. The hook detects and blocks; it never edits code.
 
-## Both harnesses were proven by falsification
+## What the cold audits found
 
-A guard only ever run against working code is unproven. Each of these was injected into a
-copy and confirmed to fail for the right reason:
+Two zero-context auditors read the repo with no knowledge of how it was built. Both found real
+defects, and the code audit found them **in the harnesses themselves** — the dangerous kind,
+because a false negative manufactures confidence.
 
-| Injected defect | Caught by |
+Every finding below was reproduced locally before being fixed, and every fix was then proven by
+re-injecting the original defect and watching the repaired guard fail.
+
+| The guard said | What was actually true |
 |---|---|
-| A real price (`$20 per month`) added to `tools.html` | `verify.js` |
-| A checkbox deleted, counter left saying "16" | `verify.js` |
-| `#moves` anchor repointed to a non-existent id | `verify.js` |
-| One nav link removed from a single page | `verify.js` |
-| A CSS rule appended *after* the mobile media query | `verify.js` |
-| `--text-ter` reverted to the low-contrast `#888780` | `render.js` |
-| Every dirty-config and dirty-component case listed above | `test.js` |
+| clipped-text scan, 6 pages green | It skipped `overflow: visible` first — the default for every tag it looked at. **0 of 123 elements examined, every run.** |
+| contrast scan, all AA | Alpha was discarded and transparent text was *skipped, not failed*. `color: transparent` and `rgba(…,0.1)` both passed. |
+| no collapsed cards | `m.deadCards === 0 \|\| open.dead.length === 0` short-circuited on 4 of 6 pages, discarding the only scan that sees inside accordions. |
+| every footer links everywhere | `… \|\| (dest === 'index.html')` made it vacuous. Removing every index link from every footer passed. |
+| tags balanced | `div` was not in the list — the only tag this site nests. Deleting a `</div>` passed. |
+| localStorage is guarded | The regex had an unbounded lazy gap; one unrelated `try {` satisfied it. Stripping all four real guards passed. |
+| source ⇄ DOM parity | It read the *built* HTML, i.e. the same artifact the browser was rendering. Not independent at all. |
+| screenshots reviewed by eye | They were the post-test state: every accordion forced closed, and a checkbox already ticked. tools.html saved at 4585px against a shipped 4707px. |
 
-Three failures during construction were the harnesses' or the port's own bugs, not the
-site's, and were fixed rather than worked around:
+And one bug the harnesses missed entirely, which the audit surfaced: **11 copy buttons were
+`opacity: 0` behind a `:hover`** — dead on every phone, on a site whose hero says "Works on a
+phone." Fixing it took three passes, each caught by a new check rather than by luck: `opacity:
+0.45` was still unreadable (so contrast now folds in cumulative opacity), and then the fully
+opaque button was **painted over by `.prompt`**, which is `position: relative` and later in the
+DOM (so controls are now occlusion-tested with `elementFromPoint`).
 
-1. A price pattern that flagged "per month" as a duration.
-2. A contrast probe that misread Chrome's `color(srgb 0…1)` output for `color-mix()`
-   backgrounds as 0–255 values.
-3. A text-parity comparison run against a backup directory that had no `assets/`, so the
-   "before" pages rendered unstyled and every page looked changed.
+Also fixed: nav highlighting died on pretty URLs (`/trust` lit nothing, `/hub/trust/` lit
+"Start"); `attr()` escaped 1 of ~10 attribute interpolations; a throw in one `init()` step
+killed every later one; `.tag-blue` and `.tag-row` matched nothing; the class-coverage set was
+harvested from CSS comments, so `class="ai"` would have passed; `undefined` and `NaN` were
+banned as substrings of `.js` source; `./selfcheck --fulll` printed PASS and exited 0.
+
+Three findings were judged and **not** treated as bugs: the mobile media query really is last,
+320px really has zero overflow, and accordion numbering past 9 is correct.
 
 ## The modular port was proven lossless
 
@@ -183,3 +197,7 @@ carries the full footer link set instead of index alone.
 
 - Not deployed anywhere. It runs from the filesystem as-is.
 - `render.js` hard-codes the path to the borrowed Playwright install.
+- Nine of the ten helpers in `src/components.js` are used by no shipped page: the six pages
+  predate them and hand-write their markup. They are correct and tested, and new sections
+  should use them, but the file's original claim that a CSS rename is "one edit instead of six
+  page-wide finds" is not true today. The docstring now says so.

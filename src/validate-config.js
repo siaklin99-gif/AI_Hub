@@ -57,6 +57,19 @@ function validate(cfg) {
     if (p.nav && seenNav.has(p.nav)) push(`${at}: duplicate nav label "${p.nav}" — two identical tabs`);
     if (p.nav) seenNav.add(p.nav);
 
+    /* heroButtons land straight in href/class attributes. Unvalidated, a typo
+       in `style` silently produces class="btn btn-undefined" with no rule. */
+    if (p.heroButtons !== undefined) {
+      if (!Array.isArray(p.heroButtons)) push(`${at}: heroButtons must be an array`);
+      else p.heroButtons.forEach((b, bi) => {
+        if (!b.href) push(`${at}: heroButtons[${bi}] has no href`);
+        if (!b.label) push(`${at}: heroButtons[${bi}] has no label`);
+        if (!['primary', 'ghost'].includes(b.style)) {
+          push(`${at}: heroButtons[${bi}] style "${b.style}" must be "primary" or "ghost" (there is no other .btn- rule)`);
+        }
+      });
+    }
+
     if (p.description && (p.description.length < 60 || p.description.length > 260)) {
       push(`${at}: description is ${p.description.length} chars, want 60-260`);
     }

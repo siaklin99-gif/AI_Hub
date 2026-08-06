@@ -18,13 +18,16 @@ const attr = (s) => String(s)
   .replace(/>/g, '&gt;')
   .replace(/"/g, '&quot;');
 
+/* Every value that lands inside quotes goes through attr(). Previously only
+   page.description did, leaving title, every href, and the hero button label
+   and style raw — a quote in any of them breaks out of the attribute. */
 const navPages = () => cfg.pages;
 
 /* ---- nav ------------------------------------------------------ */
 
 function nav() {
   const links = navPages()
-    .map((p) => `      <a href="${p.file}">${p.nav}</a>`)
+    .map((p) => `      <a href="${attr(p.file)}">${p.nav}</a>`)
     .join('\n');
   return `<nav class="nav">
   <div class="nav-inner">
@@ -40,7 +43,7 @@ ${links}
 
 function hero(page) {
   const buttons = (page.heroButtons || [])
-    .map((b) => `      <a class="btn btn-${b.style}" href="${b.href}">${b.label}</a>`)
+    .map((b) => `      <a class="btn btn-${attr(b.style)}" href="${attr(b.href)}">${b.label}</a>`)
     .join('\n');
   const btnRow = buttons ? `\n    <div class="btn-row">\n${buttons}\n    </div>` : '';
   const foot = page.heroFoot
@@ -69,7 +72,7 @@ function pager(page) {
   if (!prev && !next) return '';
 
   const cell = (p, dir) =>
-    `      <a href="${p.file}"><span class="dir">${dir}</span><span class="ttl">${p.pagerTitle}</span></a>`;
+    `      <a href="${attr(p.file)}"><span class="dir">${dir}</span><span class="ttl">${p.pagerTitle}</span></a>`;
 
   const parts = [];
   if (prev) parts.push(cell(prev, prev.track ? 'Back · ' + prev.track.split(' · ')[0] : 'Back'));
@@ -91,9 +94,9 @@ ${parts.join('\n')}
 function footer(page) {
   const internal = navPages()
     .filter((p) => !(p.file === 'index.html' && page.file === 'index.html'))
-    .map((p) => `      <a href="${p.file}">${p.nav}</a>`);
+    .map((p) => `      <a href="${attr(p.file)}">${p.nav}</a>`);
   const external = cfg.externalTracks
-    .map((t) => `      <a href="${t.href}">${t.footLabel}</a>`);
+    .map((t) => `      <a href="${attr(t.href)}">${t.footLabel}</a>`);
   const note = page.footNote ? ' ' + page.footNote : '';
 
   return `<footer class="foot">
@@ -117,7 +120,7 @@ function render(page, body) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${page.title}</title>
+<title>${attr(page.title)}</title>
 <meta name="description" content="${attr(page.description)}">
 <link rel="stylesheet" href="assets/style.css">
 </head>

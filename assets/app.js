@@ -6,11 +6,17 @@
   'use strict';
 
   /* ---- mark the current page in the nav ---------------------- */
+  /* Matches on the SLUG, not the filename, so the highlight survives a host
+     that serves pretty URLs. "/trust.html", "/trust", "/trust/" and "/" all
+     resolve correctly; previously only the ".html" forms did, and "/hub/trust/"
+     wrongly lit up "Start". */
   function markCurrent() {
-    var here = location.pathname.split('/').pop() || 'index.html';
+    var path = location.pathname.replace(/\/+$/, '');
+    var last = path.split('/').pop();
+    var here = (last || 'index').replace(/\.html$/, '');
     document.querySelectorAll('.nav-links a').forEach(function (a) {
-      var href = a.getAttribute('href') || '';
-      if (href === here) a.setAttribute('aria-current', 'page');
+      var slug = (a.getAttribute('href') || '').replace(/\.html$/, '');
+      if (slug === here) a.setAttribute('aria-current', 'page');
     });
   }
 
@@ -35,8 +41,14 @@
       var boxes = Array.prototype.slice.call(list.querySelectorAll('input[type=checkbox]'));
       if (!boxes.length) return;
 
-      var wrapEl = list.parentElement;
-      var progress = wrapEl ? wrapEl.querySelector('.progress') : null;
+      /* The list's OWN progress block: walk forward from the list rather than
+         querying the parent, which would hand two checklists in one card the
+         same counter. */
+      var progress = null;
+      for (var sib = list.nextElementSibling; sib; sib = sib.nextElementSibling) {
+        if (sib.classList && sib.classList.contains('progress')) { progress = sib; break; }
+      }
+      if (!progress && list.parentElement) progress = list.parentElement.querySelector('.progress');
       var barFill = progress ? progress.querySelector('.bar > i') : null;
       var count = progress ? progress.querySelector('[data-count]') : null;
 
@@ -101,11 +113,15 @@
     });
   }
 
+  /* Each step is isolated. Previously a throw anywhere in wireChecklists()
+     — the localStorage access is the realistic candidate, e.g. Safari private
+     browsing — escaped init() and silently killed every copy button on the
+     page. One broken feature must not take the others down. */
   function init() {
-    markCurrent();
-    wireAccTools();
-    wireChecklists();
-    wireCopy();
+    var steps = [markCurrent, wireAccTools, wireChecklists, wireCopy];
+    for (var i = 0; i < steps.length; i++) {
+      try { steps[i](); } catch (e) { if (window.console) console.error('AI Hub: ' + steps[i].name + ' failed', e); }
+    }
   }
 
   if (document.readyState === 'loading') {

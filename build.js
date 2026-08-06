@@ -42,7 +42,6 @@ for (const page of cfg.pages) {
     continue;
   }
 
-  delete require.cache[modPath];
   const body = require(modPath);
   if (typeof body !== 'string' || body.trim().length < 100) {
     console.log(`  \x1b[31mBAD\x1b[0m      src/pages/${slug}.js did not export page content`);

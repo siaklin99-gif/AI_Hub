@@ -19,6 +19,18 @@ if ! command -v node >/dev/null 2>&1; then
   exit 2
 fi
 
+# Reject anything we do not recognise. `./selfcheck --fulll` used to print
+# "rendered harness skipped" and then SELFCHECK PASS with exit 0 — the single
+# path in a fail-closed script that failed open, reachable by one typo.
+if [ $# -gt 1 ]; then
+  echo "${RED}BLOCKED${OFF}  too many arguments. Usage: ./selfcheck [--full]" >&2
+  exit 2
+fi
+case "${1:-}" in
+  ""|--full) ;;
+  *) echo "${RED}BLOCKED${OFF}  unknown argument '$1'. Usage: ./selfcheck [--full]" >&2; exit 2 ;;
+esac
+
 echo "${BOLD}[1/3] adversarial unit tests${OFF}"
 node test.js || problems=$((problems+1))
 

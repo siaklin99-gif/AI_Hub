@@ -278,7 +278,34 @@ head('JS / HTML contract');
 for (const hook of ['.acc-tools', 'data-acc', '.checklist', 'data-count', '.bar > i', '.reset-btn', '.prompt-wrap', '.copy-btn', '.nav-links a']) {
   check(JS.includes(hook), `app.js: never references "${hook}" that the HTML depends on`);
 }
-check(/try\s*\{[\s\S]*?localStorage/.test(JS), 'app.js: localStorage is not wrapped in try/catch (private browsing would throw and kill the script)');
+/* Brace-match every try block and assert each localStorage access falls
+   inside one. The old test was /try\s*\{[\s\S]*?localStorage/ — an unbounded
+   lazy gap, so a single unrelated `try {` anywhere in the file satisfied it.
+   Stripping every real try/catch and leaving one decoy passed. */
+{
+  // comments mention localStorage; only real code counts
+  const JSC = JS.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' '))
+                .replace(/^\s*\/\/.*$/gm, (m) => m.replace(/[^\n]/g, ' '));
+  const ranges = [];
+  for (let i = JSC.indexOf('try'); i !== -1; i = JSC.indexOf('try', i + 1)) {
+    const open = JSC.indexOf('{', i);
+    if (open === -1 || !/^try\s*$/.test(JSC.slice(i, open))) continue;
+    let depth = 0, j = open;
+    for (; j < JSC.length; j++) {
+      if (JSC[j] === '{') depth++;
+      else if (JSC[j] === '}') { depth--; if (depth === 0) break; }
+    }
+    ranges.push([open, j]);
+  }
+  const unguarded = [];
+  for (let i = JSC.indexOf('localStorage'); i !== -1; i = JSC.indexOf('localStorage', i + 1)) {
+    if (!ranges.some(([a, b]) => i > a && i < b)) {
+      unguarded.push(JSC.slice(Math.max(0, i - 30), i + 40).replace(/\s+/g, ' ').trim());
+    }
+  }
+  check(unguarded.length === 0,
+    `app.js: ${unguarded.length} localStorage access(es) outside any try block — private browsing throws there: ${unguarded.slice(0, 2).join(' | ')}`);
+}
 check(/aria-current/.test(JS), 'app.js: does not mark the current nav item');
 
 /* ---------- 10. content hygiene --------------------------------- */
@@ -294,7 +321,8 @@ for (const p of PAGES) {
     check(!SRC[p].includes(b), `${p}: contains placeholder/leak marker "${b}"`);
   }
   // the site's own honesty rule: every page carries the date it was written
-  check(/5 August 2026/.test(SRC[p]), `${p}: no "written on" date — this site requires its own claims to be dated`);
+  check(SRC[p].includes(cfg.site.written),
+    `${p}: does not carry the site date "${cfg.site.written}" from site.config.js — this site requires its own claims to be dated`);
 }
 
 // Attribution: the one borrowed term must be credited on the page that uses it.
@@ -337,8 +365,12 @@ for (const p of PAGES.filter((x) => x !== 'index.html')) {
   check(/<div class="pager">/.test(SRC[p]), `${p}: no next/prev pager — reader hits a dead end`);
 }
 // the six named problems on the front door must map to the five tracks + foundations
-check((idx.match(/<span class="num">0\d<\/span>/g) || []).length === 6,
-  'index.html: the "problem, named" grid must contain exactly 6 numbered cards');
+{
+  // scoped to the grid the message names, and not limited to 01-09
+  const probSection = (idx.match(/<section id="problem">[\s\S]*?<\/section>/) || [''])[0];
+  const numbered = (probSection.match(/<span class="num">\d+<\/span>/g) || []).length;
+  check(numbered === 6, `index.html: the "problem, named" grid has ${numbered} numbered cards, expected 6`);
+}
 
 /* ---------- 12. repo-wide leak sweep ----------------------------- */
 head('Repo-wide sweep');
@@ -347,7 +379,7 @@ head('Repo-wide sweep');
   const TEXTY = /\.(html|css|js|md|json|csv|txt)$/;
   const walk = (dir, out = []) => {
     for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
-      if (e.name.startsWith('.') && e.name !== '.gitignore') continue;
+      if (e.name.startsWith('.')) continue;   // .gitignore has no extension and never passes TEXTY
       if (e.isDirectory()) { if (!SKIP_DIRS.has(e.name)) walk(path.join(dir, e.name), out); }
       else if (TEXTY.test(e.name)) out.push(path.join(dir, e.name));
     }
@@ -370,7 +402,16 @@ head('Repo-wide sweep');
     for (const f of files) {
       if (SELF.has(f)) continue;
       const body = fs.readFileSync(f, 'utf8');
+      /* Value markers are leaks only in RENDERED output. In .js they are
+         ordinary JavaScript (`if (x === undefined)`), and in .md the docs
+         legitimately name them when describing this very guard. Scoping them
+         to .html is the honest rule; the alternative is widening an exemption
+         list until the guard means nothing. Placeholder markers
+         (TODO/FIXME/lorem) still apply everywhere. */
+      const rendered = /\.html$/.test(f);
+      const RENDERED_ONLY = new Set(['unde' + 'fined', 'Na' + 'N', '[object ' + 'Object]', 'null' + 'null']);
       for (const b of BANNED) {
+        if (!rendered && RENDERED_ONLY.has(b)) continue;
         if (body.includes(b)) {
           fail(`${path.relative(ROOT, f)}: contains leak marker "${b}"`);
           hits++;

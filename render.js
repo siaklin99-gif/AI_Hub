@@ -38,29 +38,44 @@ const PAGES = cfg.pages.map((p) => p.file.replace(/\.html$/, ''));
    DOM-only harness would never notice. */
 const fsx = require('fs');
 function sourceTruth(slug) {
-  const html = fsx.readFileSync(path.join(ROOT, slug + '.html'), 'utf8');
+  /* Independence matters: reading the built .html would compare the browser
+     against the very artifact it is rendering, so a build bug that dropped
+     content from every layer would pass. Count from the SOURCE modules and
+     the layout instead, so the build itself is what is under test. */
+  const page = cfg.pages.find((pg) => pg.file === slug + '.html');
+  const body = fsx.readFileSync(path.join(ROOT, 'src', 'pages', slug + '.js'), 'utf8');
+  const layoutSrc = fsx.readFileSync(path.join(ROOT, 'src', 'layout.js'), 'utf8');
+  // the front door's track grid is generated, not written in the page module
+  const generatedTracks = /trackGrid\(\)/.test(body)
+    ? cfg.pages.filter((pg) => pg.track).length + cfg.externalTracks.length : 0;
+  // layout.js contributes the hero and the pager section
+  const layoutSections = /<section>\n  <div class="wrap">\n    <div class="pager">/.test(layoutSrc) ? 1 : 0;
+  const html = body;
   const count = (re) => (html.match(re) || []).length;
   return {
-    h1: (html.match(/<h1>([\s\S]*?)<\/h1>/) || [, ''])[1].replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim(),
-    sections: count(/<section[ >]/g),
+    h1: String(page.h1).replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim(),
+    sections: count(/<section[ >]/g) + layoutSections,
     h2: count(/<h2>/g),
     h3: count(/<h3[ >]/g),
     checkboxes: count(/<input type="checkbox"/g),
     accordions: count(/<details class="acc"/g),
     tables: count(/<table>/g),
     cards: count(/<div class="card">/g),
-    tracks: count(/<a class="track"/g),
+    tracks: count(/<a class="track"/g) + generatedTracks,
     prompts: count(/<div class="prompt-wrap"/g),
-    navLabels: (html.match(/<div class="nav-links">([\s\S]*?)<\/div>/) || [, ''])[1]
-      .match(/>([^<]+)<\/a>/g) ? (html.match(/<div class="nav-links">([\s\S]*?)<\/div>/)[1]
-      .match(/>([^<]+)<\/a>/g).map((s) => s.slice(1, -4))) : [],
   };
 }
+/* The mobile combos declare touch. Without hasTouch/isMobile, Chromium still
+   reports `hover: hover` and `pointer: fine` at 390px, so any CSS gated on
+   `@media (hover: hover)` resolves the DESKTOP way and the harness cannot see
+   what a phone sees. That is exactly the class of bug that left 11 copy
+   buttons invisible on touch devices. */
 const COMBOS = [
   { name: 'desktop-light', width: 1280, height: 900, scheme: 'light' },
   { name: 'desktop-dark', width: 1280, height: 900, scheme: 'dark' },
-  { name: 'mobile-light', width: 390, height: 844, scheme: 'light' },
-  { name: 'mobile-dark', width: 390, height: 844, scheme: 'dark' },
+  { name: 'mobile-light', width: 390, height: 844, scheme: 'light', touch: true },
+  { name: 'mobile-dark', width: 390, height: 844, scheme: 'dark', touch: true },
+  { name: 'narrow-light', width: 320, height: 568, scheme: 'light', touch: true },
 ];
 
 const only = process.argv[2];
@@ -81,6 +96,8 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
       viewport: { width: combo.width, height: combo.height },
       colorScheme: combo.scheme,
       deviceScaleFactor: 1,
+      hasTouch: !!combo.touch,
+      isMobile: !!combo.touch,
     });
 
     for (const name of pages) {
@@ -91,6 +108,17 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
 
       await page.goto('file://' + path.join(ROOT, name + '.html'));
       await page.waitForLoadState('networkidle');
+
+      /* Screenshot FIRST, before anything below mutates the page. Taking it at
+         the end captured the post-test state: every accordion forced closed
+         (the old restore looked for a data-was-open attribute that is set
+         nowhere), and on checklist pages a box already ticked and reloaded.
+         The saved PNG was 4585px of all-closed tools.html against a shipped
+         4707px. These images are what the eye-verification step reviews, so
+         they have to be the page a visitor actually gets. */
+      if (combo.name === 'desktop-light' || combo.name === 'mobile-dark') {
+        await page.screenshot({ path: path.join(SHOTS, `${name}_${combo.name}.png`), fullPage: true });
+      }
 
       const m = await page.evaluate(() => {
         const el = (s) => document.querySelector(s);
@@ -118,12 +146,27 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
           return r.width > 0 && (r.right > vw + 1 || r.left < -1);
         }).map((e) => e.tagName.toLowerCase() + (e.className ? '.' + String(e.className).split(' ')[0] : ''));
 
-        // text that is clipped by its own box
-        const clipped = els('p, h1, h2, h3, h4, li, td, th, summary').filter((e) => {
+        /* Text clipped by a box that hides its overflow.
+           The previous version skipped anything with `overflow: visible` —
+           which is the default for every tag it looked at, so it examined
+           0 of 123 candidates and could never fail. Scan the CLIPPING boxes
+           instead: any element that hides overflow and whose content does
+           not fit, plus any text whose rect escapes such an ancestor. */
+        const isScroller = (e) => e.closest('.tscroll') || e.closest('.nav-links');
+        const clippers = els('body *').filter((e) => {
           const st = getComputedStyle(e);
-          if (st.overflow === 'visible') return false;
-          return e.scrollHeight > e.clientHeight + 2;
-        }).length;
+          const hides = (v) => v === 'hidden' || v === 'clip';
+          return (hides(st.overflowY) || hides(st.overflowX)) && !isScroller(e) && !e.closest('details:not([open])');
+        });
+        const clipped = clippers.filter((e) =>
+          e.scrollHeight > e.clientHeight + 2 || e.scrollWidth > e.clientWidth + 2
+        ).map((e) => e.tagName.toLowerCase() + '.' + String(e.className).split(' ')[0]);
+        const clippedText = els('p, h1, h2, h3, h4, li, td, th, summary').filter((e) => {
+          const box = e.parentElement && clippers.find((c) => c.contains(e));
+          if (!box || box === e) return false;
+          const r = e.getBoundingClientRect(), br = box.getBoundingClientRect();
+          return r.height > 0 && (r.bottom > br.bottom + 2 || r.right > br.right + 2);
+        }).map((e) => e.tagName.toLowerCase() + ':' + e.innerText.slice(0, 25));
 
         // cards that collapsed to nothing
         const deadCards = els('.card, .track, .note, .acc').filter((e) => {
@@ -140,6 +183,8 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
           emptySections,
           escapes: [...new Set(escapes)],
           clipped,
+          clippedText,
+          clippers: clippers.length,
           deadCards,
           h1: el('h1') ? el('h1').innerText.trim() : '',
           h1H: el('h1') ? Math.round(box(el('h1')).h) : 0,
@@ -196,9 +241,15 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
         return { clipped, dead, escapes: [...new Set(escapes)], overflow, opened: wasClosed.length };
       });
 
-      check(m.clipped === 0, `${name}: ${m.clipped} elements clip their own text (as shipped)`);
+      check(m.clipped.length === 0, `${name}: content overflows a box that hides it: ${m.clipped.slice(0, 3).join(', ')}`);
+      check(m.clippedText.length === 0, `${name}: text escapes a clipping ancestor: ${m.clippedText.slice(0, 3).join(' | ')}`);
       check(open.clipped.length === 0, `${name}: text clipped once expanded: ${open.clipped.slice(0, 3).join(' | ')}`);
-      check(m.deadCards === 0 || open.dead.length === 0,
+      /* Was `m.deadCards === 0 || open.dead.length === 0`. m.deadCards is 0 on
+         four of six pages, so the left operand short-circuited and the expanded
+         scan — the only one that sees inside accordions — was computed and
+         thrown away. Assert on the expanded scan alone; the as-shipped count is
+         reported but cannot be used to skip it. */
+      check(open.dead.length === 0,
         `${name}: cards collapsed to zero height with everything expanded: ${open.dead.slice(0, 3).join(' | ')}`);
       check(open.escapes.length === 0, `${name}: elements escape the viewport once expanded: ${open.escapes.slice(0, 5).join(', ')}`);
       check(open.overflow <= 1, `${name}: page scrolls horizontally by ${open.overflow}px once expanded`);
@@ -207,6 +258,55 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
       check(m.currentNav.length === 1 && m.currentNav[0] === name + '.html',
         `${name}: nav highlight is ${JSON.stringify(m.currentNav)}, expected ["${name}.html"]`);
       check(consoleErrors.length === 0, `${name}: console errors: ${consoleErrors.slice(0, 2).join(' | ')}`);
+
+      /* --- every interactive control must be usable at this viewport ---
+         The copy buttons were opacity:0 behind a :hover that a phone cannot
+         produce: 11 dead buttons on leverage.html at 390px, on a site whose
+         hero says "Works on a phone". Nothing measured visibility, and the
+         contrast scan happily graded the invisible button's colour. */
+      const controls = await page.evaluate(() => {
+        return [...document.querySelectorAll('button, a.btn, input[type=checkbox], .copy-btn')]
+          .map((e) => {
+            const st = getComputedStyle(e);
+            const r = e.getBoundingClientRect();
+            /* OCCLUSION. Opacity and size were not enough: the copy button was
+               fully opaque and correctly sized while `.prompt` — position:
+               relative and later in the DOM — painted straight over it. Ask
+               the browser what is actually on top at the control's centre. */
+            let covered = null;
+            if (r.width > 0 && r.height > 0) {
+              e.scrollIntoView({ block: 'center' });
+              const rr = e.getBoundingClientRect();
+              const cx = rr.left + rr.width / 2, cy = rr.top + rr.height / 2;
+              if (cx >= 0 && cy >= 0 && cx <= innerWidth && cy <= innerHeight) {
+                const hit = document.elementFromPoint(cx, cy);
+                if (hit && hit !== e && !e.contains(hit) && !hit.contains(e)) {
+                  covered = hit.tagName.toLowerCase() + '.' + String(hit.className).split(' ')[0];
+                }
+              }
+            }
+            let cum = 1;
+            for (let n = e; n; n = n.parentElement) cum *= Number(getComputedStyle(n).opacity);
+            return {
+              what: e.tagName.toLowerCase() + '.' + String(e.className).split(' ')[0],
+              opacity: cum,
+              w: Math.round(r.width), h: Math.round(r.height),
+              covered,
+              hidden: st.display === 'none' || st.visibility === 'hidden',
+              inClosed: !!e.closest('details:not([open])'),
+            };
+          })
+          .filter((c) => !c.inClosed && !c.hidden);
+      });
+      const buried = controls.filter((c) => c.covered);
+      check(buried.length === 0,
+        `${name}: ${buried.length} controls are painted over and cannot be clicked (${[...new Set(buried.map((c) => c.what + ' under ' + c.covered))].join(', ')})`);
+      const invisible = controls.filter((c) => c.opacity < 0.6);
+      const tiny = controls.filter((c) => c.w < 14 || c.h < 14);
+      check(invisible.length === 0,
+        `${name}: ${invisible.length} interactive controls render below opacity 0.6 (${[...new Set(invisible.map((c) => c.what + ' @' + c.opacity))].join(', ')})`);
+      check(tiny.length === 0,
+        `${name}: ${tiny.length} controls are under 14px (${[...new Set(tiny.map((c) => c.what + ' ' + c.w + 'x' + c.h))].join(', ')})`);
 
       /* --- SOURCE -> DOM parity: what the code says must be what renders --- */
       const truth = sourceTruth(name);
@@ -257,25 +357,42 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
         // Chrome reports color-mix() backgrounds as "color(srgb 0..1 ...)".
         // Parsing those as 0-255 produced false failures on the first run —
         // both notations must be handled or the check lies.
+        /* Returns [r,g,b,a]. The previous version threw the alpha away and
+           returned null for fully transparent text — which the caller treated
+           as "skip", so `color: transparent` and `rgba(...,0.1)` both PASSED.
+           Alpha is now kept and composited, and invisible text is a failure. */
         const parse = (s) => {
           if (!s) return null;
           if (s.startsWith('color(')) {
-            const n = s.match(/[\d.]+/g).map(Number).slice(0, 3);
-            return n.map((v) => v * 255);
+            const n = s.match(/[\d.]+/g).map(Number);
+            return [n[0] * 255, n[1] * 255, n[2] * 255, n.length > 3 ? n[3] : 1];
           }
           const n = (s.match(/[\d.]+/g) || []).map(Number);
           if (n.length < 3) return null;
-          if (n.length >= 4 && n[3] === 0) return null; // transparent
-          return n.slice(0, 3);
+          return [n[0], n[1], n[2], n.length >= 4 ? n[3] : 1];
+        };
+        // src over dst
+        const over = (fg, bg) => {
+          const a = fg[3];
+          return [0, 1, 2].map((i) => fg[i] * a + bg[i] * (1 - a)).concat([1]);
         };
         const lum = (c) => {
           const [r, g, b] = c.map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
           return 0.2126 * r + 0.7152 * g + 0.0722 * b;
         };
+        /* Composite every semi-transparent background down the ancestor chain
+           instead of stopping at the first one and pretending it is opaque. */
         const bgOf = (e) => {
+          const stack = [];
           let n = e;
-          while (n) { const c = parse(getComputedStyle(n).backgroundColor); if (c) return c; n = n.parentElement; }
-          return [255, 255, 255];
+          while (n) {
+            const c = parse(getComputedStyle(n).backgroundColor);
+            if (c && c[3] > 0) { stack.push(c); if (c[3] === 1) break; }
+            n = n.parentElement;
+          }
+          let out = [255, 255, 255, 1];
+          for (let i = stack.length - 1; i >= 0; i--) out = over(stack[i], out);
+          return out;
         };
         const bad = [];
         document.querySelectorAll('p,li,h1,h2,h3,h4,span,td,th,a,label,summary,button,strong,em').forEach((e) => {
@@ -283,8 +400,17 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
           if (e.querySelector('p,li,div,td,h2,h3,h4')) return;      // measure leaves only
           if (e.getBoundingClientRect().height === 0) return;        // hidden
           const st = getComputedStyle(e);
-          const fg = parse(st.color); if (!fg) return;
-          const L1 = lum(fg), L2 = lum(bgOf(e));
+          const fgRaw = parse(st.color); if (!fgRaw) return;
+          /* Fold in the cumulative `opacity` of this element and its ancestors.
+             Without it a button at opacity 0.45 was graded on its raw colour
+             and passed while being unreadable on screen — the exact bug that
+             shipped once already. */
+          let cum = 1;
+          for (let n = e; n; n = n.parentElement) cum *= Number(getComputedStyle(n).opacity);
+          fgRaw[3] *= cum;
+          if (fgRaw[3] < 0.02) { bad.push(`${st.fontSize} INVISIBLE (effective alpha ${fgRaw[3].toFixed(2)}) "${e.innerText.slice(0, 28)}"`); return; }
+          const bg = bgOf(e);
+          const L1 = lum(over(fgRaw, bg)), L2 = lum(bg);
           const ratio = (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05);
           const size = parseFloat(st.fontSize), bold = parseInt(st.fontWeight, 10) >= 700;
           const min = (size >= 24 || (size >= 18.66 && bold)) ? 3 : 4.5;
@@ -309,30 +435,51 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
         check(accWorks.after > 10, `${name}: opening an accordion revealed nothing`);
       }
 
-      const hasList = await page.$('.checklist input[type=checkbox]');
-      if (hasList) {
-        const before = await page.textContent('.progress [data-count]');
-        await page.click('.checklist input[type=checkbox]');
-        const after = await page.textContent('.progress [data-count]');
-        const barW = await page.evaluate(() => document.querySelector('.progress .bar > i').style.width);
-        check(before !== after, `${name}: ticking a box did not update the counter ("${before}" -> "${after}")`);
-        check(/^1 of \d+$/.test(after), `${name}: counter reads "${after}" after one tick, expected "1 of N"`);
-        check(barW && barW !== '0%', `${name}: progress bar did not fill (width=${barW})`);
+      /* EVERY checklist, not just the first — further.html has four, and only
+         one was ever exercised. Wrapped so one flaky click reports as a normal
+         failure instead of a raw stack that kills all remaining pages. */
+      const listCount = await page.evaluate(() => document.querySelectorAll('.checklist').length);
+      for (let li = 0; li < listCount; li++) {
+        try {
+          const read = () => page.evaluate((i) => {
+            const list = document.querySelectorAll('.checklist')[i];
+            const prog = list.parentElement.querySelector('.progress');
+            return {
+              count: prog.querySelector('[data-count]').textContent,
+              bar: prog.querySelector('.bar > i').style.width,
+              boxes: list.querySelectorAll('input[type=checkbox]').length,
+            };
+          }, li);
 
-        // and it must survive a reload
-        await page.reload();
-        await page.waitForLoadState('networkidle');
-        const persisted = await page.textContent('.progress [data-count]');
-        check(persisted === after, `${name}: tick did not persist across reload ("${persisted}" != "${after}")`);
-        // leave no residue for the next combo
-        await page.evaluate(() => {
-          Object.keys(localStorage).filter((k) => k.startsWith('aihub:')).forEach((k) => localStorage.removeItem(k));
-        });
+          const before = await read();
+          await page.evaluate((i) => {
+            const box = document.querySelectorAll('.checklist')[i].querySelector('input[type=checkbox]');
+            box.click();
+          }, li);
+          const after = await read();
+
+          check(before.count !== after.count,
+            `${name}: checklist ${li + 1}: ticking a box did not update its own counter ("${before.count}")`);
+          check(after.count === '1 of ' + after.boxes,
+            `${name}: checklist ${li + 1}: counter reads "${after.count}", expected "1 of ${after.boxes}"`);
+          check(after.bar && after.bar !== '0%', `${name}: checklist ${li + 1}: progress bar did not fill`);
+
+          await page.reload();
+          await page.waitForLoadState('networkidle');
+          const persisted = await read();
+          check(persisted.count === after.count,
+            `${name}: checklist ${li + 1}: tick did not persist across reload ("${persisted.count}")`);
+
+          await page.evaluate(() => {
+            Object.keys(localStorage).filter((k) => k.startsWith('aihub:')).forEach((k) => localStorage.removeItem(k));
+          });
+          await page.reload();
+          await page.waitForLoadState('networkidle');
+        } catch (e) {
+          check(false, `${name}: checklist ${li + 1}: interaction failed — ${String(e.message).split('\n')[0]}`);
+        }
       }
 
-      if (combo.name === 'desktop-light' || combo.name === 'mobile-dark') {
-        await page.screenshot({ path: path.join(SHOTS, `${name}_${combo.name}.png`), fullPage: true });
-      }
       await page.close();
     }
     await ctx.close();
@@ -346,7 +493,7 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
      section nobody notices is missing. */
   console.log('\n\x1b[1mdesktop vs mobile parity\x1b[0m');
   const dl = TEXT['desktop-light'] || {}, ml = TEXT['mobile-light'] || {};
-  const dd = TEXT['desktop-dark'] || {};
+  const dd = TEXT['desktop-dark'] || {}, nl = TEXT['narrow-light'] || {};
   for (const name of pages) {
     if (dl[name] && ml[name]) {
       const same = dl[name] === ml[name];
@@ -355,6 +502,9 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
     }
     if (dl[name] && dd[name]) {
       check(dl[name] === dd[name], `${name}: dark mode shows different text from light mode`);
+    }
+    if (dl[name] && nl[name]) {
+      check(dl[name] === nl[name], `${name}: 320px shows different text from desktop`);
     }
   }
 

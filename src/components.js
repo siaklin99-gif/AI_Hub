@@ -1,8 +1,14 @@
 /* ============================================================
    AI Hub — content components.
-   Helpers for authoring NEW sections. Use these rather than
-   hand-writing markup: they keep the class contract in one place,
-   so a CSS rename is one edit instead of six page-wide finds.
+
+   HONEST STATUS: the six pages in src/pages/ predate these helpers
+   and hand-write their markup, so today only trackGrid() is called
+   by a shipped page. The rest exist for NEW sections, and for the
+   invariants they enforce (a note kind that has no CSS rule throws;
+   a table is always inside .tscroll; a checklist counter is derived
+   from the item count so it cannot drift). test.js exercises them.
+   Prefer them when adding content; do not assume existing pages use
+   them.
    ============================================================ */
 'use strict';
 
@@ -16,7 +22,10 @@ function section({ id, label, h2, lead, body }) {
   if (label) parts.push(`    <p class="slabel">${label}</p>`);
   if (h2) parts.push(`    <h2>${h2}</h2>`);
   if (lead) parts.push(`    <p class="lead">\n      ${lead}\n    </p>`);
-  if (body) parts.push(body.replace(/^/gm, '    ').replace(/^\s+$/gm, ''));
+  /* Do NOT re-indent the body: `.prompt` is white-space: pre-wrap, so adding
+     four spaces to every line puts them on screen and in what the copy button
+     writes to the clipboard. Indentation is cosmetic; correctness is not. */
+  if (body) parts.push(body);
   return `<section${id ? ` id="${id}"` : ''}>
   <div class="wrap">
 ${parts.join('\n')}
@@ -117,6 +126,9 @@ function steps(items) {
 
 /** Wide tables MUST scroll inside their own box or the page overflows. */
 function table(headers, rows, { firstColWidth } = {}) {
+  if (firstColWidth && !/^\d+(px|%|em|rem)$/.test(firstColWidth)) {
+    throw new Error(`table(): firstColWidth "${firstColWidth}" must be a plain CSS length`);
+  }
   const th = headers.map((h, i) =>
     `<th${i === 0 && firstColWidth ? ` style="width:${firstColWidth}"` : ''}>${h}</th>`
   ).join('');
