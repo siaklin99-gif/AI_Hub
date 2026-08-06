@@ -16,9 +16,10 @@ module.exports = `<!-- =========================================================
     <p>
       This isn't a failure of intelligence or effort. It's structural. A search engine
       teaches you its limits quickly — you type something, you get nothing useful, you
-      learn. An AI chatbot always answers. It never says "that's not what I'm for."
-      So you never bump into the edges, and you never discover the rooms you didn't
-      walk into.
+      learn. An AI chatbot will refuse some things outright, but it almost never says
+      "I am out of my depth on this one." On an ordinary question it produces something
+      either way. So you rarely bump into the edges, and you never discover the rooms you
+      didn't walk into.
     </p>
     <div class="note note-info">
       <span class="nlabel">The shape of the problem</span>
@@ -63,8 +64,10 @@ module.exports = `<!-- =========================================================
         and to a specialist. You can say "I got lost at the third sentence — start again
         from there" as many times as you need, and it never gets impatient.</p>
         <p class="small muted">Underrated: paste in the thing you don't understand — a legal
-        clause, an error message, a doctor's letter, a tax form — and ask what it means in
-        ordinary words, and what it means <em>for you</em>.</p>
+        clause, an error message, a letter you can't parse — and ask what it means in
+        ordinary words. Take the names and numbers out first, and treat the answer as a way
+        to understand the document, not as a ruling on it. See
+        <a href="trust.html#privacy">what not to paste</a>.</p>
       </div>
     </details>
 
@@ -73,8 +76,8 @@ module.exports = `<!-- =========================================================
       <div class="acc-body">
         <p>A first draft of anything: an awkward email, a complaint letter, a job
         description, a speech, a policy, a plan. Not because the draft is good — usually
-        it's mediocre — but because reacting to a mediocre draft is ten times easier
-        than starting from nothing.</p>
+        it's mediocre — but because most people find reacting to a mediocre draft far
+        easier than starting from nothing.</p>
         <div class="note note-warn"><span class="nlabel">Careful</span>
         <p>Mediocre is the risk. If you ship the first draft, you ship generic. The value
         is in what <em>you</em> change.</p></div>
@@ -165,10 +168,12 @@ module.exports = `<!-- =========================================================
 <section id="bad">
   <div class="wrap">
     <p class="slabel">The other half of the map</p>
-    <h2>Eight things it is bad at — structurally, not temporarily</h2>
+    <h2>Eight things it is bad at on its own</h2>
     <p class="lead">
-      These aren't bugs waiting for the next version. Most follow directly from how the
-      thing works: it produces likely-looking language, one piece at a time.
+      Most of these follow directly from how the thing works: it produces likely-looking
+      language, one piece at a time. Tools fix some of them — but only when the tool
+      actually fires. Check that the answer shows a link or shows its working; if it shows
+      neither, assume no tool ran.
     </p>
 
     <div class="tscroll">
@@ -179,8 +184,8 @@ module.exports = `<!-- =========================================================
         <tbody>
           <tr>
             <td><strong>Knowing today's facts</strong></td>
-            <td>Its knowledge stops at a training cutoff date. Anything after that, it will either refuse or invent.</td>
-            <td>Use a tool that actually searches the web, and open the sources it gives you.</td>
+            <td>Its own knowledge stops at a training cutoff date. Beyond that it will refuse or invent.</td>
+            <td>Use a tool that actually searches the web, and open the sources. No links came back? Then no search happened.</td>
           </tr>
           <tr>
             <td><strong>Knowing what it doesn't know</strong></td>
@@ -189,8 +194,8 @@ module.exports = `<!-- =========================================================
           </tr>
           <tr>
             <td><strong>Arithmetic and counting</strong></td>
-            <td>It predicts the <em>look</em> of a number. Long sums, percentages of percentages, and counting items in a list all drift.</td>
-            <td>Do the maths yourself, or use a tool that genuinely calculates and shows its working.</td>
+            <td>Left to itself it predicts the <em>look</em> of a number, so long sums and counting drift. Running real code fixes this.</td>
+            <td>Do the maths yourself, or use a tool that genuinely calculates — and check it actually showed you the calculation.</td>
           </tr>
           <tr>
             <td><strong>Anything about you</strong></td>
@@ -237,11 +242,11 @@ module.exports = `<!-- =========================================================
     <p>
       In practice the boundary between what it does brilliantly and what it fails at is
       ragged and unintuitive. It can produce a genuinely expert paragraph about immunology
-      and then miscount the letters in a word. Neither result tells you much about the next
-      task. Researchers studying consultants using AI at work named this shape the
-      <strong>"jagged technological frontier"</strong> — a useful term, and not ours;
-      it comes from a 2023 Harvard Business School and Boston Consulting Group working paper
-      by Dell'Acqua and colleagues.
+      and then get a basic detail about your own industry confidently wrong. Neither result
+      tells you much about the next task. Researchers studying consultants using AI at work named this shape the
+      <strong>"jagged technological frontier"</strong> — a useful term, and not ours. It
+      comes from a 2023 Harvard Business School working paper by Dell'Acqua and colleagues,
+      reporting a field experiment with several hundred Boston Consulting Group consultants.
     </p>
 
     <div class="grid grid-2">
@@ -298,16 +303,17 @@ module.exports = `<!-- =========================================================
       <li>
         <h4>Watch a competent person work, once</h4>
         <p class="muted">Not a polished tutorial — someone doing their real job with it,
-        screen shared, including the bits where it goes wrong. Ninety percent of what you'll
-        learn is things you didn't know were possible, not techniques. Ask a colleague. Most
-        people are flattered to be asked.</p>
+        screen shared, including the bits where it goes wrong. Most of what you take away
+        will be things you didn't know were possible, rather than techniques. Ask a
+        colleague. Most people are flattered to be asked.</p>
       </li>
       <li>
         <h4>Run the same task in a second model</h4>
-        <p class="muted">Once a month, take a real task and give it to a different AI.
+        <p class="muted">Once a quarter, take a real task and give it to a different AI.
         Two things happen: you find out how much of what you assumed was "how AI is" was
         just how <em>that one</em> is, and disagreement between them flags exactly the claims
-        worth checking. This doubles as verification — see <a href="trust.html">Trust</a>.</p>
+        worth checking. Comparing is not the same as switching — you can do this without
+        moving. It doubles as verification: see <a href="trust.html">Trust</a>.</p>
       </li>
     </ol>
   </div>
@@ -325,7 +331,7 @@ module.exports = `<!-- =========================================================
 
     <div class="card">
       <ul class="checklist">
-        <li><input type="checkbox" id="au1"><label for="au1">Paste in a letter from a bank, insurer, or government office and ask what it actually means for me, and what happens if I do nothing.</label></li>
+        <li><input type="checkbox" id="au1"><label for="au1">Paste in a letter from a bank, insurer, or government office — account numbers and names removed — and ask it to explain the jargon and list what I should ask them.</label></li>
         <li><input type="checkbox" id="au2"><label for="au2">Photograph a fridge shelf and ask for three dinners from what's there.</label></li>
         <li><input type="checkbox" id="au3"><label for="au3">Have it interview me for a job I'm applying to, one hard question at a time.</label></li>
         <li><input type="checkbox" id="au4"><label for="au4">Paste an error message from any app or device and ask what it means in plain words.</label></li>
@@ -350,10 +356,15 @@ module.exports = `<!-- =========================================================
     </div>
 
     <div class="note note-warn">
-      <span class="nlabel">One caveat on that list</span>
-      <p>Number 15 is about preparing better questions — not about getting a diagnosis, a
-      legal opinion, or a quote. The AI is good at helping you walk in informed. It is not
-      the professional, and it does not carry the liability if it's wrong.</p>
+      <span class="nlabel">Two caveats on that list</span>
+      <p><strong>Items 1, 4 and 15 have a hard edge.</strong> They are about understanding a
+      document and preparing better questions — never about getting a diagnosis, a legal
+      opinion, a tax position, or a deadline you will rely on. Confirm anything with a
+      consequence attached with the sender or a qualified person. The AI helps you walk in
+      informed; it is not the professional, and it carries none of the liability if it's wrong.</p>
+      <p><strong>Take the personal details out before you paste.</strong> Account numbers,
+      names, dates of birth, reference numbers — none of them are needed for the AI to
+      explain the jargon. The rules are on the <a href="trust.html#privacy">Trust</a> page.</p>
     </div>
   </div>
 </section>`;

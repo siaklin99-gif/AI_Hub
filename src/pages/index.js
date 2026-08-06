@@ -35,7 +35,7 @@ module.exports = `<!-- =========================================================
       <div class="card">
         <span class="num">04</span>
         <h4>The mental model is usually wrong</h4>
-        <p class="small muted">Some people have no idea what AI is. Some think it's a chatbot replacing Google search. Some think a person is typing back. Some come to treat it as a real companion. Each wrong picture produces a different wrong habit.</p>
+        <p class="small muted">Almost nobody was handed a working picture of what this thing is. So people reasonably guess: that it's a better search engine, that someone is answering, or — because it's warm and remembers what you just said — that it's something like a friend. Every one of those guesses is sensible. Each one quietly produces a different bad habit.</p>
       </div>
       <div class="card">
         <span class="num">05</span>
@@ -45,15 +45,15 @@ module.exports = `<!-- =========================================================
       <div class="card">
         <span class="num">06</span>
         <h4>Same starting line, no visible line</h4>
-        <p class="small muted">AI did reset everyone to roughly the same page — young or old, technical or not. But a fair start is useless if nobody can find the start. Most people are shooting in the dark.</p>
+        <p class="small muted">Nobody has twenty years of experience with this, which is a fairer start than most technologies offer — young or old, technical or not. It is not a level field: money, hardware and language still tilt it. But the gap is months of practice, not a degree. And a fair start is useless if nobody can find the start. Most people are shooting in the dark.</p>
       </div>
     </div>
 
     <div class="note note-info" style="margin-top:20px">
       <span class="nlabel">Why this hub exists</span>
       <p>Every section below exists to close one of those six gaps. Nothing here needs any
-      technical background, and nothing here asks you to take a claim on faith — including
-      the claims on this page.</p>
+      technical background, and everything here is meant to be tested against your own
+      experience rather than believed — including the claims on this page.</p>
     </div>
   </div>
 </section>
@@ -67,16 +67,17 @@ module.exports = `<!-- =========================================================
 
     <ol class="steps">
       <li>
-        <h4>No human is behind it.</h4>
-        <p class="muted">Nobody reads your message. It is a program running on a computer in a data centre. It gives different answers to the same question because a little randomness is built in on purpose — not because you got a different person.</p>
+        <h4>No human is typing the reply.</h4>
+        <p class="muted">It is a program running in a data centre. It gives different answers to the same question because a little randomness is built in on purpose — not because you got a different person. But "no one is typing" is not "no one can ever see it": conversations can be stored, sampled by staff reviewing safety, or read by your employer if the account is company-issued. What that means for you is on the <a href="trust.html#privacy">Trust</a> page.</p>
       </li>
       <li>
         <h4>It is not a search engine.</h4>
-        <p class="muted">Search finds pages that someone already wrote. An AI chatbot <em>composes</em> a new answer, word by word, that has never existed before. That is why it can be brilliant — and why it can be confidently, fluently wrong.</p>
+        <p class="muted">Search finds pages that someone already wrote. An AI chatbot <em>composes</em> an answer word by word instead of retrieving one. Usually the result is new; sometimes it reproduces wording it was trained on. Either way nobody checked it before it reached you — which is why it can be brilliant, and why it can be confidently, fluently wrong.</p>
       </li>
       <li>
         <h4>It predicts language. It does not "know" things.</h4>
         <p class="muted">It was trained on an enormous amount of writing and learned which words tend to follow which. Being right is usually a side effect of that. It is never a guarantee.</p>
+        <p class="muted">It is then trained a second time on human ratings of its answers. That is what makes it helpful and polite — and also what makes it inclined to agree with you.</p>
       </li>
       <li>
         <h4>It sounds equally confident whether it is right or wrong.</h4>
@@ -97,7 +98,7 @@ module.exports = `<!-- =========================================================
 <!-- ============================================================ -->
 <section id="tracks">
   <div class="wrap">
-    <p class="slabel">The five tracks</p>
+    <p class="slabel">The six tracks</p>
     <h2>Pick where you are. Nothing here has to be done in order.</h2>
     <p class="lead">
       Each track is one page. Each page is skimmable in five minutes and expandable
@@ -128,7 +129,7 @@ module.exports = `<!-- =========================================================
         <h4>What it isn't</h4>
         <ul class="clean no small" style="margin-top:8px">
           <li>Not a certificate, a course, or a funnel.</li>
-          <li>Not sponsored by, or ranking, any AI company.</li>
+          <li>Not sponsored by, or ranking, any AI company. Nothing here is paid for or affiliated.</li>
           <li>Not a live leaderboard — model names age in weeks.</li>
           <li>Not a substitute for a doctor, lawyer, or accountant.</li>
         </ul>

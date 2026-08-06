@@ -298,12 +298,23 @@ for (const p of PAGES) {
 }
 
 // Attribution: the one borrowed term must be credited on the page that uses it.
-const jag = PAGES.filter((p) => /jagged/i.test(SRC[p]));
-for (const p of jag) {
-  check(/Dell'Acqua/.test(SRC[p]),
-    `${p}: uses the term "jagged frontier" without crediting Dell'Acqua et al. (HBS/BCG, 2023)`);
+/* Every page footer promises "where an idea came from someone else, it is named".
+   These are the borrowed terms; each must carry its credit on the page that uses it.
+   A term that loses its attribution in an edit is a plagiarism regression, so it
+   fails the build rather than being caught by a reader. */
+const BORROWED = [
+  { term: /jagged/i, credit: /Dell'Acqua/, who: "Dell'Acqua et al. (HBS working paper, 2023)" },
+  { term: /pre-mortem/i, credit: /Gary Klein/, who: 'Gary Klein (Harvard Business Review, 2007)' },
+];
+let attributed = 0;
+for (const b of BORROWED) {
+  const users = PAGES.filter((p) => b.term.test(SRC[p]));
+  for (const p of users) {
+    check(b.credit.test(SRC[p]), `${p}: uses a borrowed term without crediting ${b.who}`);
+  }
+  attributed += users.length;
 }
-console.log(`  ${jag.length} page(s) use a borrowed term; all attributed`);
+console.log(`  ${attributed} page-uses of a borrowed term; all attributed`);
 
 // No product names, prices or model versions — the site promises it has none.
 // Prices need a currency or a rate next to a NUMBER — a bare "per month" is a

@@ -25,7 +25,7 @@ module.exports = `<!-- =========================================================
       <div class="card">
         <span class="num">Road C</span>
         <h4>Builder or founder</h4>
-        <p class="small muted">Builds tools or a product on top of AI. Understands cost per use, reliability, and where the real defensibility sits.</p>
+        <p class="small muted">Builds tools or a product on top of AI. Understands cost per use, reliability, and what stops a competitor copying it.</p>
         <p class="small"><strong>Cost:</strong> 6–24 months, real money, real risk.<br><strong>Reachable by:</strong> fewer people than the internet implies. Read the honest section below first.</p>
       </div>
     </div>
@@ -43,9 +43,10 @@ module.exports = `<!-- =========================================================
 <section id="thirty">
   <div class="wrap">
     <p class="slabel">Road A</p>
-    <h2>Thirty days, twenty minutes a day</h2>
+    <h2>Four weeks, twenty minutes a day</h2>
     <p class="lead">
-      No course, no signup. Each week has one job. Tick as you go — saved on this device.
+      No course, no signup. One job per week, five things in each. Tick as you go — saved on
+      this device.
     </p>
 
     <h3>Week 1 · Fluency — remove the fear</h3>
@@ -97,7 +98,7 @@ module.exports = `<!-- =========================================================
     </div>
 
     <div class="note note-do">
-      <span class="nlabel">Day 30</span>
+      <span class="nlabel">The end of week 4</span>
       <p>That last item is the deliverable. Anyone who can write those five lines from
       their own experience is past "shooting in the dark" — and ahead of most people
       currently being told to embrace AI.</p>
@@ -123,7 +124,7 @@ module.exports = `<!-- =========================================================
           <tr><td><strong>Reformatting</strong></td><td>Notes → minutes. Data → report. Long → short. One template → another.</td><td>The answer is already in what you supply, so there's little to invent and it's easy to check.</td></tr>
           <tr><td><strong>First drafts</strong></td><td>Anything you currently stare at a blank page for.</td><td>You were always going to rewrite it. The AI's mediocrity costs nothing.</td></tr>
           <tr><td><strong>Reading piles</strong></td><td>Long documents, many emails, transcripts, feedback, applications.</td><td>Volume is exactly where humans get expensive and inattentive.</td></tr>
-          <tr><td><strong>Rehearsal and review</strong></td><td>Practising the pitch, pre-mortems, "what will they object to?"</td><td>Zero risk, and nobody else's time is spent.</td></tr>
+          <tr><td><strong>Rehearsal and review</strong></td><td>Practising the pitch, pre-mortems (Gary Klein's technique — imagine it has already failed, then explain how), "what will they object to?"</td><td>Zero risk, and nobody else's time is spent.</td></tr>
         </tbody>
       </table>
     </div>
@@ -137,13 +138,16 @@ module.exports = `<!-- =========================================================
 
     <h3>How to propose it without it going badly</h3>
     <ol class="steps">
-      <li><h4>Do it quietly first, on your own work</h4>
+      <li><h4>Check the rules first — before anything else</h4>
+        <p class="muted">Which tools are approved, what data is allowed in them, and whether
+        clients or patients must be told. Do this <em>first</em>: a month of quiet use of an
+        unapproved tool on real work can already be a policy breach or a data incident, and
+        in law, medicine, accounting and financial advice, confidentiality and disclosure
+        duties are obligations, not preferences. Getting this wrong is also the fastest way
+        to have the whole thing banned for everyone.</p></li>
+      <li><h4>Then prove it on your own work</h4>
         <p class="muted">One task, one month, timed before and after. An unarguable
         before-and-after beats any amount of enthusiasm.</p></li>
-      <li><h4>Check the rules before you scale it</h4>
-        <p class="muted">Which tools are approved, what data is allowed in them, whether
-        clients must be told. Getting this wrong is the fastest way to have the whole thing
-        banned for everyone.</p></li>
       <li><h4>Lead with the checking, not the speed</h4>
         <p class="muted">"Here's how I verify the output" is what makes managers comfortable.
         "It's so fast" is what makes them nervous.</p></li>
@@ -249,14 +253,14 @@ module.exports = `<!-- =========================================================
     </details>
 
     <details class="acc">
-      <summary><span class="sq">03</span>The demo is 10% of the work</summary>
+      <summary><span class="sq">03</span>The demo is the easy part</summary>
       <div class="acc-body">
-        <p>An impressive demo takes a weekend. The other 90% is what happens when it's
-        wrong in front of a paying customer: how you detect it, how the product behaves,
-        who's accountable, what you promise, and how you improve it without breaking what
-        already worked.</p>
-        <p class="small muted">Teams routinely underestimate this by an order of magnitude,
-        because the demo felt like the product.</p>
+        <p>An impressive demo can take a weekend. Almost all of the remaining work is what
+        happens when it's wrong in front of a paying customer: how you detect it, how the
+        product behaves, who's accountable, what you promise, and how you improve it without
+        breaking what already worked.</p>
+        <p class="small muted">Teams routinely underestimate that second part, because the
+        demo felt like the product.</p>
       </div>
     </details>
 
@@ -291,8 +295,8 @@ module.exports = `<!-- =========================================================
         <p>"The model said it" is not a defence to a customer, a regulator or a court. If
         your product gives advice, handles money, touches health, or makes decisions about
         people, get real advice about your obligations before you launch, not after.</p>
-        <p class="small muted">This is also a moat, incidentally. Being the company willing
-        and able to stand behind the output is genuinely hard to copy.</p>
+        <p class="small muted">It is also, incidentally, hard to copy. Being the company
+        willing and able to stand behind the output is a real advantage, not just a cost.</p>
       </div>
     </details>
 
@@ -325,7 +329,7 @@ module.exports = `<!-- =========================================================
       <li><strong>Re-run your five prompts each quarter.</strong> That's your entire "keeping up with model news" obligation.</li>
       <li><strong>Read the model makers' own documentation</strong> when you want the truth about a product, rather than commentary about it.</li>
       <li><strong>Follow two or three people who show failures</strong>, not highlight reels. Anyone whose examples always work is showing you a demo.</li>
-      <li><strong>Repeat your calibration test</strong> on your own area of expertise twice a year. Your prior should move as the tools move.</li>
+      <li><strong>Repeat your calibration test</strong> on your own area of expertise twice a year. Your working assumption about how often it's wrong should move as the tools move.</li>
       <li><strong>Teach someone.</strong> The fastest way to discover the parts you only think you understand.</li>
     </ul>
 

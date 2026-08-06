@@ -10,8 +10,8 @@ module.exports = `<!-- =========================================================
     <h2>The one fact that makes checking non-optional</h2>
 
     <div class="hero-stat">
-      <span class="big">0%</span>
-      <span class="cap">of the AI's confidence tells you anything about whether it's right</span>
+      <span class="big">No wobble</span>
+      <span class="cap">It sounds exactly the same whether it is right or wrong. There is no hesitation in its voice to warn you.</span>
     </div>
 
     <p style="margin-top:24px">
@@ -103,8 +103,9 @@ module.exports = `<!-- =========================================================
       <div class="acc-body">
         <p>A citation from an AI is a <em>claim that a source exists</em>. It is not evidence.
         Systems that don't genuinely search the web can produce references with a real-sounding
-        author, a real-sounding journal, and a title that was never written. Real lawyers have
-        been sanctioned for filing invented case citations.</p>
+        author, a real-sounding journal, and a title that was never written. Lawyers in
+        several countries have been fined or formally reprimanded for filing invented case
+        citations — the court checked, and the cases did not exist.</p>
         <p><strong>The move:</strong> ask for the source, then click it. If there's no link,
         search the exact title. If it doesn't exist, discard everything that rested on it —
         and be sceptical of the rest of the answer too.</p>
@@ -186,11 +187,11 @@ List every factual claim in it separately, and for each one say: how could I ver
         <p>Ask it about the thing you know best in the world — your job, your hobby, your
         home town, the subject you studied. Read carefully. Count the errors, including the
         subtle ones a non-expert would sail past.</p>
-        <p><strong>That number is your prior for everything you can't check.</strong> Most
-        people find it's neither zero nor catastrophic: broadly right, with a few confident
-        details wrong. Knowing your own figure is worth more than any general claim about
-        AI accuracy — including the ones on this page.</p>
-        <p class="small muted">Repeat it when you switch models, and once or twice a year.
+        <p><strong>That number becomes your working assumption</strong> — your rough
+        expectation of how often it's wrong — for every topic you <em>can't</em> check.
+        Whatever you find, your own figure is worth more than any general claim about AI
+        accuracy, including the ones on this page, because you measured it.</p>
+        <p class="small muted">Repeat it when you switch tools, and once or twice a year.
         It moves.</p>
       </div>
     </details>
@@ -212,14 +213,16 @@ List every factual claim in it separately, and for each one say: how could I ver
       </div>
       <div class="note note-dont" style="margin:0">
         <span class="nlabel">"How confident are you?"</span>
-        <p>It will give you a number. The number is generated the same way the answer was.
-        A stated "95% confident" is a piece of text, not a measurement.</p>
+        <p>It will give you a number, produced the same way the answer was. It is a weak
+        hint at best: a low number is worth heeding, a high number proves nothing. Never let
+        it stand in for an actual check.</p>
       </div>
       <div class="note note-dont" style="margin:0">
         <span class="nlabel">"I've double-checked this"</span>
-        <p>It cannot check anything unless it has a tool and shows you the result. Without
-        that, "I verified it" describes nothing that happened. Look for the evidence, not
-        the reassurance.</p>
+        <p>"I verified it" is a sentence, not an event. Re-reading its own answer <em>can</em>
+        catch real errors — that is why Move 3 works — but a bare claim to have checked, with
+        nothing shown, is not evidence. Look for the working or the tool output, not the
+        reassurance.</p>
       </div>
       <div class="note note-dont" style="margin:0">
         <span class="nlabel">It agreed with me</span>
@@ -247,7 +250,7 @@ List every factual claim in it separately, and for each one say: how could I ver
       <summary><span class="sq">01</span>Invented sources</summary>
       <div class="acc-body">
         <p><strong>Looks like:</strong> a confident citation, plausible author, plausible
-        journal, no link — or a link that 404s.</p>
+        journal, no link — or a link that leads to a dead page.</p>
         <p><strong>Catch it:</strong> search the exact title. Thirty seconds.</p>
       </div>
     </details>
@@ -362,9 +365,11 @@ List every factual claim in it separately, and for each one say: how could I ver
     <div class="note note-warn">
       <span class="nlabel">A simple test that works</span>
       <p>Before pasting, ask: <strong>would I be comfortable if this text appeared in a
-      screenshot in a news story next year?</strong> If not, don't paste it — strip the
-      names and numbers first, or use the tool your employer has actually approved.
-      Redacting takes a minute. The other thing takes a career.</p>
+      screenshot in a news story next year?</strong> If not, don't paste it. Removing names
+      and numbers helps, but it does not make a document safe — a paragraph can still
+      identify someone from context, and a redacted contract is still under the
+      confidentiality agreement. When it genuinely matters, use the tool your employer has
+      approved, or don't use one. Asking takes a minute. The other thing takes a career.</p>
     </div>
   </div>
 </section>
@@ -402,8 +407,8 @@ List every factual claim in it separately, and for each one say: how could I ver
     <div class="note note-do">
       <span class="nlabel">The last one is the whole track in a sentence</span>
       <p>The moment it goes out with your name on it, it is your work and your mistake.
-      "The AI said so" has never once been a defence, and it never will be. That isn't a
-      reason to avoid the tool — it's the reason to check it.</p>
+      "The AI said so" has not saved anyone yet, and it is not something to plan around.
+      That isn't a reason to avoid the tool — it's the reason to check it.</p>
     </div>
   </div>
 </section>`;

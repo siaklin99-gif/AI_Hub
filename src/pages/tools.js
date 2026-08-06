@@ -43,7 +43,7 @@ module.exports = `<div class="wrap">
       <div class="acc-body">
         <p>A mode or model that spends noticeably longer before answering, working through
         the problem in steps. Better on multi-step logic, tricky analysis, maths and
-        debugging. Slower, and usually more expensive or more rate-limited.</p>
+        debugging. Slower, and usually more expensive or capped at fewer uses per day.</p>
         <p class="small muted"><strong>Pick it for:</strong> problems where the answer
         depends on getting several steps right in order. Don't use it to reword an email —
         you'll wait longer for no benefit.</p>
@@ -90,9 +90,10 @@ module.exports = `<div class="wrap">
     <details class="acc">
       <summary><span class="sq">06</span>Local / open-weights — the one that runs on your machine</summary>
       <div class="acc-body">
-        <p>Models you download and run on your own computer. Typically less capable than
-        the best hosted ones, but nothing leaves your device, there's no per-use cost, and
-        it works offline.</p>
+        <p>Models you download and run on your own computer — "open-weights" simply means
+        the model file is yours to download. Typically less capable than the best hosted
+        ones, but nothing is sent to a company's server, there is no subscription (you pay
+        in hardware and electricity instead), and it works offline.</p>
         <p class="small muted"><strong>Pick it for:</strong> genuinely sensitive material,
         or curiosity. Needs a reasonably powerful computer and some patience. Not the place
         to start.</p>
@@ -123,10 +124,11 @@ module.exports = `<div class="wrap">
 
     <div class="note note-info">
       <span class="nlabel">Then pick any serious vendor</span>
-      <p>Within a category, the leading products from the major labs are close enough that
-      the difference rarely decides your outcome — your context, your iteration and your
-      checking matter more. Pick one, learn it properly, and re-test occasionally.
-      Switching every month costs more than it gains.</p>
+      <p>Within a category, the products from the major labs are similar enough that your
+      context, your iteration and your checking usually matter more than the choice. Don't
+      take that on trust either — it is what your own five-prompt test below is for. Pick
+      one, learn it properly, and re-test each quarter. Switching every month costs more
+      than it gains.</p>
     </div>
   </div>
 </section>
@@ -146,10 +148,10 @@ module.exports = `<div class="wrap">
     <h3>What that means in practice</h3>
     <ul class="clean">
       <li><strong>Free usually means the smaller or faster model</strong>, or a limited number of the good answers per day. The gap between free and paid is often larger than the gap between two vendors.</li>
-      <li><strong>Limits are usually per few hours, not per month.</strong> Hit one and it typically comes back the same day.</li>
+      <li><strong>Limits reset on their own schedule</strong>, which varies by product and changes without notice. Your account page is the only current answer.</li>
       <li><strong>The limits move without warning.</strong> Providers change them as capacity and costs change. If a number is written somewhere, treat it as a snapshot.</li>
-      <li><strong>Free tiers are more likely to use your conversations for training.</strong> Not universal, and it changes — check the data setting in your own account.</li>
-      <li><strong>"Unlimited" is rarely literally unlimited.</strong> There is almost always a fair-use ceiling.</li>
+      <li><strong>Whether your conversations are used for training varies</strong> by product and by plan, and often differs between free and paid. It is a setting in your own account — go and read it.</li>
+      <li><strong>"Unlimited" is rarely literally unlimited.</strong> There is almost always an upper bound for unusually heavy use, whether or not it is published.</li>
     </ul>
 
     <div class="note note-do">
