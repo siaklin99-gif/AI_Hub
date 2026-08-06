@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# ============================================================
+# AI Hub — blocking pre-commit guard.
+# Installed by:  git config core.hooksPath hooks
+#
+# Runs the FAST, OFFLINE checks only. Blocking a commit on a
+# browser launch or network flakiness is unacceptable, so the
+# rendered harness stays behind ./selfcheck --full, which you
+# run before shipping.
+#
+# This hook DETECTS and BLOCKS. It never edits code.
+# ============================================================
+set -uo pipefail
+cd "$(git rev-parse --show-toplevel)"
+
+if ! command -v node >/dev/null 2>&1; then
+  echo "pre-commit BLOCKED: node not found — cannot verify this commit." >&2
+  exit 1
+fi
+
+echo "pre-commit: adversarial tests + static harness…"
+if ! node test.js >/tmp/aihub-precommit.log 2>&1; then
+  cat /tmp/aihub-precommit.log >&2
+  echo "" >&2
+  echo "COMMIT BLOCKED: adversarial tests failed." >&2
+  exit 1
+fi
+if ! node verify.js >>/tmp/aihub-precommit.log 2>&1; then
+  cat /tmp/aihub-precommit.log >&2
+  echo "" >&2
+  echo "COMMIT BLOCKED: static harness failed." >&2
+  echo "If you edited a .html by hand, edit src/pages/ instead and run: node build.js" >&2
+  exit 1
+fi
+
+echo "pre-commit: OK (run ./selfcheck --full before shipping for the rendered pass)"
+exit 0

@@ -1,0 +1,5 @@
+# Rendered verification screenshots — regenerate with: node render.js
+render_shots/
+
+.DS_Store
+node_modules/

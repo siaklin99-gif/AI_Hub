@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# ============================================================
+# AI Hub — the single guard. Run this before believing anything.
+#
+#   ./selfcheck          static checks only (fast, offline)
+#   ./selfcheck --full   static + real-browser rendered checks
+#
+# Fails closed: if a harness cannot run, this exits non-zero
+# rather than quietly passing.
+# ============================================================
+set -uo pipefail
+cd "$(dirname "$0")"
+
+RED=$'\033[31m'; GREEN=$'\033[32m'; BOLD=$'\033[1m'; OFF=$'\033[0m'
+problems=0
+
+if ! command -v node >/dev/null 2>&1; then
+  echo "${RED}BLOCKED${OFF}  node is not installed — cannot verify anything."
+  exit 2
+fi
+
+echo "${BOLD}[1/3] adversarial unit tests${OFF}"
+node test.js || problems=$((problems+1))
+
+echo
+echo "${BOLD}[2/3] static harness${OFF}"
+node verify.js || problems=$((problems+1))
+
+if [ "${1:-}" = "--full" ]; then
+  echo
+  echo "${BOLD}[3/3] rendered harness (real Chromium, 4 viewport/theme combos)${OFF}"
+  node render.js
+  rc=$?
+  if [ $rc -eq 2 ]; then
+    # Playwright missing is a BLOCK, not a pass — a guard that fails open
+    # is worse than no guard, because it manufactures false confidence.
+    echo "${RED}BLOCKED${OFF}  rendered harness could not run. Treat this as a failure."
+    problems=$((problems+1))
+  elif [ $rc -ne 0 ]; then
+    problems=$((problems+1))
+  fi
+else
+  echo
+  echo "[3/3] rendered harness skipped — run ./selfcheck --full before shipping."
+fi
+
+echo
+echo "============================================================"
+if [ $problems -eq 0 ]; then
+  echo "${GREEN}SELFCHECK PASS${OFF}"
+  exit 0
+else
+  echo "${RED}SELFCHECK FAIL${OFF}  ($problems harness/harnesses reported problems)"
+  exit 1
+fi
