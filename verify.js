@@ -372,6 +372,30 @@ for (const p of PAGES.filter((x) => x !== 'index.html')) {
   check(numbered === 6, `index.html: the "problem, named" grid has ${numbered} numbered cards, expected 6`);
 }
 
+/* ---------- 11b. public-release requirements --------------------- */
+head('Public-release requirements');
+{
+  // This repo is published. A missing licence makes every "steal this" on the
+  // site legally false, and it is the kind of thing nobody notices is absent.
+  const hasLicense = fs.existsSync(path.join(ROOT, 'LICENSE'));
+  check(hasLicense, 'no LICENSE file — the site invites reuse ("Steal these", "ours to copy freely") while granting none');
+  if (hasLicense) {
+    const lic = read('LICENSE');
+    check(/MIT/.test(lic), 'LICENSE does not name a code licence');
+    check(/CC BY 4\.0/.test(lic), 'LICENSE does not name a content licence');
+    check(/not medical, legal, financial/i.test(lic) || /not medical, legal or financial/i.test(lic),
+      'LICENSE carries no not-professional-advice disclaimer');
+  }
+  const rm = read('README.md');
+  check(/\[LICENSE\]\(LICENSE\)/.test(rm), 'README does not link the LICENSE');
+  check(!/thoughts\.rtf/.test(rm), 'README still points readers at the private notes file');
+  check(!fs.existsSync(path.join(ROOT, '.git')) ||
+        require('child_process').spawnSync('git', ['ls-files', 'thoughts.rtf'], { cwd: ROOT, encoding: 'utf8' }).stdout.trim() === '',
+    'thoughts.rtf is still tracked by git — it would publish');
+  check(/\.claude\//.test(read('.gitignore')), '.gitignore does not exclude .claude/ (it holds absolute local paths)');
+  console.log('  licence present, private notes untracked, README clean');
+}
+
 /* ---------- 12. repo-wide leak sweep ----------------------------- */
 head('Repo-wide sweep');
 {
@@ -398,6 +422,23 @@ head('Repo-wide sweep');
   if (files) {
     // this harness and the test suite legitimately contain the markers as data
     const SELF = new Set([path.join(ROOT, 'verify.js'), path.join(ROOT, 'test.js')]);
+
+    /* PUBLICATION LEAKS. This repo is public, so anything identifying the
+       author's machine, other private projects, or credentials must not ship.
+       The earlier sweep looked ONLY for placeholder markers and reported
+       "23 text files swept, no leak markers" while render.js contained an
+       absolute /Users/<name>/... path that also named an unrelated private
+       project. Patterns are assembled from fragments so this file does not
+       trip its own sweep. */
+    const LEAKS = [
+      { name: 'absolute macOS home path', re: new RegExp('/' + 'Users' + '/[A-Za-z0-9._-]+/') },
+      { name: 'absolute Linux home path', re: new RegExp('/' + 'home' + '/[A-Za-z0-9._-]+/') },
+      { name: 'absolute Windows home path', re: new RegExp('C:' + '\\\\Users\\\\[A-Za-z0-9._-]+') },
+      { name: 'email address', re: /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/ },
+      { name: 'API-key-shaped string', re: new RegExp('(' + 'sk' + '-[A-Za-z0-9]{16}|' + 'ghp' + '_[A-Za-z0-9]{20}|' + 'AKIA' + '[A-Z0-9]{12})') },
+      { name: 'localhost or private-network URL', re: /https?:\/\/(localhost|127\.0\.0\.1|192\.168\.)/ },
+    ];
+
     let hits = 0;
     for (const f of files) {
       if (SELF.has(f)) continue;
@@ -417,8 +458,16 @@ head('Repo-wide sweep');
           hits++;
         }
       }
+      for (const L of LEAKS) {
+        const m = L.re.exec(body);
+        if (m) {
+          const line = body.slice(0, m.index).split('\n').length;
+          fail(`${path.relative(ROOT, f)}:${line}: ${L.name} would be published — "${m[0].slice(0, 60)}"`);
+          hits++;
+        }
+      }
     }
-    if (hits === 0) { checks++; console.log(`  ${files.length} text files swept, no leak markers`); }
+    if (hits === 0) { checks++; console.log(`  ${files.length} text files swept: no placeholders, paths, emails, keys or private hosts`); }
   }
 }
 

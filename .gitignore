@@ -1,3 +1,9 @@
+# Siak's raw private notes — the source for the site's framing, not for publication.
+thoughts.rtf
+
+# Local Claude Code settings contain absolute paths for this machine.
+.claude/
+
 # Rendered verification screenshots — regenerate with: node render.js
 render_shots/
 

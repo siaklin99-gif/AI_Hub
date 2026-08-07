@@ -363,6 +363,11 @@ tbody tr:last-child td { border-bottom: 0; }
 }
 .foot a { color: var(--text-sec); }
 .foot-links { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 14px; }
+.foot .legal { margin: 10px 0 0; padding-top: 10px; border-top: 0.5px solid var(--border); }
+/* Grow the licence link's hit area without moving the text. At 13px it was a
+   16px-tall tap target, which is mean on a phone and meaner on a site aimed
+   at older readers. Negative margin cancels the layout effect of the padding. */
+.foot .legal a { padding: 5px 3px; margin: -5px -3px; }
 
 /* ---------- mobile (MUST stay last: equal specificity, source order wins) ---------- */
 

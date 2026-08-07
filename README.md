@@ -4,19 +4,19 @@ A six-page static site for anyone — young or old, technical or not — who has
 "embrace AI" and given no idea where to start. No framework, no server, no account, no
 runtime dependencies: open `index.html`.
 
-Built from the pain points in `thoughts.rtf`. Each of the six problems named on the front
-door maps to a track that closes it.
+Built from a page of notes about what actually makes AI confusing right now. Each of the
+six problems named on the front door maps to a track that closes it.
 
 ## The pages
 
 | Page | Track | What it does |
 |------|-------|--------------|
 | `index.html` | — | Names the six problems from the notes, gives the 60-second version, routes to the tracks. |
-| `map.html` | 1 · The Map | "We don't know what we don't know." Ten things AI is good at, eight it is structurally bad at, the jagged frontier, five habits for finding your own blind spots, a 16-item self-audit. |
+| `map.html` | 1 · The Map | "We don't know what we don't know." Ten things AI is good at, eight it is bad at on its own, the jagged frontier, five habits for finding your own blind spots, a 16-item self-audit. |
 | `trust.html` | 2 · Trust | The flagship. Triage by cost-of-being-wrong, six verification moves, four things that *feel* like checking but aren't, eight failure modes, privacy, a 10-item one-page check. |
 | `leverage.html` | 3 · Leverage | The mental model, the five parts of a request that works, iteration, ten copyable patterns, seven beginner mistakes, three tool levels. |
 | `tools.html` | 4 · Tools | Six categories instead of a leaderboard, a four-question decision flow, why free tiers end, and how to build your own five-prompt benchmark. |
-| `further.html` | 5 · Go Further | Three ladders, a 30-day / 20-min-a-day plan, finding AI-shaped work, an honest read on careers, and seven awkward truths about starting an AI company. |
+| `further.html` | 5 · Go Further | Three ladders, a four-week / 20-min-a-day plan, finding AI-shaped work, an honest read on careers, and seven awkward truths about starting an AI company. |
 
 Track 0 (foundations — what AI *is*) deliberately links out to the existing **Baseline**
 page at `hlur.ai/baseline` rather than being rewritten here. One source of truth per
@@ -77,9 +77,10 @@ a rule **and** every rule matching something; every `localStorage` access brace-
 a real try block; the mobile media query genuinely last; the one-source-of-truth site date;
 borrowed terms keeping their attribution; no price or model version; a repo-wide leak sweep.
 
-**`render.js` — 1,208 rendered checks.** Real Chromium, 6 pages × 5 combos —
-{desktop, mobile, 320px narrow} × {light, dark}, with the mobile combos declaring
-`hasTouch`/`isMobile` so hover-gated CSS resolves the way a phone resolves it.
+**`render.js` — rendered checks in real Chromium**, 6 pages × 5 combos: desktop and mobile in
+both themes, plus 320px narrow in light. The two mobile combos and the narrow one declare
+`hasTouch`/`isMobile`, so hover-gated CSS resolves the way a phone resolves it rather than the
+way a desktop browser pretending to be small does.
 
 - **Source ⇄ DOM parity.** Counts are read from `src/pages/*.js` + `site.config.js` +
   `src/layout.js` — never from the built HTML — so a build bug that drops content from every
@@ -99,9 +100,16 @@ borrowed terms keeping their attribution; no price or model version; a repo-wide
 Screenshots are taken **immediately after load**, before any harness mutation, so the PNGs are
 the page a visitor actually gets.
 
-Playwright is borrowed from `a local install` so this repo stays dependency-free. If it
-can't load, `selfcheck --full` **blocks**. An unrecognised argument is rejected with exit 2
-rather than silently degrading to static-only.
+`test.js` and `verify.js` need **nothing installed** — just Node. Only the rendered pass needs
+Playwright:
+
+```bash
+npm install --no-save playwright && npx playwright install chromium
+```
+
+Already have it elsewhere? `AIHUB_PLAYWRIGHT=/path/to/node_modules/playwright node render.js`.
+If Playwright can't be found, `selfcheck --full` **blocks** rather than quietly passing, and an
+unrecognised argument is rejected with exit 2 rather than degrading to static-only.
 
 ### The pre-commit hook
 
@@ -193,10 +201,20 @@ carries the full footer link set instead of index alone.
   page's footer. Everything else is original wording. `verify.js` fails if the term appears
   without the credit.
 
+## Licence
+
+Dual, because the site tells readers to steal its prompts and re-run its harnesses, so the
+licence has to actually permit that:
+
+- **Code** (`build.js`, `src/`, `assets/`, the harnesses) — MIT.
+- **Writing** (the pages, the checklists, the prompt templates, this README) — CC BY 4.0.
+
+See [LICENSE](LICENSE). Third-party ideas quoted in the text stay with their authors and are
+credited on the page that uses them.
+
 ## Not yet done
 
-- Not deployed anywhere. It runs from the filesystem as-is.
-- `render.js` hard-codes the path to the borrowed Playwright install.
+- Not deployed anywhere yet. It runs from the filesystem as-is.
 - Nine of the ten helpers in `src/components.js` are used by no shipped page: the six pages
   predate them and hand-write their markup. They are correct and tested, and new sections
   should use them, but the file's original claim that a CSS rename is "one edit instead of six

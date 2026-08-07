@@ -107,6 +107,7 @@ ${internal.concat(external).join('\n')}
     <p class="tiny">
       ${cfg.footerNote} Written ${cfg.site.written}.${note}
     </p>
+    <p class="tiny legal">${cfg.legal}</p>
   </div>
 </footer>`;
 }

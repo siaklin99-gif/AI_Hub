@@ -1,0 +1,15 @@
+{
+  "name": "ai-hub",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A calm, jargon-free AI starting point for anyone — foundations, verification, leverage, tools, and what comes next.",
+  "license": "MIT",
+  "scripts": {
+    "build": "node build.js",
+    "check": "node build.js --check",
+    "test": "node test.js && node verify.js",
+    "test:full": "./selfcheck --full"
+  },
+  "comment": "The SITE has no dependencies and no build requirement beyond Node. Playwright is needed only for the rendered harness (node render.js): npm install --no-save playwright && npx playwright install chromium",
+  "engines": { "node": ">=18" }
+}

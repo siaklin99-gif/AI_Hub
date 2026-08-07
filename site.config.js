@@ -13,8 +13,10 @@ module.exports = {
        holds itself to the same rule. Change it when you revise content. */
     written: '5 August 2026',
     /* Outbound links are allow-listed. Anything else fails verify.js: this
-       site should not ship links it cannot verify. */
-    allowedExternalHosts: ['hlur.ai'],
+       site should not ship links it cannot verify. creativecommons.org is here
+       only because the footer must link the licence it claims — it is a stable
+       canonical URL, not a recommendation. */
+    allowedExternalHosts: ['hlur.ai', 'creativecommons.org'],
     baselineUrl: 'https://hlur.ai/baseline',
   },
 
@@ -133,5 +135,9 @@ module.exports = {
     },
   ],
 
-  footerNote: 'AI Hub — a starting point for anyone, technical or not. No tracking, no cookies, no account. Everything on this page is our own words; where an idea came from someone else, it is named.',
+  /* One canonical legal line on every page. The old footer said "no tracking,
+     no cookies" — literally true, but the checklists DO use localStorage, and a
+     technically-true claim that looks like a dodge is worse than a fuller one. */
+  footerNote: 'AI Hub — a starting point for anyone, technical or not. No tracking, no cookies, no account; the checklists remember your ticks on this device only. Everything here is our own words, and where an idea came from someone else, it is named.',
+  legal: '&copy; 2026 Siak Lin. Words under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, code under MIT. Educational only — not medical, legal or financial advice.',
 };

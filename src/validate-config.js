@@ -125,6 +125,14 @@ function validate(cfg) {
   }
 
   if (!cfg.footerNote) push('footerNote: missing — every page footer uses it');
+  if (!cfg.legal) push('legal: missing — every page footer must carry the copyright and licence line');
+  else {
+    if (!/&copy;|©/.test(cfg.legal)) push('legal: must contain a copyright symbol');
+    if (!/CC BY|MIT/.test(cfg.legal)) push('legal: must name the licence');
+    if (!/not medical, legal or financial advice/i.test(cfg.legal)) {
+      push('legal: must carry the not-professional-advice disclaimer on every page, not just one');
+    }
+  }
 
   if (errs.length) {
     throw new Error('site.config.js is invalid:\n  - ' + errs.join('\n  - '));

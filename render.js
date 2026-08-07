@@ -2,28 +2,45 @@
 /* ============================================================
    AI Hub — RENDERED verification.
    A static CSS read cannot see a layout bug. This drives the real
-   pages in real Chromium at 4 viewport/theme combinations, measures
+   pages in real Chromium at 5 viewport/theme combinations, measures
    the DOM, exercises the interactive parts, and saves screenshots.
 
        node render.js            all pages, all combos
        node render.js trust      one page
 
-   Playwright is borrowed from a sibling project rather than
-   installed again here — this repo stays dependency-free.
+   Needs Playwright. The site itself has no dependencies; this
+   harness does:
+       npm install --no-save playwright
+       npx playwright install chromium
    ============================================================ */
 'use strict';
 
 const path = require('path');
 const fs = require('fs');
 
-const SIBLING = '<resolved at runtime>';
-module.paths.unshift(SIBLING);
+const ROOT_DIR = __dirname;
+
+/* Playwright is resolved, never hard-coded. An absolute path here would ship
+   the author's home directory — and the name of unrelated projects — to every
+   reader of a public repo, while also making this harness unrunnable by
+   anyone else. Tried in order: an explicit override, a normal install, then
+   the repo's own node_modules. */
 let chromium;
-try {
-  ({ chromium } = require(path.join(SIBLING, 'playwright')));
-} catch (e) {
-  console.error('Could not load Playwright from ' + SIBLING);
-  console.error('Run the static harness instead:  node verify.js');
+const tried = [];
+for (const spec of [process.env.AIHUB_PLAYWRIGHT, 'playwright', path.join(ROOT_DIR, 'node_modules', 'playwright')]) {
+  if (!spec) continue;
+  tried.push(spec);
+  try { ({ chromium } = require(spec)); break; } catch (e) { /* try the next one */ }
+}
+if (!chromium) {
+  console.error('Playwright is not installed, so the rendered checks cannot run.');
+  console.error('');
+  console.error('  npm install --no-save playwright && npx playwright install chromium');
+  console.error('');
+  console.error('Or point AIHUB_PLAYWRIGHT at an existing install:');
+  console.error('  AIHUB_PLAYWRIGHT=/path/to/node_modules/playwright node render.js');
+  console.error('');
+  console.error('The offline checks need nothing installed:  node verify.js && node test.js');
   process.exit(2);
 }
 
@@ -298,6 +315,19 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
           })
           .filter((c) => !c.inClosed && !c.hidden);
       });
+      /* Navigation links are controls too. The general prose-link case is
+         deliberately excluded — flagging every inline link would be noise —
+         but anything in the nav or the footer is something a reader is meant
+         to tap, and on a phone a 16px target is a miss waiting to happen. */
+      const navTargets = await page.evaluate(() => {
+        return [...document.querySelectorAll('.nav-links a, .foot a')]
+          .map((a) => { const r = a.getBoundingClientRect();
+            return { text: a.textContent.trim().slice(0, 20), h: Math.round(r.height), w: Math.round(r.width) }; })
+          .filter((t) => t.h > 0 && t.h < 20);
+      });
+      check(navTargets.length === 0,
+        `${name}: ${navTargets.length} nav/footer tap targets under 20px tall (${navTargets.map((t) => t.text + ' ' + t.h + 'px').join(', ')})`);
+
       const buried = controls.filter((c) => c.covered);
       check(buried.length === 0,
         `${name}: ${buried.length} controls are painted over and cannot be clicked (${[...new Set(buried.map((c) => c.what + ' under ' + c.covered))].join(', ')})`);

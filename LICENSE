@@ -1,0 +1,72 @@
+AI Hub is dual-licensed: permissive for the code, permissive-with-credit for
+the writing. The site tells readers to steal its prompts and re-run its
+harnesses, so the licence has to actually permit that.
+
+================================================================================
+1. CODE — MIT License
+================================================================================
+
+Applies to: build.js, site.config.js, src/**, assets/style.css, assets/app.js,
+verify.js, render.js, test.js, selfcheck, hooks/**, package.json.
+
+Copyright (c) 2026 Siak Lin
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+================================================================================
+2. WRITING — Creative Commons Attribution 4.0 International (CC BY 4.0)
+================================================================================
+
+Applies to: the prose, checklists and prompt templates in src/pages/** and in
+the generated *.html, and to README.md.
+
+Copyright (c) 2026 Siak Lin
+
+Licensed under CC BY 4.0. You may share and adapt this material for any
+purpose, including commercially, provided you give appropriate credit, link to
+the licence, and indicate if changes were made.
+
+Full licence text: https://creativecommons.org/licenses/by/4.0/legalcode
+Human-readable summary: https://creativecommons.org/licenses/by/4.0/
+
+Suggested credit line:
+    Adapted from AI Hub by Siak Lin (hlur.ai), CC BY 4.0.
+
+================================================================================
+3. WHAT THIS LICENCE DOES NOT COVER
+================================================================================
+
+Third-party ideas referenced and credited in the text remain the property of
+their authors. Two are named on the site:
+
+  - "jagged technological frontier" — Dell'Acqua et al., Harvard Business
+    School working paper 24-013 (2023).
+  - the pre-mortem — Gary Klein, Harvard Business Review (2007).
+
+The ideas are theirs; only the wording used to describe them here is covered
+by section 2.
+
+================================================================================
+4. NO WARRANTY, AND NOT PROFESSIONAL ADVICE
+================================================================================
+
+This material is educational. It is not medical, legal, financial, tax or
+employment advice, and it is not a substitute for a qualified professional.
+It is provided without warranty of any kind. You are responsible for anything
+you do with it — which is, in fairness, the entire point of the site.

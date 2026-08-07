@@ -40,13 +40,13 @@ node verify.js || problems=$((problems+1))
 
 if [ "${1:-}" = "--full" ]; then
   echo
-  echo "${BOLD}[3/3] rendered harness (real Chromium, 4 viewport/theme combos)${OFF}"
+  echo "${BOLD}[3/3] rendered harness (real Chromium, 5 viewport/theme combos)${OFF}"
   node render.js
   rc=$?
   if [ $rc -eq 2 ]; then
     # Playwright missing is a BLOCK, not a pass — a guard that fails open
     # is worse than no guard, because it manufactures false confidence.
-    echo "${RED}BLOCKED${OFF}  rendered harness could not run. Treat this as a failure."
+    echo "${RED}BLOCKED${OFF}  rendered harness could not run (see above). Treat this as a failure, not a pass."
     problems=$((problems+1))
   elif [ $rc -ne 0 ]; then
     problems=$((problems+1))
