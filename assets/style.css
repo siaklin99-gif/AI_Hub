@@ -55,6 +55,32 @@ body {
 
 .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--pad); }
 
+/* Skip link — WCAG 2.4.1. Six nav links precede the content on every page, and
+   a keyboard or screen-reader user had to walk all six on every navigation.
+   Off-screen until focused, then it lands in the top-left. */
+.skip {
+  position: absolute; left: -9999px; top: 0; z-index: 100;
+  background: var(--surface); color: var(--text);
+  border: 0.5px solid var(--border-med); border-radius: 0 0 var(--radius-sm) 0;
+  padding: 12px 18px; font-size: 15px; font-weight: 560;
+  box-shadow: var(--shadow);
+}
+.skip:focus { left: 0; }
+
+/* A visible focus ring everywhere. Nothing here sets outline:none, so browser
+   defaults did survive — but they are thin and low-contrast against these
+   surfaces, and this site is aimed partly at older readers. */
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* Two short transitions exist; honour a reader who asked for stillness. */
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
+
 a { color: var(--blue); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
@@ -149,7 +175,9 @@ hr { border: 0; border-top: 0.5px solid var(--border); margin: 40px 0; }
 .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
-.card h4 { margin: 0 0 6px; }
+/* These were <h4> purely for their size. Promoted to <h3> so no page skips a
+   heading level (WCAG 1.3.1) — the look is preserved here, not in the tag. */
+.card h3 { font-size: 16px; margin: 0 0 6px; }
 .card p:last-child { margin-bottom: 0; }
 .card .num {
   font-size: 12.5px; font-weight: 700; color: var(--text-ter);
@@ -167,7 +195,7 @@ hr { border: 0; border-top: 0.5px solid var(--border); margin: 40px 0; }
   font-size: 11.5px; font-weight: 700; color: var(--green);
   letter-spacing: 0.08em; text-transform: uppercase;
 }
-.track h4 { margin: 5px 0 5px; font-size: 17.5px; }
+.track h3 { margin: 5px 0 5px; font-size: 17.5px; }
 .track p { font-size: 14.5px; color: var(--text-sec); margin: 0; }
 
 /* ---------- big number / stat ---------- */
@@ -342,7 +370,7 @@ tbody tr:last-child td { border-bottom: 0; }
   font-size: 13px; font-weight: 700;
   display: flex; align-items: center; justify-content: center;
 }
-.steps h4 { margin: 2px 0 5px; }
+.steps h3 { font-size: 16px; margin: 2px 0 5px; line-height: 1.3; }
 
 /* ---------- next / prev ---------- */
 

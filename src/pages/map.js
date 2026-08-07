@@ -277,14 +277,14 @@ module.exports = `<!-- =========================================================
 
     <ol class="steps">
       <li>
-        <h4>Keep a friction log for one week</h4>
+        <h3>Keep a friction log for one week</h3>
         <p class="muted">Every time something at work or at home is tedious, repetitive, or
         makes you sigh — write one line in a note. Don't judge, just log. At the end of the
         week you're holding a list of the AI-shaped holes in your life. This finds far more
         than any "100 prompts" article, because it's about your actual days.</p>
       </li>
       <li>
-        <h4>Ask it what you should have asked</h4>
+        <h3>Ask it what you should have asked</h3>
         <p class="muted">The cheapest trick on this whole site. At the end of any exchange:</p>
         <div class="prompt-wrap">
           <button class="copy-btn" type="button">Copy</button>
@@ -294,21 +294,21 @@ module.exports = `<!-- =========================================================
         walked past. Then verify what it says — it's a lead, not a fact.</p>
       </li>
       <li>
-        <h4>Push one task until it breaks</h4>
+        <h3>Push one task until it breaks</h3>
         <p class="muted">Take something it did well and keep escalating: longer, harder,
         more constraints, more data. The point isn't to win — it's to <em>feel</em> where the
         edge is, so you stop guessing. Ten minutes of deliberate breaking teaches more than
         an hour of tutorials.</p>
       </li>
       <li>
-        <h4>Watch a competent person work, once</h4>
+        <h3>Watch a competent person work, once</h3>
         <p class="muted">Not a polished tutorial — someone doing their real job with it,
         screen shared, including the bits where it goes wrong. Most of what you take away
         will be things you didn't know were possible, rather than techniques. Ask a
         colleague. Most people are flattered to be asked.</p>
       </li>
       <li>
-        <h4>Run the same task in a second model</h4>
+        <h3>Run the same task in a second model</h3>
         <p class="muted">Once a quarter, take a real task and give it to a different AI.
         Two things happen: you find out how much of what you assumed was "how AI is" was
         just how <em>that one</em> is, and disagreement between them flags exactly the claims

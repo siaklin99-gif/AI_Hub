@@ -28,6 +28,22 @@ function validate(cfg) {
     if (!Array.isArray(cfg.site.allowedExternalHosts) || !cfg.site.allowedExternalHosts.length) {
       push('site.allowedExternalHosts: must be a non-empty array');
     }
+    if (!cfg.site.author) push('site.author: missing — every page carries a <meta name="author">');
+    /* Canonical and og:url are built from baseUrl. A trailing slash here would
+       produce "//trust", and a relative-asset site served under a trailing
+       slash path resolves its stylesheet into a subdirectory that does not
+       exist — so the shape is enforced, not assumed. */
+    if (!/^https:\/\/[a-z0-9.-]+(\/[a-z0-9-]+)*$/.test(cfg.site.baseUrl || '')) {
+      push(`site.baseUrl: "${cfg.site.baseUrl}" must be an https URL with no trailing slash`);
+    }
+    if (cfg.site.baseUrl) {
+      const host = cfg.site.baseUrl.replace(/^https:\/\//, '').split('/')[0];
+      if (!cfg.site.allowedExternalHosts.includes(host)) {
+        push(`site.baseUrl host "${host}" is not in allowedExternalHosts`);
+      }
+    }
+    if (!cfg.site.ogImage) push('site.ogImage: missing — pages would advertise no social card');
+    if (!cfg.site.ogAlt || cfg.site.ogAlt.length < 30) push('site.ogAlt: missing or too short (screen readers read it)');
   }
 
   /* ---- pages ---- */

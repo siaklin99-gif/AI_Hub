@@ -23,6 +23,13 @@ const attr = (s) => String(s)
    and style raw — a quote in any of them breaks out of the attribute. */
 const navPages = () => cfg.pages;
 
+/* Pretty URL, matching the rest of hlur.ai: no ".html", no trailing slash,
+   and the front door is the bare base with a slash. */
+function canonical(page) {
+  const base = cfg.site.baseUrl.replace(/\/+$/, '');
+  return page.file === 'index.html' ? base + '/' : base + '/' + page.file.replace(/\.html$/, '');
+}
+
 /* ---- nav ------------------------------------------------------ */
 
 function nav() {
@@ -123,17 +130,41 @@ function render(page, body) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${attr(page.title)}</title>
 <meta name="description" content="${attr(page.description)}">
+<link rel="canonical" href="${attr(canonical(page))}">
+<meta name="author" content="${attr(cfg.site.author)}">
+<meta name="theme-color" content="#f9f8f6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a1a18" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="${attr(cfg.site.name)}">
+<meta property="og:title" content="${attr(page.title)}">
+<meta property="og:description" content="${attr(page.description)}">
+<meta property="og:url" content="${attr(canonical(page))}">
+<meta property="og:image" content="${attr(cfg.site.baseUrl + '/' + cfg.site.ogImage)}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${attr(cfg.site.ogAlt)}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${attr(page.title)}">
+<meta name="twitter:description" content="${attr(page.description)}">
+<meta name="twitter:image" content="${attr(cfg.site.baseUrl + '/' + cfg.site.ogImage)}">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
 
+<a class="skip" href="#main">Skip to content</a>
+
 ${nav()}
+
+<main id="main">
 
 ${hero(page)}
 ${rule}
 ${body.trim()}
 
 ${pager(page)}
+
+</main>
 
 ${footer(page)}
 

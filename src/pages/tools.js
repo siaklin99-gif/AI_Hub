@@ -109,15 +109,15 @@ module.exports = `<div class="wrap">
     <h2>Which one, in four questions</h2>
 
     <ol class="steps">
-      <li><h4>Does the answer depend on something recent?</h4>
+      <li><h3>Does the answer depend on something recent?</h3>
         <p class="muted">Yes → search-connected, and open the links. No → carry on.</p></li>
-      <li><h4>Does it need several steps to be right in sequence?</h4>
+      <li><h3>Does it need several steps to be right in sequence?</h3>
         <p class="muted">Yes → the reasoning mode, and expect to wait. No → general chat is
         faster and usually just as good.</p></li>
-      <li><h4>Does something need to be <em>done</em>, not just written?</h4>
+      <li><h3>Does something need to be <em>done</em>, not just written?</h3>
         <p class="muted">Yes → an agent or coding tool, working on copies, with you reading
         what it did. No → stay in chat.</p></li>
-      <li><h4>Is the material genuinely confidential?</h4>
+      <li><h3>Is the material genuinely confidential?</h3>
         <p class="muted">Yes → your employer's approved tool, or a local model, or redact
         before pasting. This question overrides all the others.</p></li>
     </ol>
@@ -176,20 +176,20 @@ module.exports = `<div class="wrap">
     </p>
 
     <ol class="steps">
-      <li><h4>Pick five real tasks from your own week</h4>
+      <li><h3>Pick five real tasks from your own week</h3>
         <p class="muted">Real ones, with the real material. Cover different shapes: one
         writing, one explaining, one analysing something with numbers, one about your
         specialist subject, one awkward or messy task that has caught tools out before.</p></li>
-      <li><h4>Write down what a good answer looks like — before you run it</h4>
+      <li><h3>Write down what a good answer looks like — before you run it</h3>
         <p class="muted">Do this first or you'll be persuaded by whichever answer is
         best-formatted. One line per task is enough.</p></li>
-      <li><h4>Run all five through each candidate, with identical wording</h4>
+      <li><h3>Run all five through each candidate, with identical wording</h3>
         <p class="muted">Same text, fresh conversation each time, no follow-ups. Any
         difference in how you asked contaminates the comparison.</p></li>
-      <li><h4>Score them yourself, on your own criteria</h4>
+      <li><h3>Score them yourself, on your own criteria</h3>
         <p class="muted">Right / nearly / wrong is enough. Count the errors on your
         specialist task especially — that's the one where you can actually see the truth.</p></li>
-      <li><h4>Keep the five prompts. Re-run them when something new launches.</h4>
+      <li><h3>Keep the five prompts. Re-run them when something new launches.</h3>
         <p class="muted">Now every announcement is a twenty-minute check instead of an
         anxious guess. This is the single most useful thing on this page.</p></li>
     </ol>

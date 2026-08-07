@@ -73,7 +73,8 @@ function sourceTruth(slug) {
     h1: String(page.h1).replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim(),
     sections: count(/<section[ >]/g) + layoutSections,
     h2: count(/<h2>/g),
-    h3: count(/<h3[ >]/g),
+    // each generated track card carries its own <h3>
+    h3: count(/<h3[ >]/g) + generatedTracks,
     checkboxes: count(/<input type="checkbox"/g),
     accordions: count(/<details class="acc"/g),
     tables: count(/<table>/g),

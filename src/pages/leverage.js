@@ -49,20 +49,20 @@ module.exports = `<!-- =========================================================
     </p>
 
     <ol class="steps">
-      <li><h4>Context — the situation</h4>
+      <li><h3>Context — the situation</h3>
         <p class="muted">Who you are, who this is for, what's already happened, what
         constraints exist. This is the part beginners skip and experts over-deliver on.</p></li>
-      <li><h4>Task — the actual verb</h4>
+      <li><h3>Task — the actual verb</h3>
         <p class="muted">Not "help me with my email" but "rewrite this so it declines
         without closing the door." Vague verbs produce vague output.</p></li>
-      <li><h4>Constraints — the boundaries</h4>
+      <li><h3>Constraints — the boundaries</h3>
         <p class="muted">Length, tone, what to avoid, what must be included, what you've
         already tried and don't want repeated.</p></li>
-      <li><h4>Format — the shape you want back</h4>
+      <li><h3>Format — the shape you want back</h3>
         <p class="muted">A table with these columns. Five bullets. An email under 150 words.
         Plain English, no jargon. Shape is free to ask for and enormously improves usability
         — and makes checking easier.</p></li>
-      <li><h4>Example — one sample of "good"</h4>
+      <li><h3>Example — one sample of "good"</h3>
         <p class="muted">The most powerful and least used ingredient. One example of what
         right looks like beats three paragraphs describing it.</p></li>
     </ol>
@@ -111,9 +111,9 @@ End with an open offer to hear objections.</div>
     </p>
 
     <div class="grid grid-3">
-      <div class="card"><h4>Round 1</h4><p class="small muted">You see the shape of the answer, and discover what you actually wanted — which you often didn't know until you saw the wrong version.</p></div>
-      <div class="card"><h4>Round 2–3</h4><p class="small muted">"Too formal." "You missed the cost angle." "Cut it in half." "Keep paragraph 2, redo the rest." Direct, blunt, specific.</p></div>
-      <div class="card"><h4>Round 4–5</h4><p class="small muted">Now the material is genuinely yours. This is where the output stops being generic and starts being usable.</p></div>
+      <div class="card"><h3>Round 1</h3><p class="small muted">You see the shape of the answer, and discover what you actually wanted — which you often didn't know until you saw the wrong version.</p></div>
+      <div class="card"><h3>Round 2–3</h3><p class="small muted">"Too formal." "You missed the cost angle." "Cut it in half." "Keep paragraph 2, redo the rest." Direct, blunt, specific.</p></div>
+      <div class="card"><h3>Round 4–5</h3><p class="small muted">Now the material is genuinely yours. This is where the output stops being generic and starts being usable.</p></div>
     </div>
 
     <div class="note note-do">
@@ -292,19 +292,19 @@ End with an open offer to hear objections.</div>
     <div class="grid grid-3">
       <div class="card">
         <span class="num">Level 1</span>
-        <h4>Chat</h4>
+        <h3>Chat</h3>
         <p class="small muted">Type a question, get an answer. Fine for most things, and where everyone starts.</p>
         <p class="small muted"><strong>Move on when:</strong> you're pasting the same background into every new conversation.</p>
       </div>
       <div class="card">
         <span class="num">Level 2</span>
-        <h4>Chat with your files</h4>
+        <h3>Chat with your files</h3>
         <p class="small muted">Upload documents, keep a persistent set of instructions, work over your own material rather than general knowledge.</p>
         <p class="small muted"><strong>Move on when:</strong> you want it to <em>do</em> things, not just produce text about them.</p>
       </div>
       <div class="card">
         <span class="num">Level 3</span>
-        <h4>Agents and coding tools</h4>
+        <h3>Agents and coding tools</h3>
         <p class="small muted">It takes multiple steps on its own — searching, running code, editing files, checking its own work.</p>
         <p class="small muted"><strong>The catch:</strong> more autonomy, more to verify, and far more it can break in one go when it's wrong.</p>
       </div>

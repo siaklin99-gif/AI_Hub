@@ -16,7 +16,7 @@ const cfg = require('./site.config.js');
 // Single source of truth: the page list comes from the config, so this harness
 // automatically covers a page the moment it is added there.
 const PAGES = cfg.pages.map((p) => p.file);
-const ASSETS = ['assets/style.css', 'assets/app.js'];
+const ASSETS = ['assets/style.css', 'assets/app.js', 'assets/favicon.svg', 'assets/og.png'];
 const SOURCES = ['build.js', 'site.config.js', 'src/layout.js', 'src/components.js']
   .concat(cfg.pages.map((p) => 'src/pages/' + p.file.replace(/\.html$/, '') + '.js'));
 
@@ -92,6 +92,43 @@ for (const p of PAGES) {
   check(/<link rel="stylesheet" href="assets\/style\.css">/.test(s), `${p}: does not load the shared stylesheet`);
   check(/<script src="assets\/app\.js"><\/script>/.test(s), `${p}: does not load the shared script`);
   check((s.match(/<h1[ >]/g) || []).length === 1, `${p}: must have exactly one <h1>`);
+
+  /* Accessibility landmarks. Six nav links precede the content on every page;
+     without these a keyboard or screen-reader user walks all six every time
+     (WCAG 2.4.1, Level A). */
+  check(/<main id="main">/.test(s), `${p}: no <main id="main"> landmark`);
+  check((s.match(/<main[ >]/g) || []).length === 1, `${p}: must have exactly one <main>`);
+  check(/<a class="skip" href="#main">/.test(s), `${p}: no skip link before the nav`);
+  check(s.indexOf('class="skip"') < s.indexOf('<nav'), `${p}: the skip link must come BEFORE the nav to be reachable first`);
+
+  /* Heading order. A screen-reader user navigates by level; a jump from h2 to
+     h4 breaks the outline. Every page skipped, because .card h4 was chosen for
+     its size — the size now lives in CSS and the level is semantic. */
+  const levels = (s.match(/<h([1-6])[ >]/g) || []).map((t) => Number(t[2]));
+  const skips = [];
+  for (let i = 1; i < levels.length; i++) {
+    if (levels[i] - levels[i - 1] > 1) skips.push(`${levels[i - 1]}->${levels[i]}`);
+  }
+  check(skips.length === 0, `${p}: heading levels skip (${skips.join(', ')}) — WCAG 1.3.1`);
+  check(levels[0] === 1, `${p}: first heading is h${levels[0]}, must be the h1`);
+
+  /* Social + canonical. A page shared into Slack or WhatsApp with no card is a
+     bare grey link, and this site exists to be passed around. */
+  for (const tag of ['og:title', 'og:description', 'og:url', 'og:image', 'og:image:alt', 'og:type', 'og:site_name']) {
+    check(new RegExp(`property="${tag}" content="[^"]+"`).test(s), `${p}: missing ${tag}`);
+  }
+  check(/name="twitter:card" content="summary_large_image"/.test(s), `${p}: missing twitter:card`);
+  check(/<link rel="canonical" href="https:\/\/[^"]+">/.test(s), `${p}: missing canonical URL`);
+  check(/<link rel="icon"/.test(s), `${p}: no favicon — every visit logs a /favicon.ico 404`);
+  check(/name="theme-color"/.test(s), `${p}: no theme-color`);
+
+  // canonical must be the pretty form used across hlur.ai, and unique per page
+  const canon = (s.match(/rel="canonical" href="([^"]+)"/) || [])[1];
+  if (canon) {
+    check(!/\.html$/.test(canon), `${p}: canonical "${canon}" ends in .html — hlur.ai uses pretty URLs`);
+    check(canon === (p === 'index.html' ? cfg.site.baseUrl + '/' : cfg.site.baseUrl + '/' + p.replace(/\.html$/, '')),
+      `${p}: canonical "${canon}" does not match its own filename`);
+  }
 }
 
 /* ---------- 2. shared chrome is IDENTICAL, not merely present ---- */
@@ -241,6 +278,9 @@ check(CSS.slice(mqIndex).indexOf('\n}\n') > 0 && CSS.trim().endsWith('}'),
 const afterMq = CSS.slice(mqIndex).replace(/@media[\s\S]*?\n\}/, '').trim();
 check(afterMq === '', 'style.css: rules appear AFTER the mobile media query — source order will undo the mobile overrides');
 
+check(/\.skip:focus/.test(CSS), 'style.css: the skip link never becomes visible on focus');
+check(/:focus-visible/.test(CSS), 'style.css: no visible focus indicator');
+check(/prefers-reduced-motion/.test(CSS), 'style.css: does not honour prefers-reduced-motion');
 for (const v of ['--bg', '--surface', '--text', '--green', '--red', '--amber', '--blue', '--radius']) {
   check(CSS.includes(v + ':'), `style.css: theme token ${v} not defined`);
 }
@@ -400,7 +440,7 @@ head('Public-release requirements');
 head('Repo-wide sweep');
 {
   const SKIP_DIRS = new Set(['node_modules', '.git', 'render_shots']);
-  const TEXTY = /\.(html|css|js|md|json|csv|txt)$/;
+  const TEXTY = /\.(html|css|js|md|json|csv|txt|svg)$/;
   const walk = (dir, out = []) => {
     for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
       if (e.name.startsWith('.')) continue;   // .gitignore has no extension and never passes TEXTY

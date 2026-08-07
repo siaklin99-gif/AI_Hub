@@ -41,7 +41,7 @@ function grid(cols, cards) {
 /** A plain card. `num` renders the small grey counter above the heading. */
 function card({ num, title, body }) {
   const n = num ? `\n  <span class="num">${num}</span>` : '';
-  const h = title ? `\n  <h4>${title}</h4>` : '';
+  const h = title ? `\n  <h3>${title}</h3>` : '';
   return `<div class="card">${n}${h}\n  ${body}\n</div>`;
 }
 
@@ -117,7 +117,7 @@ ${lis}
 /** items: {title, body} */
 function steps(items) {
   const lis = items.map((s) =>
-    `  <li>\n    <h4>${s.title}</h4>\n    ${s.body}\n  </li>`
+    `  <li>\n    <h3>${s.title}</h3>\n    ${s.body}\n  </li>`
   ).join('\n');
   return `<ol class="steps">\n${lis}\n</ol>`;
 }
@@ -184,7 +184,7 @@ function trackGrid() {
     .sort((a, b) => a.order - b.order)
     .map((t) => `  <a class="track" href="${t.href}">
     <span class="tnum">${t.track}</span>
-    <h4>${t.cardTitle}</h4>
+    <h3>${t.cardTitle}</h3>
     <p>${t.cardBlurb}</p>
   </a>`);
 

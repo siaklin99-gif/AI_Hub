@@ -8,6 +8,7 @@
 module.exports = {
   site: {
     name: 'AI Hub',
+    author: 'Siak Lin',
     /* Every page is stamped with this and the static harness fails if a page
        loses it — the site tells readers to distrust undated claims, so it
        holds itself to the same rule. Change it when you revise content. */
@@ -18,6 +19,15 @@ module.exports = {
        canonical URL, not a recommendation. */
     allowedExternalHosts: ['hlur.ai', 'creativecommons.org'],
     baselineUrl: 'https://hlur.ai/baseline',
+
+    /* Where this site will live. Canonical and og:url are built from it.
+       The URL style matches the rest of hlur.ai, checked against its own
+       pages: pretty URLs, no ".html", no trailing slash, root gets "/".
+       Relative asset paths depend on that no-trailing-slash form — served
+       as /hub/trust/ the stylesheet would resolve to /hub/trust/assets/. */
+    baseUrl: 'https://hlur.ai/hub',
+    ogImage: 'assets/og.png',
+    ogAlt: 'AI Hub — "Everyone is confused. That is the honest starting line." A free, sign-up-free guide to understanding and checking AI.',
   },
 
   /* ---- the pages, in reading order -------------------------------

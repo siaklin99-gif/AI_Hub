@@ -12,19 +12,19 @@ module.exports = `<!-- =========================================================
     <div class="grid grid-3">
       <div class="card">
         <span class="num">Road A</span>
-        <h4>Confident everyday user</h4>
+        <h3>Confident everyday user</h3>
         <p class="small muted">Uses it naturally for life admin, learning, writing and thinking. Knows what it's bad at. Checks without being told.</p>
         <p class="small"><strong>Cost:</strong> ~20 min/day for a month.<br><strong>Reachable by:</strong> anyone. No technical background at all.</p>
       </div>
       <div class="card">
         <span class="num">Road B</span>
-        <h4>The person at work who gets it</h4>
+        <h3>The person at work who gets it</h3>
         <p class="small muted">Has rebuilt a real part of their own job around it, can show the before-and-after, and is trusted to advise colleagues.</p>
         <p class="small"><strong>Cost:</strong> Road A, then 3–6 months of applying it to real work.<br><strong>Reachable by:</strong> anyone with a job that involves words, numbers or process.</p>
       </div>
       <div class="card">
         <span class="num">Road C</span>
-        <h4>Builder or founder</h4>
+        <h3>Builder or founder</h3>
         <p class="small muted">Builds tools or a product on top of AI. Understands cost per use, reliability, and what stops a competitor copying it.</p>
         <p class="small"><strong>Cost:</strong> 6–24 months, real money, real risk.<br><strong>Reachable by:</strong> fewer people than the internet implies. Read the honest section below first.</p>
       </div>
@@ -138,20 +138,20 @@ module.exports = `<!-- =========================================================
 
     <h3>How to propose it without it going badly</h3>
     <ol class="steps">
-      <li><h4>Check the rules first — before anything else</h4>
+      <li><h3>Check the rules first — before anything else</h3>
         <p class="muted">Which tools are approved, what data is allowed in them, and whether
         clients or patients must be told. Do this <em>first</em>: a month of quiet use of an
         unapproved tool on real work can already be a policy breach or a data incident, and
         in law, medicine, accounting and financial advice, confidentiality and disclosure
         duties are obligations, not preferences. Getting this wrong is also the fastest way
         to have the whole thing banned for everyone.</p></li>
-      <li><h4>Then prove it on your own work</h4>
+      <li><h3>Then prove it on your own work</h3>
         <p class="muted">One task, one month, timed before and after. An unarguable
         before-and-after beats any amount of enthusiasm.</p></li>
-      <li><h4>Lead with the checking, not the speed</h4>
+      <li><h3>Lead with the checking, not the speed</h3>
         <p class="muted">"Here's how I verify the output" is what makes managers comfortable.
         "It's so fast" is what makes them nervous.</p></li>
-      <li><h4>Give away the method</h4>
+      <li><h3>Give away the method</h3>
         <p class="muted">Hoarding it buys you a few months. Teaching it makes you the person
         the organisation asks — which is worth considerably more, for longer.</p></li>
     </ol>
@@ -171,7 +171,7 @@ module.exports = `<!-- =========================================================
 
     <div class="grid grid-2">
       <div class="card">
-        <h4>Getting less valuable</h4>
+        <h3>Getting less valuable</h3>
         <ul class="clean no small" style="margin-top:8px">
           <li>Producing competent first drafts</li>
           <li>Formatting, tidying, transcribing</li>
@@ -181,7 +181,7 @@ module.exports = `<!-- =========================================================
         </ul>
       </div>
       <div class="card">
-        <h4>Getting more valuable</h4>
+        <h3>Getting more valuable</h3>
         <ul class="clean yes small" style="margin-top:8px">
           <li>Knowing which question is worth asking</li>
           <li>Telling a good answer from a plausible one</li>

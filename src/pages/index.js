@@ -19,32 +19,32 @@ module.exports = `<!-- =========================================================
     <div class="grid grid-2">
       <div class="card">
         <span class="num">01</span>
-        <h4>Noise everywhere, training nowhere</h4>
+        <h3>Noise everywhere, training nowhere</h3>
         <p class="small muted">AI is on the news, in podcasts, on cars, trains and billboards, and in every company all-hands. Employers say "embrace AI to improve productivity" — and then run no formal training at all.</p>
       </div>
       <div class="card">
         <span class="num">02</span>
-        <h4>Too many teachers, no way to grade them</h4>
+        <h3>Too many teachers, no way to grade them</h3>
         <p class="small muted">YouTube and Instagram are full of AI tutorials. Some are good. Some are vague. Some are too simple to use, some too deep to follow. Nothing tells you which is which before you've wasted the hour.</p>
       </div>
       <div class="card">
         <span class="num">03</span>
-        <h4>Too many models, no idea which is right</h4>
+        <h3>Too many models, no idea which is right</h3>
         <p class="small muted">New names every month, each claiming to be the best. Several look free — until you hit a limit nobody explained. Choosing feels like a bet you're not qualified to place.</p>
       </div>
       <div class="card">
         <span class="num">04</span>
-        <h4>The mental model is usually wrong</h4>
+        <h3>The mental model is usually wrong</h3>
         <p class="small muted">Almost nobody was handed a working picture of what this thing is. So people reasonably guess: that it's a better search engine, that someone is answering, or — because it's warm and remembers what you just said — that it's something like a friend. Every one of those guesses is sensible. Each one quietly produces a different bad habit.</p>
       </div>
       <div class="card">
         <span class="num">05</span>
-        <h4>No way to check the answer</h4>
+        <h3>No way to check the answer</h3>
         <p class="small muted">This is the big one. Nobody teaches how to validate what an AI produces. Blind trust isn't leverage — it's a risk you can't see. An answer you can't check is not an answer you can use.</p>
       </div>
       <div class="card">
         <span class="num">06</span>
-        <h4>Same starting line, no visible line</h4>
+        <h3>Same starting line, no visible line</h3>
         <p class="small muted">Nobody has twenty years of experience with this, which is a fairer start than most technologies offer — young or old, technical or not. It is not a level field: money, hardware and language still tilt it. But the gap is months of practice, not a degree. And a fair start is useless if nobody can find the start. Most people are shooting in the dark.</p>
       </div>
     </div>
@@ -67,28 +67,28 @@ module.exports = `<!-- =========================================================
 
     <ol class="steps">
       <li>
-        <h4>No human is typing the reply.</h4>
+        <h3>No human is typing the reply.</h3>
         <p class="muted">It is a program running in a data centre. It gives different answers to the same question because a little randomness is built in on purpose — not because you got a different person. But "no one is typing" is not "no one can ever see it": conversations can be stored, sampled by staff reviewing safety, or read by your employer if the account is company-issued. What that means for you is on the <a href="trust.html#privacy">Trust</a> page.</p>
       </li>
       <li>
-        <h4>It is not a search engine.</h4>
+        <h3>It is not a search engine.</h3>
         <p class="muted">Search finds pages that someone already wrote. An AI chatbot <em>composes</em> an answer word by word instead of retrieving one. Usually the result is new; sometimes it reproduces wording it was trained on. Either way nobody checked it before it reached you — which is why it can be brilliant, and why it can be confidently, fluently wrong.</p>
       </li>
       <li>
-        <h4>It predicts language. It does not "know" things.</h4>
+        <h3>It predicts language. It does not "know" things.</h3>
         <p class="muted">It was trained on an enormous amount of writing and learned which words tend to follow which. Being right is usually a side effect of that. It is never a guarantee.</p>
         <p class="muted">It is then trained a second time on human ratings of its answers. That is what makes it helpful and polite — and also what makes it inclined to agree with you.</p>
       </li>
       <li>
-        <h4>It sounds equally confident whether it is right or wrong.</h4>
+        <h3>It sounds equally confident whether it is right or wrong.</h3>
         <p class="muted">There is no wobble in its voice when it invents something. Confidence carries no information. This single fact is why the <a href="trust.html">Trust</a> track exists.</p>
       </li>
       <li>
-        <h4>It is not a companion, even when it feels like one.</h4>
+        <h3>It is not a companion, even when it feels like one.</h3>
         <p class="muted">The warmth is a property of the text, not of a mind that cares about you. It has no stake in your life, and no memory of you unless the product was built to keep one. It can still be genuinely useful — just don't mistake the feeling for a relationship.</p>
       </li>
       <li>
-        <h4>The skill is not "prompting". It is judgement.</h4>
+        <h3>The skill is not "prompting". It is judgement.</h3>
         <p class="muted">The people getting real value are not the ones with magic words. They are the ones who know what to ask for, and can tell a good answer from a plausible one.</p>
       </li>
     </ol>
@@ -117,7 +117,7 @@ module.exports = `<!-- =========================================================
 
     <div class="grid grid-2">
       <div class="card">
-        <h4>What it is</h4>
+        <h3>What it is</h3>
         <ul class="clean yes small" style="margin-top:8px">
           <li>Plain language. No jargon without a translation.</li>
           <li>Free, with no account and nothing to install.</li>
@@ -126,7 +126,7 @@ module.exports = `<!-- =========================================================
         </ul>
       </div>
       <div class="card">
-        <h4>What it isn't</h4>
+        <h3>What it isn't</h3>
         <ul class="clean no small" style="margin-top:8px">
           <li>Not a certificate, a course, or a funnel.</li>
           <li>Not sponsored by, or ranking, any AI company. Nothing here is paid for or affiliated.</li>

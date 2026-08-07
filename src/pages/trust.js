@@ -342,7 +342,7 @@ List every factual claim in it separately, and for each one say: how could I ver
 
     <div class="grid grid-2">
       <div class="card">
-        <h4>Never paste</h4>
+        <h3>Never paste</h3>
         <ul class="clean no small" style="margin-top:8px">
           <li>Passwords, keys, one-time codes, card numbers</li>
           <li>Other people's personal or medical details</li>
@@ -352,7 +352,7 @@ List every factual claim in it separately, and for each one say: how could I ver
         </ul>
       </div>
       <div class="card">
-        <h4>Check before you rely on it</h4>
+        <h3>Check before you rely on it</h3>
         <ul class="clean small" style="margin-top:8px">
           <li>Whether your conversations may be used to train the model — it varies by product and by plan, and the setting can move</li>
           <li>Whether your employer has an approved tool, and whether the free consumer version is allowed</li>
