@@ -12,9 +12,9 @@ six problems named on the front door maps to a track that closes it.
 | Page | Track | What it does |
 |------|-------|--------------|
 | `index.html` | — | Names the six problems from the notes, gives the 60-second version, routes to the tracks. |
-| `map.html` | 1 · The Map | "We don't know what we don't know." Ten things AI is good at, eight it is bad at on its own, the jagged frontier, five habits for finding your own blind spots, a 16-item self-audit. |
+| `map.html` | 1 · The Map | Ten things AI is good at, eight it is bad at on its own, the jagged frontier, five habits for finding your own blind spots, a 16-item self-audit. |
 | `trust.html` | 2 · Trust | The flagship. Triage by cost-of-being-wrong, six verification moves, four things that *feel* like checking but aren't, eight failure modes, privacy, a 10-item one-page check. |
-| `leverage.html` | 3 · Leverage | The mental model, the five parts of a request that works, iteration, ten copyable patterns, seven beginner mistakes, three tool levels. |
+| `leverage.html` | 3 · Get Help | The mental model, the five parts of a request that works, iteration, ten copyable patterns, seven beginner mistakes, three tool levels. |
 | `tools.html` | 4 · Tools | Six categories instead of a leaderboard, a four-question decision flow, why free tiers end, and how to build your own five-prompt benchmark. |
 | `further.html` | 5 · Go Further | Three ladders, a four-week / 20-min-a-day plan, finding AI-shaped work, an honest read on careers, and seven awkward truths about starting an AI company. |
 

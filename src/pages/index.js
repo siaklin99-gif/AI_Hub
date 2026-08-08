@@ -6,6 +6,37 @@
 const C = require("../components.js");
 
 module.exports = `<!-- ============================================================ -->
+<section id="uses">
+  <div class="wrap">
+    <p class="slabel">Before any theory</p>
+    <h2>The kind of thing people use it for</h2>
+    <p class="lead">
+      Real shapes of use, in plain words. None of them need any technical skill.
+    </p>
+    <ul class="clean" id="use-list">
+      <li>A restaurant owner pastes next week's staff availability — and gets a rota to argue with. <a href="map.html#audit">how</a></li>
+      <li>A retired teacher pastes a pension letter — and asks what it means, in plain words. <a href="map.html#audit">how</a></li>
+      <li>A nurse asks what to ask the doctor — before the appointment, not after. <a href="map.html#audit">how</a></li>
+      <li>A manager turns an hour of meeting notes into decisions, owners and dates. <a href="map.html#audit">how</a></li>
+      <li>Someone about to repost a statistic checks the source actually exists. <a href="trust.html#moves">how</a></li>
+      <li>A parent rehearses a hard conversation — with the AI playing the other person. <a href="map.html#audit">how</a></li>
+    </ul>
+    <p class="small muted">These are shapes of use, not testimonials — the pages below show
+    exactly how to do each one, and how to check what comes back.</p>
+
+    <div class="note note-info" id="firsttime">
+      <span class="nlabel">If you have never used one at all</span>
+      <p>You cannot break anything, and reading this site commits you to nothing — no
+      account, no download. Three things worth knowing before a first try: the big tools
+      are free to start. Don't type anything private. And it sounds confident even when it
+      is wrong — that is what the <a href="trust.html">Trust</a> page is for. When you do
+      try, the first thing to type can simply be: <em>"Explain [anything you have always
+      wondered about] in plain words."</em> A good first time is with someone beside you.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
 <section id="problem">
   <div class="wrap">
     <p class="slabel">The problem, named</p>
