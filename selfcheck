@@ -19,6 +19,13 @@ if ! command -v node >/dev/null 2>&1; then
   exit 2
 fi
 
+# Self-wire the commit gate. core.hooksPath is per-clone config, so a fresh
+# clone commits ungated until someone finds the setup line in a doc. Idempotent
+# (pattern from the host repo's selfcheck).
+if [ -d .git ] && [ "$(git config core.hooksPath 2>/dev/null)" != "hooks" ]; then
+  git config core.hooksPath hooks && echo "(wired hooks/pre-commit as the commit gate)"
+fi
+
 # Reject anything we do not recognise. `./selfcheck --fulll` used to print
 # "rendered harness skipped" and then SELFCHECK PASS with exit 0 — the single
 # path in a fail-closed script that failed open, reachable by one typo.
@@ -31,26 +38,39 @@ case "${1:-}" in
   *) echo "${RED}BLOCKED${OFF}  unknown argument '$1'. Usage: ./selfcheck [--full]" >&2; exit 2 ;;
 esac
 
+# run <label> <file> <min-checks>
+# The floor is what catches a suite that silently SHRINKS: a verify.js gutted
+# to exit 0, or an edit that drops half the assertions, passes on exit code
+# alone. Count what actually ran and hold it to a minimum (host-repo pattern).
+run() {
+  local label="$1" file="$2" floor="$3" out rc n
+  out="$(node "$file" 2>&1)"; rc=$?
+  echo "$out"
+  if [ $rc -eq 2 ]; then
+    echo "${RED}BLOCKED${OFF}  $label could not run (see above). Treat this as a failure, not a pass."
+    problems=$((problems+1)); return
+  fi
+  [ $rc -ne 0 ] && { problems=$((problems+1)); return; }
+  n="$(printf '%s' "$out" | sed 's/\x1b\[[0-9;]*m//g' \
+        | grep -oE '^PASS +[0-9]+ (adversarial tests|checks|rendered checks)' \
+        | grep -oE '[0-9]+' | head -1)"
+  if [ -z "${n:-}" ] || [ "$n" -lt "$floor" ]; then
+    echo "${RED}FLOOR${OFF}   $label ran ${n:-0} checks, expected ≥$floor — the suite shrank."
+    problems=$((problems+1))
+  fi
+}
+
 echo "${BOLD}[1/3] adversarial unit tests${OFF}"
-node test.js || problems=$((problems+1))
+run "test.js" test.js 26
 
 echo
 echo "${BOLD}[2/3] static harness${OFF}"
-node verify.js || problems=$((problems+1))
+run "verify.js" verify.js 900
 
 if [ "${1:-}" = "--full" ]; then
   echo
   echo "${BOLD}[3/3] rendered harness (real Chromium, 5 viewport/theme combos)${OFF}"
-  node render.js
-  rc=$?
-  if [ $rc -eq 2 ]; then
-    # Playwright missing is a BLOCK, not a pass — a guard that fails open
-    # is worse than no guard, because it manufactures false confidence.
-    echo "${RED}BLOCKED${OFF}  rendered harness could not run (see above). Treat this as a failure, not a pass."
-    problems=$((problems+1))
-  elif [ $rc -ne 0 ]; then
-    problems=$((problems+1))
-  fi
+  run "render.js" render.js 1200
 else
   echo
   echo "[3/3] rendered harness skipped — run ./selfcheck --full before shipping."
