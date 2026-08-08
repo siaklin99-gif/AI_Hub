@@ -113,7 +113,10 @@ module.exports = {
       eyebrow: 'Track 4 · Tools',
       h1: 'Don\'t learn the leaderboard. Learn the categories.',
       sub: 'New model names arrive every few weeks, each announced as the best. Memorising them is a treadmill. The categories underneath barely move — and once you know which category your task belongs to, picking a product takes about a minute.',
-      footNote: 'No product is named, ranked or recommended here, and nothing on this site is sponsored.',
+      /* Scoped deliberately. The Foundations guide this hub links to DOES name
+         products — it is the concrete door a beginner needs — and it says so on
+         its own card. Claiming more than these six pages would be untrue. */
+      footNote: 'No product is named, ranked or recommended on these six pages, and nothing on this site is sponsored. The Foundations guide linked here does name products, and says so.',
     },
     {
       file: 'further.html',
