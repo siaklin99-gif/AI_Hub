@@ -1,0 +1,26 @@
+# The rendered pass, off this machine. Until now render.js ran only on the
+# author's Mac — which demonstrably fails (macOS revoked its folder access
+# mid-deploy once). Weekly plus on-demand, not per-push: a browser install
+# per push is slow, and the fast harnesses already gate every push.
+#
+# --no-refs: the pixel references are macOS-rendered; Linux font metrics
+# differ, so the comparison would fail for the wrong reason here. Every
+# other rendered check (layout, contrast, parity, features, budgets,
+# deployed shape) runs in full.
+name: rendered
+on:
+  schedule:
+    - cron: '0 6 * * 1'   # Mondays 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  rendered-harness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install --no-save playwright
+      - run: npx playwright install --with-deps chromium
+      - run: node render.js --no-refs

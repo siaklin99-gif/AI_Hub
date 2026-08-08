@@ -97,6 +97,28 @@ const COMBOS = [
 ];
 
 const UPDATE = process.argv.includes('--update');
+/* --no-refs skips the pixel-reference comparison. The references are rendered
+   on macOS; a Linux CI runner draws different font metrics, so comparing them
+   there fails for the wrong reason. CI passes this flag; local runs never do. */
+const NO_REFS = process.argv.includes('--no-refs');
+
+/* SCREEN BUDGETS — phone screens at 390x844, accordions collapsed, per page.
+   The five-persona panel's clearest finding was that content beyond a reader's
+   attention span is invisible: only one of five read deeply, and the trust
+   page's privacy section sat at 66% of 11.9 screens where a break-length
+   reader never reached it. Prose trims kept being given back by additions, so
+   the LENGTH itself is now locked: growing a page past its budget fails this
+   harness. Like the host repo's page-weight budget, every raise must edit
+   this table and say why — growth becomes a decision, not a drift.
+   Values are the 2026-08-08 measurement plus ~0.8 screen of headroom. */
+const SCREEN_BUDGET = {
+  index: 11,      // 10.0 measured: hero, uses, short version, tracks, problems, honest
+  map: 12.5,      // 11.5 measured: the 16-item self-audit earns its height
+  trust: 13,      // 12.2 measured: flagship page; privacy deliberately at 57%
+  leverage: 12.5, // 11.3 measured
+  tools: 10,      // 8.8 measured
+  further: 14.5,  // 13.4 measured: four checklists; longest page by design
+};
 const only = process.argv.slice(2).find((a) => !a.startsWith('--'));
 const pages = only ? PAGES.filter((p) => p === only) : PAGES;
 if (!pages.length) { console.error('Unknown page: ' + only); process.exit(2); }
@@ -434,6 +456,12 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
       check(open.overflow <= 1, `${name}: page scrolls horizontally by ${open.overflow}px once expanded`);
       check(m.h1H > 20, `${name}: h1 has no height`);
       check(m.pageH > 800, `${name}: page is suspiciously short (${m.pageH}px)`);
+      if (combo.name === 'mobile-light') {
+        const screens = m.pageH / combo.height;
+        check(screens <= SCREEN_BUDGET[name],
+          `${name}: ${screens.toFixed(1)} phone screens exceeds its budget of ${SCREEN_BUDGET[name]} — ` +
+          `cut something, or raise the budget in render.js WITH a written reason`);
+      }
       check(m.currentNav.length === 1 && m.currentNav[0] === name + '.html',
         `${name}: nav highlight is ${JSON.stringify(m.currentNav)}, expected ["${name}.html"]`);
 
@@ -705,7 +733,7 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
      blessed into all of A's references); failures write the pair plus a diff
      image to render_diff/ so the change can be reviewed by eye.
      The diff runs inside Chromium itself (canvas), so no new dependency. */
-  if (!only) {
+  if (!only && !NO_REFS) {
     const REF = path.join(ROOT, 'render_ref');
     const DIFF = path.join(ROOT, 'render_diff');
     const shots = fs.readdirSync(SHOTS).filter((f) => f.endsWith('.png')).sort();
