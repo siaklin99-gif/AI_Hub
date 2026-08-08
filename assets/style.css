@@ -211,6 +211,18 @@ hr { border: 0; border-top: 0.5px solid var(--border); margin: 40px 0; }
 }
 .hero-stat .cap { font-size: 13.5px; color: var(--text-sec); margin-top: 10px; display: block; }
 
+/* ---------- figures (inline SVG diagrams) ----------
+   Narrow viewBoxes (~380) so label text is drawn large in diagram units and
+   stays legible when the whole figure is 350px wide on a phone; the desktop
+   cap keeps the same text from ballooning. Every colour is a theme token, so
+   dark mode needs no second drawing. */
+.fig { margin: 24px auto; max-width: 520px; }
+.fig svg { width: 100%; height: auto; display: block; }
+.fig figcaption {
+  font-size: 13px; color: var(--text-ter); margin-top: 8px;
+  text-align: center; line-height: 1.45;
+}
+
 /* ---------- callouts ---------- */
 
 .note {

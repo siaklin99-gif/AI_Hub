@@ -14,7 +14,21 @@ module.exports = `<!-- =========================================================
       <span class="cap">It sounds exactly the same whether it is right or wrong. There is no hesitation in its voice to warn you.</span>
     </div>
 
-    <p style="margin-top:24px">
+    <figure class="fig" style="margin-top:26px">
+      <svg viewBox="0 0 380 150" role="img" aria-label="Diagram: a correct answer and a wrong answer drawn as two speech bubbles with identical steady voice lines">
+        <rect x="22" y="30" width="150" height="62" rx="12" fill="var(--surface)" stroke="var(--border-med)" stroke-width="1.2"/>
+        <path d="M52 92 L60 106 L70 92" fill="var(--surface)" stroke="var(--border-med)" stroke-width="1.2"/>
+        <rect x="208" y="30" width="150" height="62" rx="12" fill="var(--surface)" stroke="var(--border-med)" stroke-width="1.2"/>
+        <path d="M238 92 L246 106 L256 92" fill="var(--surface)" stroke="var(--border-med)" stroke-width="1.2"/>
+        <path d="M40 61 h22 v-8 h18 v16 h20 v-8 h34" stroke="var(--text-sec)" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M226 61 h22 v-8 h18 v16 h20 v-8 h34" stroke="var(--text-sec)" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <text x="97" y="130" text-anchor="middle" font-size="12" fill="var(--green)" font-weight="620">✓ a right answer</text>
+        <text x="283" y="130" text-anchor="middle" font-size="12" fill="var(--red)" font-weight="620">✕ an invented one</text>
+      </svg>
+      <figcaption>The voice is the same line, drawn twice. Nothing in the tone tells you which is which.</figcaption>
+    </figure>
+
+    <p>
       A person who is unsure usually sounds unsure. They hedge, they slow down, they say
       "I think". An AI writes a fabricated legal case, a made-up statistic, and a correct
       historical date in exactly the same tone — fluent, calm, well-organised. The signal
@@ -44,9 +58,8 @@ module.exports = `<!-- =========================================================
     <p class="slabel">Rule one</p>
     <h2>Match the checking to the cost of being wrong</h2>
     <p class="lead">
-      Verifying everything is exhausting and nobody does it. Verifying nothing is how
-      people get hurt. So don't decide by how confident you feel — decide by what happens
-      if this is wrong. Do this before you read the answer, not after.
+      Checking everything is exhausting; checking nothing is how people get hurt. Decide
+      by what happens if this is wrong — before you read the answer, not after.
     </p>
 
     <div class="tscroll">
@@ -89,8 +102,7 @@ module.exports = `<!-- =========================================================
     <p class="slabel">Rule two</p>
     <h2>Six verification moves</h2>
     <p class="lead">
-      Concrete, learnable, and mostly fast. You will not use all six every time — pick by
-      the triage above. Move 4 is the one to make automatic.
+      Concrete and mostly fast. Pick by the triage above; make Move 4 automatic.
     </p>
 
     <div class="acc-tools">

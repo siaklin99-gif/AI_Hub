@@ -51,7 +51,7 @@ module.exports = {
       description: 'A calm, jargon-free starting point for AI. Learn the foundations, find out what you didn\'t know to ask, and learn to check the answers instead of trusting them.',
       eyebrow: 'AI Hub',
       h1: 'Everyone is confused. That is the honest starting line.',
-      sub: 'AI is on the billboards, in the all-hands, and in nobody\'s training budget. This is a calm place to build the basics — and then learn the part almost no one teaches: how to <strong>check</strong> what the AI gives you, instead of trusting it.',
+      sub: 'AI is on the billboards, in the all-hands, and in nobody\'s training budget. This is a calm place to build the basics — then learn the part almost no one teaches: how to <strong>check</strong> what AI gives you.',
       heroButtons: [
         { href: '#tracks', label: 'Show me where to start', style: 'primary' },
         { href: 'trust.html', label: 'I already use AI — teach me to verify it', style: 'ghost' },
@@ -70,7 +70,7 @@ module.exports = {
       description: 'You can\'t ask for help you can\'t imagine. A map of what AI is good at, bad at, and unpredictable at — plus five habits for finding your own blind spots.',
       eyebrow: 'Track 1 · The Map',
       h1: 'You cannot ask for help you can\'t imagine.',
-      sub: 'The biggest thing holding people back isn\'t bad prompting. It\'s not knowing what is even on the menu. This page is the menu — what AI is genuinely good at, genuinely bad at, and unreliable at — and five habits for finding the rest yourself.',
+      sub: 'The biggest blocker isn\'t bad prompting — it\'s not knowing what\'s on the menu. This page is the menu, plus five habits for finding the rest yourself.',
       footNote: 'The term "jagged technological frontier" is from Dell\'Acqua et al., Harvard Business School working paper 24-013 (2023), a field experiment run with BCG consultants — the idea is theirs, the words on this page are ours.',
     },
     {
@@ -84,7 +84,7 @@ module.exports = {
       description: 'Trust is not a property of the AI. It is a property of your process. Six verification moves, a triage rule, the failure modes to recognise, and a checklist you can keep.',
       eyebrow: 'Track 2 · Trust',
       h1: 'Trust is not something the AI has. It\'s something your process produces.',
-      sub: '"Can I trust AI?" is the wrong question — it has no answer, and waiting for one leaves you either paralysed or reckless. The right question is smaller and always answerable: <strong>how do I check this particular answer, given what it costs me to be wrong?</strong>',
+      sub: '"Can I trust AI?" is the wrong question. The right one is smaller and always answerable: <strong>how do I check this answer, given what it costs me to be wrong?</strong>',
       footNote: 'Nothing on this page is medical, legal or financial advice.',
     },
     {
@@ -98,7 +98,7 @@ module.exports = {
       description: 'The mental model that works, the five parts of a good request, ten patterns worth stealing, and the beginner mistakes that waste the most time.',
       eyebrow: 'Track 3 · Leverage',
       h1: 'Treat it as a fast, well-read, over-confident new colleague.',
-      sub: 'Not an oracle, not a search box, not a friend. Someone brilliant who started this morning, has read almost everything, has no idea what your job involves, and will never admit to being lost. Once that picture is right, most of the technique follows on its own.',
+      sub: 'Not an oracle, not a search box, not a friend: someone brilliant who started this morning, knows nothing about your job, and never admits to being lost. Get that picture right and the technique follows.',
       footNote: 'Every prompt on this page is ours to copy freely.',
     },
     {
@@ -112,7 +112,7 @@ module.exports = {
       description: 'Stop memorising the leaderboard. Learn the six categories of AI tool, a decision flow for picking one, why free tiers end, and how to run your own five-prompt test.',
       eyebrow: 'Track 4 · Tools',
       h1: 'Don\'t learn the leaderboard. Learn the categories.',
-      sub: 'New model names arrive every few weeks, each announced as the best. Memorising them is a treadmill. The categories underneath barely move — and once you know which category your task belongs to, picking a product takes about a minute.',
+      sub: 'New model names arrive weekly, each announced as the best; memorising them is a treadmill. The categories underneath barely move — know your task\'s category and picking a product takes a minute.',
       /* Scoped deliberately. The Foundations guide this hub links to DOES name
          products — it is the concrete door a beginner needs — and it says so on
          its own card. Claiming more than these six pages would be untrue. */
