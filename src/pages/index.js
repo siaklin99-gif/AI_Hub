@@ -19,7 +19,7 @@ module.exports = `<!-- =========================================================
       <div class="card">
         <span class="num">01</span>
         <h3>Noise everywhere, training nowhere</h3>
-        <p class="small muted">AI is on the news, in podcasts, on cars, trains and billboards, and in every company all-hands. Employers say "embrace AI to improve productivity" — and then run no formal training at all.</p>
+        <p class="small muted">AI is on the news, in podcasts, on cars, trains and billboards, and in every company meeting. Employers say "embrace AI to improve productivity" — and then run no formal training at all.</p>
       </div>
       <div class="card">
         <span class="num">02</span>
@@ -29,12 +29,12 @@ module.exports = `<!-- =========================================================
       <div class="card">
         <span class="num">03</span>
         <h3>Too many models, no idea which is right</h3>
-        <p class="small muted">New names every month, each claiming to be the best. Several look free — until you hit a limit nobody explained. Choosing feels like a bet you're not qualified to place.</p>
+        <p class="small muted">New names every month, each claiming to be the best. Several look free — until you hit a limit nobody explained. Choosing feels like a guess you're not qualified to make.</p>
       </div>
       <div class="card">
         <span class="num">04</span>
         <h3>The mental model is usually wrong</h3>
-        <p class="small muted">Almost nobody was handed a working picture of what this thing is. So people reasonably guess: that it's a better search engine, that someone is answering, or — because it's warm and remembers what you just said — that it's something like a friend. Every one of those guesses is sensible. Each one quietly produces a different bad habit.</p>
+        <p class="small muted">Almost nobody was handed a working picture of what this thing is. So people guess. A better search engine. A person typing back. Or — because it's warm and remembers what you said — something like a friend. Every guess is sensible. Each one quietly produces a different bad habit.</p>
       </div>
       <div class="card">
         <span class="num">05</span>
@@ -44,7 +44,7 @@ module.exports = `<!-- =========================================================
       <div class="card">
         <span class="num">06</span>
         <h3>Same starting line, no visible line</h3>
-        <p class="small muted">Nobody has twenty years of experience with this, which is a fairer start than most technologies offer — young or old, technical or not. It is not a level field: money, hardware and language still tilt it. But the gap is months of practice, not a degree. And a fair start is useless if nobody can find the start. Most people are shooting in the dark.</p>
+        <p class="small muted">Nobody has twenty years of experience with this — young or old, working or retired, technical or not. It is not a perfectly fair start, but the gap is months of practice, not a degree. The problem is that nobody can find the start.</p>
       </div>
     </div>
 
@@ -61,8 +61,8 @@ module.exports = `<!-- =========================================================
 <section id="sixty">
   <div class="wrap">
     <p class="slabel">Before anything else</p>
-    <h2>The 60-second version</h2>
-    <p class="lead">Six true things. If you only ever read one screen of this hub, read this one.</p>
+    <h2>The short version</h2>
+    <p class="lead">Six true things. If you read nothing else here, read these.</p>
 
     <figure class="fig">
       <svg viewBox="0 0 380 175" role="img" aria-label="Diagram: a search engine retrieves an existing page; an AI chatbot composes a new answer word by word">
@@ -95,7 +95,7 @@ module.exports = `<!-- =========================================================
     <ol class="steps">
       <li>
         <h3>No human is typing the reply.</h3>
-        <p class="muted">It is a program running in a data centre. It gives different answers to the same question because a little randomness is built in on purpose — not because you got a different person. But "no one is typing" is not "no one can ever see it": conversations can be stored, sampled by staff reviewing safety, or read by your employer if the account is company-issued. What that means for you is on the <a href="trust.html#privacy">Trust</a> page.</p>
+        <p class="muted">It is a program running in a data centre. It gives different answers to the same question because a little randomness is built in on purpose — not because you got a different person. But that does not make it private. Conversations can be stored, sometimes read by staff checking for misuse, and — on a work account — seen by your employer. What that means for you is on the <a href="trust.html#privacy">Trust</a> page.</p>
       </li>
       <li>
         <h3>It is not a search engine.</h3>
@@ -104,11 +104,11 @@ module.exports = `<!-- =========================================================
       <li>
         <h3>It predicts language. It does not "know" things.</h3>
         <p class="muted">It was trained on an enormous amount of writing and learned which words tend to follow which. Being right is usually a side effect of that. It is never a guarantee.</p>
-        <p class="muted">It is then trained a second time on human ratings of its answers. That is what makes it helpful and polite — and also what makes it inclined to agree with you.</p>
+        <p class="muted">Afterwards, people rate its answers, and it is tuned toward the answers people like. That is what makes it helpful and polite — and also keen to agree with you.</p>
       </li>
       <li>
         <h3>It sounds equally confident whether it is right or wrong.</h3>
-        <p class="muted">There is no wobble in its voice when it invents something. Confidence carries no information. This single fact is why the <a href="trust.html">Trust</a> track exists.</p>
+        <p class="muted">There is no wobble in its voice when it invents something — it sounds just as sure when it is wrong. Confidence carries no information. That one fact is why the <a href="trust.html">Trust</a> track exists.</p>
       </li>
       <li>
         <h3>It is not a companion, even when it feels like one.</h3>
@@ -155,7 +155,7 @@ module.exports = `<!-- =========================================================
       <div class="card">
         <h3>What it isn't</h3>
         <ul class="clean no small" style="margin-top:8px">
-          <li>Not a certificate, a course, or a funnel.</li>
+          <li>Not a certificate, not a course, not selling you anything.</li>
           <li>Not sponsored by, or ranking, any AI company. Nothing here is paid for or affiliated.</li>
           <li>Not a live leaderboard — model names age in weeks.</li>
           <li>Not a substitute for a doctor, lawyer, or accountant.</li>

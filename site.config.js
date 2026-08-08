@@ -51,7 +51,7 @@ module.exports = {
       description: 'A calm, jargon-free starting point for AI. Learn the foundations, find out what you didn\'t know to ask, and learn to check the answers instead of trusting them.',
       eyebrow: 'AI Hub',
       h1: 'Everyone is confused. That is the honest starting line.',
-      sub: 'AI is on the billboards, in the all-hands, and in nobody\'s training budget. This is a calm place to build the basics — then learn the part almost no one teaches: how to <strong>check</strong> what AI gives you.',
+      sub: 'AI is on the news, at work, in the family group chat — and nobody was shown how to use it. This is a calm place to build the basics — then learn the part almost no one teaches: how to <strong>check</strong> what AI gives you.',
       heroButtons: [
         { href: '#tracks', label: 'Show me where to start', style: 'primary' },
         { href: 'trust.html', label: 'I already use AI — teach me to verify it', style: 'ghost' },

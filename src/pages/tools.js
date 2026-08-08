@@ -177,10 +177,10 @@ module.exports = `<div class="wrap">
     <p class="slabel">The thing nobody explains</p>
     <h2>"Free until you hit the limit" — what's actually going on</h2>
     <p>
-      Free tiers feel like a bait-and-switch. They're not, quite. Every answer costs the
-      provider real money in electricity and hardware — unlike ordinary software, where one
-      more user costs almost nothing. A free tier is a sample, priced to let you find out
-      whether it's worth paying for.
+      Free plans feel like a trick when the limit appears. Mostly they are not. Every
+      answer costs the provider real money in electricity and hardware — unlike ordinary
+      software, where one more user costs almost nothing. A free plan is a sample, sized to
+      let you find out whether it's worth paying for.
     </p>
 
     <h3>What that means in practice</h3>
@@ -217,7 +217,7 @@ module.exports = `<div class="wrap">
       <li><h3>Pick five real tasks from your own week</h3>
         <p class="muted">Real ones, with the real material. Cover different shapes: one
         writing, one explaining, one analysing something with numbers, one about your
-        specialist subject, one awkward or messy task that has caught tools out before.</p></li>
+        specialist subject, one awkward or messy task that tools have failed at before.</p></li>
       <li><h3>Write down what a good answer looks like — before you run it</h3>
         <p class="muted">Do this first or you'll be persuaded by whichever answer is
         best-formatted. One line per task is enough.</p></li>
