@@ -407,7 +407,11 @@ tbody tr:last-child td { border-bottom: 0; }
 /* Grow the licence link's hit area without moving the text. At 13px it was a
    16px-tall tap target, which is mean on a phone and meaner on a site aimed
    at older readers. Negative margin cancels the layout effect of the padding. */
-.foot .legal a { padding: 5px 3px; margin: -5px -3px; }
+/* Every inline footer link, not just the licence one. The disclosure link
+   added with the usage counter landed at 16px — the same 20px-target failure
+   the licence link had, caught by the same guard. Scoped to .foot so prose
+   links elsewhere keep their natural line box. */
+.foot p a { padding: 5px 3px; margin: -5px -3px; }
 
 /* ---------- mobile (MUST stay last: equal specificity, source order wins) ---------- */
 

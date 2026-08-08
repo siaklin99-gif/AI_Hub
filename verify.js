@@ -171,6 +171,25 @@ for (const p of PAGES) {
     }
     if (href.startsWith('mailto:')) continue;
 
+    /* Server endpoints are routes, not files on disk — but exempting them
+       blindly would let a link to a function that does not exist ship. The
+       function lives in the host repo, so verify it there when that checkout
+       is present, and SKIP LOUDLY when it is not (the CI case). */
+    if (href.startsWith('/.netlify/functions/')) {
+      const fn = href.replace('/.netlify/functions/', '').split('?')[0];
+      const hostFn = path.join(ROOT, '..', 'LLC', 'Hlur_Website', 'netlify', 'functions');
+      if (!fs.existsSync(hostFn)) {
+        if (!global.__fnSkipNoted) {
+          global.__fnSkipNoted = true;
+          console.log(`  SKIP  server endpoint /${fn} — host repo not checked out here (expected in CI)`);
+        }
+      } else {
+        const found = fs.readdirSync(hostFn).some((f) => f.replace(/\.(mjs|js|ts)$/, '') === fn);
+        check(found, `${p}: links /.netlify/functions/${fn}, which does not exist in the host repo`);
+      }
+      continue;
+    }
+
     const [file, frag] = href.split('#');
     const target = file || p;
     if (file) {
@@ -441,6 +460,40 @@ head('Public-release requirements');
     'thoughts.rtf is still tracked by git — it would publish');
   check(/\.claude\//.test(read('.gitignore')), '.gitignore does not exclude .claude/ (it holds absolute local paths)');
   console.log('  licence present, private notes untracked, README clean');
+}
+
+/* ---------- 11c. counting must stay disclosed and honest --------- */
+head('Usage counting');
+{
+  const hasTally = /function tally\(/.test(JS);
+  if (!hasTally) {
+    checks++;
+    console.log('  no tally() in app.js — nothing to disclose');
+  } else {
+    /* A counter plus a "no tracking" claim is the exact shape of the dishonesty
+       this site warns readers about. If the code counts, the footer says so. */
+    for (const p of PAGES) {
+      check(!/No tracking, no cookies/.test(SRC[p]),
+        `${p}: still claims "No tracking" while app.js counts page views`);
+      check(/counts six things and nothing else/.test(SRC[p]),
+        `${p}: app.js counts, but this page does not disclose what is counted`);
+      check(/tally\?site=hub/.test(SRC[p]),
+        `${p}: the disclosure does not link the public numbers`);
+    }
+    // every event the code can send must be named in the disclosure
+    const named = ['page view', 'scroll', 'copied prompt', 'ticked box'];
+    for (const n of named) {
+      check(SRC['index.html'].includes(n),
+        `the disclosure does not mention "${n}" — it must name every event tally() can send`);
+    }
+    // and the code must stay gated + allowlisted
+    check(/location\.hostname !== 'hlur\.ai'/.test(JS),
+      'app.js: tally is not host-gated — a fork or a local file would phone home');
+    check(/TALLY\.indexOf/.test(JS), 'app.js: tally does not check its own allowlist');
+    check(/catch \(e\) \{ \/\* never let counting break anything \*\/ \}/.test(JS),
+      'app.js: tally is not wrapped to fail soft');
+    console.log('  counting is disclosed, event-named, host-gated and fail-soft');
+  }
 }
 
 /* ---------- 12. repo-wide leak sweep ----------------------------- */

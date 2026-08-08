@@ -123,8 +123,75 @@
      — the localStorage access is the realistic candidate, e.g. Safari private
      browsing — escaped init() and silently killed every copy button on the
      page. One broken feature must not take the others down. */
+  /* ---- aggregate usage counting ------------------------------
+     WHY: the site had no feedback loop at all, so there was no way to tell
+     "good page nobody found" from "found it, stopped at screen three" — the
+     single biggest unknown after a five-persona reading panel.
+
+     WHAT IS SENT: one of the names below, and nothing else. No cookie, no
+     identifier, no IP, no referrer, no timestamp finer than the server's day
+     bucket, no per-visitor record of any kind. The server increments an
+     integer. Every number is public at
+     /.netlify/functions/tally?site=hub — a page about verification should
+     show its own workings.
+
+     GATED: only on hlur.ai. Opened from a file, a fork, or a mirror it stays
+     silent. Fails soft, always: a counter must never break the page. */
+  var TALLY = ['load', 'deep', 'copy', 'check'];
+
+  function tally(name) {
+    try {
+      if (location.hostname !== 'hlur.ai') return;
+      if (TALLY.indexOf(String(name).split(':').pop()) === -1) return;
+      var body = JSON.stringify({ e: name, s: 'hub' });
+      var url = '/.netlify/functions/tally';
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(url, new Blob([body], { type: 'application/json' }));
+      } else {
+        fetch(url, { method: 'POST', body: body, keepalive: true }).catch(function () {});
+      }
+    } catch (e) { /* never let counting break anything */ }
+  }
+
+  /* page slug from the URL, reduced the same way the nav highlight is, so a
+     host serving pretty URLs does not produce a second set of event names */
+  function pageSlug() { return slugOf(location.pathname); }
+
+  function wireTally() {
+    tally(pageSlug() + ':load');
+
+    /* "deep" = the reader got past 75% of the page. This is the number that
+       answers the question the panel could only guess at: do people reach the
+       later sections? Fires at most once. */
+    var deepSent = false;
+    var onScroll = function () {
+      if (deepSent) return;
+      var doc = document.documentElement;
+      var seen = window.scrollY + window.innerHeight;
+      if (doc.scrollHeight > 0 && seen / doc.scrollHeight >= 0.75) {
+        deepSent = true;
+        tally(pageSlug() + ':deep');
+        window.removeEventListener('scroll', onScroll);
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    document.querySelectorAll('.copy-btn').forEach(function (b) {
+      b.addEventListener('click', function () { tally('copy'); });
+    });
+    var ticked = false;
+    document.querySelectorAll('.checklist input[type=checkbox]').forEach(function (box) {
+      box.addEventListener('change', function () {
+        if (ticked || !box.checked) return;
+        ticked = true;                 // one per page load, not one per box
+        tally('check');
+      });
+    });
+  }
+
   function init() {
-    var steps = [markCurrent, wireAccTools, wireChecklists, wireCopy];
+    var steps = [markCurrent, wireAccTools, wireChecklists, wireCopy, wireTally];
     for (var i = 0; i < steps.length; i++) {
       try { steps[i](); } catch (e) { if (window.console) console.error('AI Hub: ' + steps[i].name + ' failed', e); }
     }

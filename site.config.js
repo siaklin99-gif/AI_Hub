@@ -151,6 +151,11 @@ module.exports = {
   /* One canonical legal line on every page. The old footer said "no tracking,
      no cookies" — literally true, but the checklists DO use localStorage, and a
      technically-true claim that looks like a dodge is worse than a fuller one. */
-  footerNote: 'AI Hub — a starting point for anyone, technical or not. No tracking, no cookies, no account; the checklists remember your ticks on this device only. Everything here is our own words, and where an idea came from someone else, it is named.',
+  /* The old line said "No tracking, no cookies, no account". Two of three are
+     still true, but the page now counts page views and three anonymous
+     actions, so the absolute claim had to go rather than be quietly stretched.
+     The claim is scoped to what is STORED, names every event, and links the
+     public numbers — the same standard the Trust page asks of everyone else. */
+  footerNote: 'AI Hub — a starting point for anyone, technical or not. No cookies, no account, no profile of you. It counts six things and nothing else: a page view, a scroll past three-quarters of a page, a copied prompt, a ticked box — with no identifier, no IP and no record of any individual visit. <a href="/.netlify/functions/tally?site=hub">The numbers are public</a>. The checklists remember your ticks on this device only. Everything here is our own words, and where an idea came from someone else, it is named.',
   legal: '&copy; 2026 Siak Lin. Words under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, code under MIT. Educational only — not medical, legal or financial advice.',
 };
