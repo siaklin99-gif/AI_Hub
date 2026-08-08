@@ -428,6 +428,13 @@ head('Public-release requirements');
   }
   const rm = read('README.md');
   check(/\[LICENSE\]\(LICENSE\)/.test(rm), 'README does not link the LICENSE');
+  /* The README claimed "1,979 checks" while the harnesses ran 2,190 — a stale
+     rigour claim in the one document strangers read first. Totals live in the
+     harness output, never in prose. Named per-suite floors are allowed only in
+     the selfcheck section that documents the floors themselves. */
+  check(!/\*\*[0-9][0-9,]* checks?\*\*/.test(rm),
+    'README states an exact check total — it will rot; point at selfcheck output instead');
+  check(!/Not deployed anywhere/.test(rm), 'README still claims the site is not deployed');
   check(!/thoughts\.rtf/.test(rm), 'README still points readers at the private notes file');
   check(!fs.existsSync(path.join(ROOT, '.git')) ||
         require('child_process').spawnSync('git', ['ls-files', 'thoughts.rtf'], { cwd: ROOT, encoding: 'utf8' }).stdout.trim() === '',

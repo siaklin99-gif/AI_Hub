@@ -62,14 +62,16 @@ Don't take any of the above on trust — that would be a strange way to run this
 ./selfcheck --full
 ```
 
-Three harnesses, **1,979 checks**, all re-runnable and all yours.
+Three harnesses, all re-runnable and all yours. The exact check count is whatever
+`./selfcheck --full` prints when you run it — a number printed by the harness cannot go
+stale in prose, which is why none is written here.
 
-**`test.js` — 26 adversarial unit tests.** Not happy paths. A page missing its title, two
+**`test.js` — adversarial unit tests.** Not happy paths. A page missing its title, two
 pages sharing a nav label, a reorder that leaves a page calling itself "Track 3" from slot 5,
 an `idPrefix` that would collide in localStorage, an unknown `note()` kind, accordion
 numbering past 9, a quote in a description trying to break out of `content="…"`.
 
-**`verify.js` — 745 static checks, offline, zero dependencies.** Config validation; every
+**`verify.js` — static checks, offline, zero dependencies.** Config validation; every
 `.html` byte-identical to what the source renders; every link *and anchor* resolving; the nav
 byte-identical across pages; every checklist counter matching its real box count; tag balance
 including `div`; every table actually inside a `.tscroll`; every CSS class used in HTML having
@@ -214,7 +216,8 @@ credited on the page that uses them.
 
 ## Not yet done
 
-- Not deployed anywhere yet. It runs from the filesystem as-is.
+- Live at [hlur.ai/hub](https://hlur.ai/hub/), synced there by `sync_hlur.sh` and served
+  by the host repo's deploy gate. It also runs from the filesystem as-is.
 - Nine of the ten helpers in `src/components.js` are used by no shipped page: the six pages
   predate them and hand-write their markup. They are correct and tested, and new sections
   should use them, but the file's original claim that a CSS rename is "one edit instead of six
