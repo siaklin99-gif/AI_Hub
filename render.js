@@ -138,6 +138,166 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
         await page.screenshot({ path: path.join(SHOTS, `${name}_${combo.name}.png`), fullPage: true });
       }
 
+      /* ---- FEATURE TESTS (one combo — the logic is viewport-independent) ----
+         These drive the real assets/app.js. Until now the copy buttons — the
+         feature that already shipped broken once — were tested for visibility
+         and occlusion but never CLICKED; expand/collapse-all and the reset
+         button were presence-checked; and init()'s isolation claim ("one broken
+         step cannot kill the rest") was a comment, not a test. */
+      if (combo.name === 'desktop-light') {
+        try {
+          // copy button, clipboard path: stub the browser API deterministically
+          // (headless file:// clipboard permissions are flaky); the stub records
+          // what app.js hands it, so the wiring itself is what is under test.
+          const copyPage = await ctx.newPage();
+          await copyPage.addInitScript(() => {
+            window.__copied = null;
+            Object.defineProperty(navigator, 'clipboard', {
+              value: { writeText: (t) => { window.__copied = t; return Promise.resolve(); } },
+            });
+          });
+          await copyPage.goto('file://' + path.join(ROOT, name + '.html'));
+          await copyPage.waitForLoadState('networkidle');
+          const nPrompts = await copyPage.evaluate(() => document.querySelectorAll('.prompt-wrap').length);
+          if (nPrompts > 0) {
+            const r = await copyPage.evaluate(async () => {
+              const w = document.querySelector('.prompt-wrap');
+              const d = w.closest('details'); if (d) d.open = true;
+              w.querySelector('.copy-btn').click();
+              // the "Copied" label lands in writeText's .then() — a microtask
+              // after the click returns; reading synchronously sees "Copy"
+              await new Promise((res) => setTimeout(res, 30));
+              return {
+                copied: window.__copied,
+                label: w.querySelector('.copy-btn').textContent,
+                expected: w.querySelector('.prompt').textContent,
+              };
+            });
+            check(r.copied === r.expected && r.copied.length > 10,
+              `${name}: copy button copied ${r.copied === null ? 'NOTHING' : 'the wrong text'}`);
+            check(r.label === 'Copied', `${name}: copy button label is "${r.label}", expected "Copied"`);
+
+            // no-clipboard fallback: the API is gone entirely; app.js must
+            // select the text and say so rather than dying.
+            const fbPage = await ctx.newPage();
+            await fbPage.addInitScript(() => {
+              Object.defineProperty(navigator, 'clipboard', { value: undefined });
+            });
+            await fbPage.goto('file://' + path.join(ROOT, name + '.html'));
+            await fbPage.waitForLoadState('networkidle');
+            const fb = await fbPage.evaluate(() => {
+              const w = document.querySelector('.prompt-wrap');
+              const d = w.closest('details'); if (d) d.open = true;
+              w.querySelector('.copy-btn').click();
+              const sel = String(window.getSelection());
+              return { label: w.querySelector('.copy-btn').textContent, selLen: sel.length,
+                       matches: sel === w.querySelector('.prompt').textContent };
+            });
+            check(fb.label === 'Selected' && fb.matches,
+              `${name}: no-clipboard fallback — label "${fb.label}", selection ${fb.matches ? 'ok' : 'wrong (' + fb.selLen + ' chars)'}`);
+            await fbPage.close();
+          }
+          await copyPage.close();
+
+          // expand/collapse-all must be SCOPED to its own section: "expand all"
+          // in section A opening section B's accordions would pass every
+          // presence check we have.
+          const scoping = await page.evaluate(() => {
+            const sections = [...document.querySelectorAll('section')].filter((sec) => sec.querySelector('.acc-tools'));
+            if (sections.length === 0) return null;
+            const target = sections[0];
+            const others = sections.slice(1);
+            const openIn = (root) => root.querySelectorAll('details.acc[open]').length;
+            const accIn = (root) => root.querySelectorAll('details.acc').length;
+            const othersBefore = others.map(openIn);
+            target.querySelector('[data-acc="open"]').click();
+            const allOpened = openIn(target) === accIn(target);
+            const othersUntouched = others.every((sec, i) => openIn(sec) === othersBefore[i]);
+            target.querySelector('[data-acc="close"]').click();
+            const allClosed = openIn(target) === 0;
+            return { allOpened, othersUntouched, allClosed, otherSections: others.length };
+          });
+          if (scoping) {
+            check(scoping.allOpened, `${name}: "Expand all" did not open every accordion in its own section`);
+            check(scoping.allClosed, `${name}: "Collapse all" did not close them`);
+            if (scoping.otherSections > 0) {
+              check(scoping.othersUntouched,
+                `${name}: expand-all LEAKED into ${scoping.otherSections} other section(s) — the closest('section') scoping is broken`);
+            }
+          }
+
+          // init() isolation: the comment in app.js claims a throwing
+          // wireChecklists cannot kill the later steps. Prove it — break
+          // localStorage before load, then the copy button must still work.
+          const isoPage = await ctx.newPage();
+          await isoPage.addInitScript(() => {
+            Object.defineProperty(navigator, 'clipboard', {
+              value: { writeText: () => Promise.resolve() },
+            });
+            const boom = () => { throw new Error('storage dead (injected)'); };
+            Object.defineProperty(window, 'localStorage', {
+              get() { return { getItem: boom, setItem: boom, removeItem: boom, key: boom, clear: boom, length: 0 }; },
+            });
+          });
+          await isoPage.goto('file://' + path.join(ROOT, name + '.html'));
+          await isoPage.waitForLoadState('networkidle');
+          const iso = await isoPage.evaluate(async () => {
+            const out = { nav: !!document.querySelector('.nav-links a[aria-current="page"]'), copy: null };
+            const w = document.querySelector('.prompt-wrap');
+            if (w) {
+              const d = w.closest('details'); if (d) d.open = true;
+              w.querySelector('.copy-btn').click();
+              await new Promise((res) => setTimeout(res, 30));
+              out.copy = w.querySelector('.copy-btn').textContent;
+            }
+            return out;
+          });
+          check(iso.nav, `${name}: with storage dead, the nav highlight died too — init() isolation failed`);
+          if (iso.copy !== null) {
+            check(iso.copy === 'Copied',
+              `${name}: with storage dead, the copy button died (label "${iso.copy}") — a broken wireChecklists killed wireCopy`);
+          }
+          await isoPage.close();
+
+          /* The storage-dead probe above cannot actually reach init()'s outer
+             isolation: every localStorage call sits inside its own try/catch,
+             so the fault is swallowed a level deeper and the probe passes even
+             with the isolation deleted (falsification proved it). This one
+             throws from the ONE unguarded call in wireChecklists —
+             addEventListener on a checkbox — so the step genuinely dies, and
+             only the outer isolation can keep the later steps alive. */
+          const escPage = await ctx.newPage();
+          await escPage.addInitScript(() => {
+            Object.defineProperty(navigator, 'clipboard', {
+              value: { writeText: () => Promise.resolve() },
+            });
+            const orig = EventTarget.prototype.addEventListener;
+            EventTarget.prototype.addEventListener = function (t, f, o) {
+              if (this && this.tagName === 'INPUT') throw new Error('injected: checklist wiring dies');
+              return orig.call(this, t, f, o);
+            };
+          });
+          await escPage.goto('file://' + path.join(ROOT, name + '.html'));
+          await escPage.waitForLoadState('networkidle');
+          const esc2 = await escPage.evaluate(async () => {
+            const w = document.querySelector('.prompt-wrap');
+            if (!w) return { copy: null, hasInputs: document.querySelectorAll('.checklist input').length > 0 };
+            const d = w.closest('details'); if (d) d.open = true;
+            w.querySelector('.copy-btn').click();
+            await new Promise((res) => setTimeout(res, 30));
+            return { copy: w.querySelector('.copy-btn').textContent,
+                     hasInputs: document.querySelectorAll('.checklist input').length > 0 };
+          });
+          if (esc2.copy !== null && esc2.hasInputs) {
+            check(esc2.copy === 'Copied',
+              `${name}: a throw ESCAPING wireChecklists killed the copy buttons (label "${esc2.copy}") — init() steps are not isolated`);
+          }
+          await escPage.close();
+        } catch (e) {
+          check(false, `${name}: feature tests crashed — ${String(e.message).split('\n')[0]}`);
+        }
+      }
+
       const m = await page.evaluate(() => {
         const el = (s) => document.querySelector(s);
         const els = (s) => Array.prototype.slice.call(document.querySelectorAll(s));
@@ -503,9 +663,24 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
           check(persisted.count === after.count,
             `${name}: checklist ${li + 1}: tick did not persist across reload ("${persisted.count}")`);
 
-          await page.evaluate(() => {
-            Object.keys(localStorage).filter((k) => k.startsWith('aihub:')).forEach((k) => localStorage.removeItem(k));
-          });
+          /* Clean up by clicking the REAL reset button instead of wiping
+             localStorage by hand — the wipe tested nothing, the button was
+             presence-checked only. It must zero its own counter and bar AND
+             remove the stored keys. */
+          const afterReset = await page.evaluate((i) => {
+            const list = document.querySelectorAll('.checklist')[i];
+            const prog = list.parentElement.querySelector('.progress');
+            prog.querySelector('.reset-btn').click();
+            return {
+              count: prog.querySelector('[data-count]').textContent,
+              bar: prog.querySelector('.bar > i').style.width,
+              keys: Object.keys(localStorage).filter((k) => k.startsWith('aihub:check:')).length,
+            };
+          }, li);
+          check(afterReset.count === '0 of ' + before.boxes,
+            `${name}: checklist ${li + 1}: reset left the counter at "${afterReset.count}"`);
+          check(afterReset.bar === '0%', `${name}: checklist ${li + 1}: reset left the bar at ${afterReset.bar}`);
+          check(afterReset.keys === 0, `${name}: checklist ${li + 1}: reset left ${afterReset.keys} stored keys behind`);
           await page.reload();
           await page.waitForLoadState('networkidle');
         } catch (e) {
