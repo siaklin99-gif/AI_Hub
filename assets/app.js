@@ -6,17 +6,23 @@
   'use strict';
 
   /* ---- mark the current page in the nav ---------------------- */
-  /* Matches on the SLUG, not the filename, so the highlight survives a host
-     that serves pretty URLs. "/trust.html", "/trust", "/trust/" and "/" all
-     resolve correctly; previously only the ".html" forms did, and "/hub/trust/"
-     wrongly lit up "Start". */
+  /* Reduce BOTH the current URL and each link to the same slug, then compare.
+     Reducing only one side was the bug: a host that serves pretty URLs rewrites
+     href="map.html" into href="/hub/map", so the link side became a path while
+     the location side was already a bare slug, and nothing ever matched — the
+     nav highlight was dead on every deployed page while working from the
+     filesystem. "/hub/", "/hub/map", "map.html", "/trust/" and "/" all reduce
+     correctly now. */
+  function slugOf(u) {
+    var s = String(u || '').split(/[?#]/)[0].replace(/\/+$/, '');
+    var last = s.split('/').pop();
+    return (last || 'index').replace(/\.html$/, '');
+  }
+
   function markCurrent() {
-    var path = location.pathname.replace(/\/+$/, '');
-    var last = path.split('/').pop();
-    var here = (last || 'index').replace(/\.html$/, '');
+    var here = slugOf(location.pathname);
     document.querySelectorAll('.nav-links a').forEach(function (a) {
-      var slug = (a.getAttribute('href') || '').replace(/\.html$/, '');
-      if (slug === here) a.setAttribute('aria-current', 'page');
+      if (slugOf(a.getAttribute('href')) === here) a.setAttribute('aria-current', 'page');
     });
   }
 

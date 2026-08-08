@@ -275,6 +275,8 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
       check(m.pageH > 800, `${name}: page is suspiciously short (${m.pageH}px)`);
       check(m.currentNav.length === 1 && m.currentNav[0] === name + '.html',
         `${name}: nav highlight is ${JSON.stringify(m.currentNav)}, expected ["${name}.html"]`);
+
+
       check(consoleErrors.length === 0, `${name}: console errors: ${consoleErrors.slice(0, 2).join(' | ')}`);
 
       /* --- every interactive control must be usable at this viewport ---
@@ -514,6 +516,67 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
       await page.close();
     }
     await ctx.close();
+  }
+
+  /* ---- THE DEPLOYED SHAPE ------------------------------------------
+     Everything above loads file://.../trust.html, so it only ever sees the
+     hrefs we authored. The host does not serve those. Netlify's pretty URLs
+     rewrote href="map.html" into href="/hub/map", and the nav highlight died
+     on every live page while this harness stayed green — the bug shipped.
+
+     So: serve the built pages over HTTP under /hub/ exactly as the host does
+     — pretty URLs, and hrefs rewritten the same way — and run the REAL
+     assets/app.js against them. No logic is duplicated here; if app.js is
+     wrong, this fails. */
+  {
+    const http = require('http');
+    const rewrite = (html) => html.replace(/href="([a-z0-9-]+)\.html(#[^"]*)?"/g,
+      (m, f, frag) => `href="${f === 'index' ? '/hub/' : '/hub/' + f}${frag || ''}"`);
+
+    const server = http.createServer((req, res) => {
+      let p = decodeURIComponent(req.url.split('?')[0]);
+      if (!p.startsWith('/hub')) { res.writeHead(404); return res.end(); }
+      let rel = p.replace(/^\/hub\/?/, '') || 'index';
+      if (rel.startsWith('assets/')) {
+        const f = path.join(ROOT, rel);
+        if (!fs.existsSync(f)) { res.writeHead(404); return res.end(); }
+        const type = rel.endsWith('.css') ? 'text/css' : rel.endsWith('.js') ? 'text/javascript'
+          : rel.endsWith('.svg') ? 'image/svg+xml' : 'image/png';
+        res.writeHead(200, { 'content-type': type });
+        return res.end(fs.readFileSync(f));
+      }
+      const file = path.join(ROOT, rel.replace(/\/$/, '') + '.html');
+      if (!fs.existsSync(file)) { res.writeHead(404); return res.end(); }
+      res.writeHead(200, { 'content-type': 'text/html' });
+      res.end(rewrite(fs.readFileSync(file, 'utf8')));
+    });
+    await new Promise((r) => server.listen(0, '127.0.0.1', r));
+    const port = server.address().port;
+
+    console.log('\n\x1b[1mdeployed shape\x1b[0m  (served under /hub/ with host-style pretty URLs)');
+    const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+    for (const name of pages) {
+      const url = `http://127.0.0.1:${port}/hub/` + (name === 'index' ? '' : name);
+      const pg = await ctx.newPage();
+      const errs = [];
+      pg.on('pageerror', (e) => errs.push(e.message));
+      await pg.goto(url, { waitUntil: 'networkidle' });
+      const r = await pg.evaluate(() => ({
+        current: [...document.querySelectorAll('.nav-links a[aria-current="page"]')].map((a) => a.textContent.trim()),
+        styled: getComputedStyle(document.body).backgroundColor,
+        navHrefs: [...document.querySelectorAll('.nav-links a')].map((a) => a.getAttribute('href')),
+      }));
+      const want = cfg.pages.find((q) => q.file === name + '.html').nav;
+      check(r.current.length === 1 && r.current[0] === want,
+        `${name}: served at /hub/, the nav highlight is ${JSON.stringify(r.current)} — expected exactly ["${want}"]`);
+      check(r.styled !== 'rgba(0, 0, 0, 0)', `${name}: stylesheet did not load when served under /hub/`);
+      check(errs.length === 0, `${name}: page errors under /hub/: ${errs.join(' | ')}`);
+      check(r.navHrefs.every((h) => h.startsWith('/hub/')), `${name}: rewrite did not apply — ${JSON.stringify(r.navHrefs)}`);
+      await pg.close();
+    }
+    await ctx.close();
+    await new Promise((r) => server.close(r));
+    console.log(`  ${pages.length} pages served and checked as the host serves them`);
   }
 
   await browser.close();

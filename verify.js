@@ -476,8 +476,13 @@ head('Repo-wide sweep');
       { name: 'absolute Windows home path', re: new RegExp('C:' + '\\\\Users\\\\[A-Za-z0-9._-]+') },
       { name: 'email address', re: /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/ },
       { name: 'API-key-shaped string', re: new RegExp('(' + 'sk' + '-[A-Za-z0-9]{16}|' + 'ghp' + '_[A-Za-z0-9]{20}|' + 'AKIA' + '[A-Z0-9]{12})') },
-      { name: 'localhost or private-network URL', re: /https?:\/\/(localhost|127\.0\.0\.1|192\.168\.)/ },
+      /* Only a defect in something that SHIPS. render.js binds a throwaway
+         localhost server to serve the pages the way the host does — that is a
+         test fixture, not a leak. Paths, emails and keys identify the author
+         wherever they appear; a loopback URL only matters in shipped output. */
+      { name: 'localhost or private-network URL', re: /https?:\/\/(localhost|127\.0\.0\.1|192\.168\.)/, shippedOnly: true },
     ];
+    const SHIPPED = (f) => /\.html$/.test(f) || /[\\/]assets[\\/]/.test(f);
 
     let hits = 0;
     for (const f of files) {
@@ -499,6 +504,7 @@ head('Repo-wide sweep');
         }
       }
       for (const L of LEAKS) {
+        if (L.shippedOnly && !SHIPPED(f)) continue;
         const m = L.re.exec(body);
         if (m) {
           const line = body.slice(0, m.index).split('\n').length;
