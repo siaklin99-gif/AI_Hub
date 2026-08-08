@@ -96,7 +96,8 @@ const COMBOS = [
   { name: 'narrow-light', width: 320, height: 568, scheme: 'light', touch: true },
 ];
 
-const only = process.argv[2];
+const UPDATE = process.argv.includes('--update');
+const only = process.argv.slice(2).find((a) => !a.startsWith('--'));
 const pages = only ? PAGES.filter((p) => p === only) : PAGES;
 if (!pages.length) { console.error('Unknown page: ' + only); process.exit(2); }
 
@@ -691,6 +692,87 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
       await page.close();
     }
     await ctx.close();
+  }
+
+  /* ---- PIXEL REFERENCES --------------------------------------------
+     Ported from AI_Technology's visual.js, at 1/4 its corpus: full-page only,
+     the 12 shots already taken (6 pages x desktop-light + mobile-dark), no
+     per-section grid, no 4-theme matrix. What it buys: a colour-token change,
+     a spacing collapse, or a dark-mode-only vanish now FAILS with a named
+     region instead of shipping while a human forgets to look at the PNGs.
+     A's hard-won rules kept: a missing ref is a failure, not a self-approval;
+     --update is REFUSED while anything else is red (an injected bug once got
+     blessed into all of A's references); failures write the pair plus a diff
+     image to render_diff/ so the change can be reviewed by eye.
+     The diff runs inside Chromium itself (canvas), so no new dependency. */
+  if (!only) {
+    const REF = path.join(ROOT, 'render_ref');
+    const DIFF = path.join(ROOT, 'render_diff');
+    const shots = fs.readdirSync(SHOTS).filter((f) => f.endsWith('.png')).sort();
+    console.log('\n\x1b[1mpixel references\x1b[0m  (' + (UPDATE ? 'updating' : 'comparing') + ' ' + shots.length + ' full-page images)');
+
+    if (UPDATE) {
+      if (fails > 0) {
+        console.log('    \x1b[31mREFUSED\x1b[0m --update while ' + fails + ' other check(s) are red — fix them first, then re-approve.');
+      } else {
+        fs.mkdirSync(REF, { recursive: true });
+        for (const f of shots) fs.copyFileSync(path.join(SHOTS, f), path.join(REF, f));
+        console.log('    wrote ' + shots.length + ' reference image(s) — commit render_ref/');
+      }
+    } else if (!fs.existsSync(REF)) {
+      console.log('    no render_ref/ yet — run node render.js --update once (all-green) to create it');
+    } else {
+      fs.mkdirSync(DIFF, { recursive: true });
+      const diffPage = await browser.newPage();
+      for (const f of shots) {
+        const refPath = path.join(REF, f);
+        if (!fs.existsSync(refPath)) {
+          check(false, `pixel ref missing for ${f} — a new page/combo needs a deliberate --update`);
+          continue;
+        }
+        const r = await diffPage.evaluate(async ([a, b]) => {
+          const load = (src) => new Promise((res, rej) => {
+            const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = src;
+          });
+          const [ia, ib] = await Promise.all([load(a), load(b)]);
+          if (ia.width !== ib.width || ia.height !== ib.height) {
+            return { size: `${ia.width}x${ia.height} -> ${ib.width}x${ib.height}` };
+          }
+          const w = ia.width, h = ia.height;
+          const cv = (im) => { const c = document.createElement('canvas'); c.width = w; c.height = h;
+            const x = c.getContext('2d'); x.drawImage(im, 0, 0); return x.getImageData(0, 0, w, h).data; };
+          const da = cv(ia), db = cv(ib);
+          let n = 0, minX = w, minY = h, maxX = 0, maxY = 0;
+          for (let i = 0; i < da.length; i += 4) {
+            if (Math.abs(da[i] - db[i]) > 24 || Math.abs(da[i + 1] - db[i + 1]) > 24 || Math.abs(da[i + 2] - db[i + 2]) > 24) {
+              n++;
+              const px = (i / 4) % w, py = Math.floor((i / 4) / w);
+              if (px < minX) minX = px; if (px > maxX) maxX = px;
+              if (py < minY) minY = py; if (py > maxY) maxY = py;
+            }
+          }
+          return { n, region: n ? `${maxX - minX + 1}x${maxY - minY + 1} at (${minX},${minY})` : null };
+        }, [
+          // data: URIs — Chromium refuses file:// image loads from about:blank
+          'data:image/png;base64,' + fs.readFileSync(refPath).toString('base64'),
+          'data:image/png;base64,' + fs.readFileSync(path.join(SHOTS, f)).toString('base64'),
+        ]);
+
+        if (r.size) {
+          check(false, `${f}: page size changed ${r.size} — review, then --update if intended`);
+          fs.copyFileSync(refPath, path.join(DIFF, f.replace('.png', '_ref.png')));
+          fs.copyFileSync(path.join(SHOTS, f), path.join(DIFF, f.replace('.png', '_now.png')));
+        } else if (r.n > 120) {   // absolute pixels, A's lesson: a % hides small-page damage
+          check(false, `${f}: ${r.n} pixels changed, region ${r.region} — review render_diff/, then --update if intended`);
+          fs.copyFileSync(refPath, path.join(DIFF, f.replace('.png', '_ref.png')));
+          fs.copyFileSync(path.join(SHOTS, f), path.join(DIFF, f.replace('.png', '_now.png')));
+        } else {
+          checks++;
+        }
+      }
+      await diffPage.close();
+      console.log('    ' + shots.length + ' image(s) compared against committed references');
+    }
   }
 
   /* ---- THE DEPLOYED SHAPE ------------------------------------------

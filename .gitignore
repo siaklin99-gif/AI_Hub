@@ -9,3 +9,4 @@ render_shots/
 
 .DS_Store
 node_modules/
+render_diff/
