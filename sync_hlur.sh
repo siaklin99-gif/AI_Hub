@@ -32,13 +32,74 @@ if [[ ! -d "$SITE" ]]; then
 fi
 
 echo "▶ guard first — only a green build may ship"
-# The offline harnesses are the gate. The rendered pass needs Playwright, so it
-# is required for --deploy and merely encouraged for a plain copy.
-./selfcheck
-if [[ $DEPLOY -eq 1 ]]; then
-  echo
-  echo "▶ rendered pass (required before anything reaches hlur.ai)"
-  ./selfcheck --full
+GUARD_OUT="$(mktemp)"; trap 'rm -f "$GUARD_OUT"' EXIT
+# Run the guard exactly ONCE and keep its output. Running it twice — offline
+# then --full — appended both reports to the same file and the claim gate summed
+# the offline harnesses twice: it reported 3118 checks where the repo runs 2190.
+# A gate that miscounts is worse than none; it fails builds for a lie.
+FULL_OK=1
+if ./selfcheck --full 2>&1 | tee "$GUARD_OUT"; then
+  :
+else
+  FULL_OK=0
+  if [[ $DEPLOY -eq 1 ]]; then
+    echo "✗ the rendered pass must be green before anything reaches hlur.ai"
+    exit 1
+  fi
+  # Plain sync with no Playwright: fall back to the offline gate, which still
+  # has to pass, but the check TOTAL is now incomplete — the claim gate says so
+  # rather than comparing against a number it knows is short.
+  : > "$GUARD_OUT"
+  ./selfcheck | tee "$GUARD_OUT"
+fi
+
+# ------------------------------------------------------------------
+# CLAIM GATE
+# The hlur.ai homepage advertises this repo's check count ("Ships behind N
+# automated checks"). That number goes stale the moment a check is added, and a
+# stale claim on a card whose whole pitch is verification is the worst possible
+# place to have one. Compare it to what selfcheck just reported: WARN on a plain
+# sync, FAIL on --deploy, because an untrue claim must not go live.
+#
+# `|| true` on every extraction: under `set -euo pipefail` a grep that matches
+# nothing exits 1, pipefail propagates it, and set -e kills the script ON THE
+# ASSIGNMENT — no message, no verdict. Let it yield empty and be judged below.
+#
+# The strings are ANSI-coloured, so colour codes are stripped before parsing.
+# The homepage carries TWO such receipts — Baseline's and this one — so the
+# match is anchored on this card's distinguishing wording, not the shared prefix.
+# ------------------------------------------------------------------
+CHECKS="$(sed 's/\x1b\[[0-9;]*m//g' "$GUARD_OUT" \
+          | grep -oE '^PASS +[0-9]+ (adversarial tests|checks|rendered checks)' \
+          | grep -oE '[0-9]+' | awk '{s+=$1} END{print s+0}' || true)"
+CLAIMED="$(grep -oE 'Ships behind [0-9,]+ automated checks; every page is generated' \
+            "$SITE/index.html" 2>/dev/null | grep -oE '[0-9,]+' | tr -d ',' || true)"
+
+echo
+echo "▶ claim gate — the homepage says what this repo ships behind"
+if [[ $FULL_OK -eq 0 ]]; then
+  echo "  ⚠ the rendered pass did not run, so the total is incomplete."
+  echo "    Claim not verified. Run ./selfcheck --full before deploying."
+elif [[ -z "$CHECKS" || "$CHECKS" == "0" ]]; then
+  # A COUNT OF ZERO IS NOT AGREEMENT. Unparseable selfcheck output must never
+  # read as "the claim is fine" — that is the failure mode this gate exists for.
+  echo "  ✗ could not parse a check count from selfcheck output."
+  echo "    The gate cannot verify the homepage claim, so it is not verified."
+  [[ $DEPLOY -eq 1 ]] && exit 1
+elif [[ -z "$CLAIMED" ]]; then
+  echo "  ✗ no AI Hub receipt found on $SITE/index.html"
+  echo "    Expected: 'Ships behind N automated checks; every page is generated'"
+  [[ $DEPLOY -eq 1 ]] && exit 1
+elif [[ "$CHECKS" != "$CLAIMED" ]]; then
+  echo "  ✗ the homepage claims $CLAIMED checks; this repo runs $CHECKS."
+  echo "    Fix the receipt in $SITE/index.html, then re-run."
+  if [[ $DEPLOY -eq 1 ]]; then
+    echo "    Refusing to deploy an untrue claim."
+    exit 1
+  fi
+  echo "    (warning only — a plain sync does not publish)"
+else
+  echo "  ✓ homepage claim matches: $CHECKS checks"
 fi
 
 echo
