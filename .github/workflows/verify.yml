@@ -1,0 +1,24 @@
+# The fast harnesses, on every push and PR. They need nothing but Node —
+# verify.js already runs build.js --check internally, so a hand-edited page
+# or a config/source drift fails here even if the author bypassed the local
+# hook with --no-verify or committed from a clone that never ran selfcheck.
+#
+# Deliberately NOT here: the rendered pass (needs a browser; it gates deploys
+# via sync_hlur.sh --deploy, and deploys are manual through the host repo),
+# and any deploy step (this repo never deploys itself).
+name: verify
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  fast-harnesses:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node test.js
+      - run: node verify.js
