@@ -112,12 +112,14 @@ const NO_REFS = process.argv.includes('--no-refs');
    this table and say why — growth becomes a decision, not a drift.
    Values are the 2026-08-08 measurement plus ~0.8 screen of headroom. */
 const SCREEN_BUDGET = {
-  index: 11,      // 10.0 measured: hero, uses, short version, tracks, problems, honest
-  map: 12.5,      // 11.5 measured: the 16-item self-audit earns its height
-  trust: 13,      // 12.2 measured: flagship page; privacy deliberately at 57%
-  leverage: 12.5, // 11.3 measured
-  tools: 10,      // 8.8 measured
-  further: 14.5,  // 13.4 measured: four checklists; longest page by design
+  /* Tightened 2026-08-08 after the cut pass, to lock the reduction in rather
+     than leave the old headroom for it to drift back into. Measured + ~0.4. */
+  index: 10,      //  9.6 measured — problem cards cut to one sentence each
+  map: 12,        // 11.5 measured — the 16-item self-audit earns its height
+  trust: 12.2,    // 11.8 measured — failure modes are a scannable table now
+  leverage: 11.7, // 11.3 measured
+  tools: 9.2,     //  8.8 measured
+  further: 13.7,  // 13.3 measured — four checklists; longest page by design
 };
 const only = process.argv.slice(2).find((a) => !a.startsWith('--'));
 const pages = only ? PAGES.filter((p) => p === only) : PAGES;

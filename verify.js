@@ -447,7 +447,10 @@ head('Public-release requirements');
 head('Repo-wide sweep');
 {
   const SKIP_DIRS = new Set(['node_modules', '.git', 'render_shots']);
-  const TEXTY = /\.(html|css|js|md|json|csv|txt|svg)$/;
+  // .sh added 2026-08-08: sync_hlur.sh hard-coded an absolute home path and the
+  // sweep never looked at shell scripts — the one file type that holds deploy
+  // paths by nature. Found one step before this repo was made public.
+  const TEXTY = /\.(html|css|js|md|json|csv|txt|svg|sh|ya?ml)$/;
   const walk = (dir, out = []) => {
     for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
       if (e.name.startsWith('.')) continue;   // .gitignore has no extension and never passes TEXTY

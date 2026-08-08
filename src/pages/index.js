@@ -75,15 +75,15 @@ module.exports = `<!-- =========================================================
     <ol class="steps">
       <li>
         <h3>No human is typing the reply.</h3>
-        <p class="muted">It is a program running in a data centre. It gives different answers to the same question because a little randomness is built in on purpose — not because you got a different person. But that does not make it private. Conversations can be stored, sometimes read by staff checking for misuse, and — on a work account — seen by your employer. What that means for you is on the <a href="trust.html#privacy">Trust</a> page.</p>
+        <p class="muted">It is a program in a data centre. Answers vary because a little randomness is built in on purpose, not because you got a different person. That does not make it private: conversations can be stored, sometimes read by staff checking for misuse, and on a work account seen by your employer. What that means for you is on the <a href="trust.html#privacy">Trust</a> page.</p>
       </li>
       <li>
         <h3>It is not a search engine.</h3>
-        <p class="muted">Search finds pages that someone already wrote. An AI chatbot <em>composes</em> an answer word by word instead of retrieving one. Usually the result is new; sometimes it reproduces wording it was trained on. Either way nobody checked it before it reached you — which is why it can be brilliant, and why it can be confidently, fluently wrong.</p>
+        <p class="muted">Search finds pages someone already wrote. A chatbot <em>composes</em> an answer word by word instead. Nobody checked it before it reached you — which is why it can be brilliant, and why it can be fluently wrong.</p>
       </li>
       <li>
         <h3>It predicts language. It does not "know" things.</h3>
-        <p class="muted">It was trained on an enormous amount of writing and learned which words tend to follow which. Being right is usually a side effect of that. It is never a guarantee.</p>
+        <p class="muted">It learned which words tend to follow which, from an enormous amount of writing. Being right is a side effect of that, never a guarantee.</p>
         <p class="muted">Afterwards, people rate its answers, and it is tuned toward the answers people like. That is what makes it helpful and polite — and also keen to agree with you.</p>
       </li>
       <li>
@@ -92,11 +92,11 @@ module.exports = `<!-- =========================================================
       </li>
       <li>
         <h3>It is not a companion, even when it feels like one.</h3>
-        <p class="muted">The warmth is a property of the text, not of a mind that cares about you. It has no stake in your life, and no memory of you unless the product was built to keep one. It can still be genuinely useful — just don't mistake the feeling for a relationship.</p>
+        <p class="muted">The warmth is a property of the text, not of a mind that cares. It has no stake in your life. Useful, yes — just don't mistake the feeling for a relationship.</p>
       </li>
       <li>
         <h3>The skill is not "prompting". It is judgement.</h3>
-        <p class="muted">The people getting real value are not the ones with magic words. They are the ones who know what to ask for, and can tell a good answer from a plausible one.</p>
+        <p class="muted">The people getting real value are not the ones with magic words, but the ones who can tell a good answer from a plausible one.</p>
       </li>
     </ol>
   </div>
@@ -130,32 +130,32 @@ module.exports = `<!-- =========================================================
       <div class="card">
         <span class="num">01</span>
         <h3>Noise everywhere, training nowhere</h3>
-        <p class="small muted">AI is on the news, in podcasts, on cars, trains and billboards, and in every company meeting. Employers say "embrace AI to improve productivity" — and then run no formal training at all.</p>
+        <p class="small muted">It is on the news, on billboards, in every company meeting — and in nobody's training budget.</p>
       </div>
       <div class="card">
         <span class="num">02</span>
         <h3>Too many teachers, no way to grade them</h3>
-        <p class="small muted">YouTube and Instagram are full of AI tutorials. Some are good. Some are vague. Some are too simple to use, some too deep to follow. Nothing tells you which is which before you've wasted the hour.</p>
+        <p class="small muted">The tutorials are endless. Some good, some vague, some far too deep — and nothing tells you which before you've spent the hour.</p>
       </div>
       <div class="card">
         <span class="num">03</span>
         <h3>Too many models, no idea which is right</h3>
-        <p class="small muted">New names every month, each claiming to be the best. Several look free — until you hit a limit nobody explained. Choosing feels like a guess you're not qualified to make.</p>
+        <p class="small muted">New names every month, each claiming to be best, several free until a limit nobody explained. Choosing feels like a guess you're not qualified to make.</p>
       </div>
       <div class="card">
         <span class="num">04</span>
         <h3>The mental model is usually wrong</h3>
-        <p class="small muted">Almost nobody was handed a working picture of what this thing is. So people guess. A better search engine. A person typing back. Or — because it's warm and remembers what you said — something like a friend. Every guess is sensible. Each one quietly produces a different bad habit.</p>
+        <p class="small muted">Nobody was handed a working picture of what it is, so people guess: a better search engine, a person typing back, something like a friend. Every guess is sensible, and each produces a different bad habit.</p>
       </div>
       <div class="card">
         <span class="num">05</span>
         <h3>No way to check the answer</h3>
-        <p class="small muted">This is the big one. Nobody teaches how to validate what an AI produces. Blind trust isn't leverage — it's a risk you can't see. An answer you can't check is not an answer you can use.</p>
+        <p class="small muted">The big one. Nobody teaches how to check what comes back — and an answer you can't check is not an answer you can use.</p>
       </div>
       <div class="card">
         <span class="num">06</span>
         <h3>Same starting line, no visible line</h3>
-        <p class="small muted">Nobody has twenty years of experience with this — young or old, working or retired, technical or not. It is not a perfectly fair start, but the gap is months of practice, not a degree. The problem is that nobody can find the start.</p>
+        <p class="small muted">Nobody has twenty years of experience with this — young or old, working or retired. The gap is months of practice, not a degree. The problem is finding the start.</p>
       </div>
     </div>
 

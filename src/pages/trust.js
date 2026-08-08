@@ -116,7 +116,7 @@ module.exports = `<!-- =========================================================
       <button type="button" data-acc="close">Collapse all</button>
     </div>
 
-    <details class="acc" open>
+    <details class="acc">
       <summary><span class="sq">01</span>Ask for sources — then actually open them</summary>
       <div class="acc-body">
         <p>A citation from an AI is a <em>claim that a source exists</em>. It is not evidence.
@@ -306,93 +306,26 @@ List every factual claim in it separately, and for each one say: how could I ver
     <h2>Eight failure modes, and how each one looks</h2>
     <p class="lead">Learn these by name and you'll start spotting them mid-read.</p>
 
-    <div class="acc-tools">
-      <button type="button" data-acc="open">Expand all</button>
-      <button type="button" data-acc="close">Collapse all</button>
+    <div class="tscroll">
+      <table>
+        <thead>
+          <tr><th style="width:24%">Failure mode</th><th>Looks like</th><th>Catch it</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Invented sources</strong></td><td>A confident citation with no link, or a dead one.</td><td>Search the exact title. Thirty seconds.</td></tr>
+          <tr><td><strong>Code that runs and is still wrong</strong></td><td>Clean, no errors — and using the wrong column or date range.</td><td>Run it on an example whose answer you know. "No error" is not "correct".</td></tr>
+          <tr><td><strong>Stale facts in the present tense</strong></td><td>Present-tense claims about prices, laws or versions, frozen at the cutoff.</td><td>Ask how current it is, then check a live source.</td></tr>
+          <tr><td><strong>Sycophancy</strong></td><td>Eager agreement, and a plan with no downsides.</td><td>Ask for the case against. A real one has real costs in it.</td></tr>
+          <tr><td><strong>Anchoring on your framing</strong></td><td>You asked why X beats Y, and got an essay on why X beats Y.</td><td>Ask neutrally in a fresh chat, naming neither as the favourite.</td></tr>
+          <tr><td><strong>Confident middle, invented edges</strong></td><td>The explanation is solid; the exact figure or date is invented.</td><td>Trust the shape, check the specifics. Precision is where invention hides.</td></tr>
+          <tr><td><strong>Silent unit and currency errors</strong></td><td>Millions mixed with billions, percent with percentage points — in one tidy table.</td><td>Check the units are stated, consistent, and that totals add up.</td></tr>
+          <tr><td><strong>Over-generalising from your one example</strong></td><td>You gave one sample row; it works only for that row.</td><td>Test the awkward cases: empty, duplicate, missing field.</td></tr>
+        </tbody>
+      </table>
     </div>
-
-    <details class="acc">
-      <summary><span class="sq">01</span>Invented sources</summary>
-      <div class="acc-body">
-        <p><strong>Looks like:</strong> a confident citation, plausible author, plausible
-        journal, no link — or a link that leads to a dead page.</p>
-        <p><strong>Catch it:</strong> search the exact title. Thirty seconds.</p>
-      </div>
-    </details>
-
-    <details class="acc">
-      <summary><span class="sq">02</span>Code that runs and is still wrong</summary>
-      <div class="acc-body">
-        <p><strong>Looks like:</strong> clean, commented, no errors — and quietly using the
-        wrong column, the wrong rounding, or the wrong date range.</p>
-        <p><strong>Catch it:</strong> run it on a small example where you already know the
-        right answer by hand. "No error message" is not "correct".</p>
-      </div>
-    </details>
-
-    <details class="acc">
-      <summary><span class="sq">03</span>Stale facts stated in the present tense</summary>
-      <div class="acc-body">
-        <p><strong>Looks like:</strong> current-sounding claims about prices, laws, versions,
-        people's jobs, or which product is best — frozen at the training cutoff.</p>
-        <p><strong>Catch it:</strong> for anything time-sensitive, ask when its information
-        is from, and check it against a live source yourself.</p>
-      </div>
-    </details>
-
-    <details class="acc">
-      <summary><span class="sq">04</span>Sycophancy</summary>
-      <div class="acc-body">
-        <p><strong>Looks like:</strong> "Great question!", enthusiastic agreement with your
-        framing, a plan that has no downsides.</p>
-        <p><strong>Catch it:</strong> ask for the case against. If the case against is thin,
-        ask again more forcefully — a real analysis has real costs in it.</p>
-      </div>
-    </details>
-
-    <details class="acc">
-      <summary><span class="sq">05</span>Anchoring on your framing</summary>
-      <div class="acc-body">
-        <p><strong>Looks like:</strong> you asked "why is X better than Y?" and got a fluent
-        essay on why X is better — because you asked for it, not because it is.</p>
-        <p><strong>Catch it:</strong> ask neutrally in a fresh chat: "Compare X and Y. Which
-        is better for this situation, and why might I be wrong to prefer either?"</p>
-      </div>
-    </details>
-
-    <details class="acc">
-      <summary><span class="sq">06</span>Confident middles, invented edges</summary>
-      <div class="acc-body">
-        <p><strong>Looks like:</strong> the general explanation is solid; the specific
-        figure, exact quote, precise date or edge case is fabricated.</p>
-        <p><strong>Catch it:</strong> trust the shape, check the specifics. Precision is
-        where invention hides — an oddly exact number with no source is a flag, not a
-        credential.</p>
-      </div>
-    </details>
-
-    <details class="acc">
-      <summary><span class="sq">07</span>Silent unit, currency and scale errors</summary>
-      <div class="acc-body">
-        <p><strong>Looks like:</strong> a mix of millions and billions, dollars and pounds,
-        percent and percentage points, metric and imperial — all inside one tidy table.</p>
-        <p><strong>Catch it:</strong> check that the units are stated, consistent, and that
-        the totals add up. This one reaches real audiences constantly because the formatting
-        looks so authoritative.</p>
-      </div>
-    </details>
-
-    <details class="acc">
-      <summary><span class="sq">08</span>Over-generalising from your one example</summary>
-      <div class="acc-body">
-        <p><strong>Looks like:</strong> you gave it one sample row, one file, or one case,
-        and it produced something that only works for that one and breaks on the rest.</p>
-        <p><strong>Catch it:</strong> test on the awkward cases — the empty one, the
-        duplicate, the one with a missing field, the one in a different format.</p>
-      </div>
-    </details>
-  </div>
-</section>
+    <p class="small muted">A table, not eight fold-outs: this is a page people scan under
+    time pressure, and nobody opens eight fold-outs.</p>
+  </section>
 
 
 <!-- ============================================================ -->

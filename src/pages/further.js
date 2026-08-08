@@ -71,7 +71,7 @@ module.exports = `<!-- =========================================================
     <h3>Week 1 · Fluency — get comfortable</h3>
     <div class="card">
       <ul class="checklist">
-        <li><input type="checkbox" id="d1"><label for="d1">Read <a href="index.html#sixty">the 60-second version</a> and the <a href="https://hlur.ai/baseline">foundations guide</a>. Nothing else.</label></li>
+        <li><input type="checkbox" id="d1"><label for="d1">Read <a href="index.html#sixty">the short version</a> and the <a href="https://hlur.ai/baseline">foundations guide</a>. Nothing else.</label></li>
         <li><input type="checkbox" id="d2"><label for="d2">Ask it to explain something you've never understood — three times, each simpler.</label></li>
         <li><input type="checkbox" id="d3"><label for="d3">Paste a real document (letter, contract, form) and ask what it means for you.</label></li>
         <li><input type="checkbox" id="d4"><label for="d4">Take one answer through five rounds of "that's not right because…" and watch it improve.</label></li>
@@ -131,7 +131,7 @@ module.exports = `<!-- =========================================================
     <p class="slabel">Road B</p>
     <h2>Finding the AI-shaped work in your actual job</h2>
     <p class="lead">
-      Your employer said "use AI" and stopped there. Here is the part they left out.
+      Your employer said "use AI" and stopped there. Here is the rest.
     </p>
 
     <h3>The four task types worth handing over first</h3>
@@ -187,9 +187,8 @@ module.exports = `<!-- =========================================================
     <p class="slabel">The uncomfortable part</p>
     <h2>What this honestly does to your job</h2>
     <p>
-      Nobody knows how this lands in ten years, and anyone who tells you they do is
-      selling something. But the direction of travel is visible enough to plan around,
-      so here it is without the reassurance.
+      Nobody knows how this lands in ten years, and anyone who says they do is selling
+      something. The direction of travel is visible enough to plan around.
     </p>
 
     <div class="grid grid-2">
@@ -343,9 +342,8 @@ module.exports = `<!-- =========================================================
     <p class="slabel">Staying current</p>
     <h2>How to keep learning without drowning in it</h2>
     <p>
-      There is no reading list here on purpose. Links rot, courses go out of date within a
-      year, and a stale list is worse than none because it looks authoritative. What
-      doesn't rot is the routine.
+      No reading list here, on purpose: links rot and a stale list looks authoritative.
+      What doesn't rot is the routine.
     </p>
     <ul class="clean">
       <li><strong>Use it weekly on real work.</strong> Everything else is optional. Nothing substitutes for this.</li>

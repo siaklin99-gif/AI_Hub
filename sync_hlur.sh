@@ -20,7 +20,10 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 # DEST is overridable so CI runs THIS script rather than a duplicate in YAML.
-DEST="${DEST:-<resolved at runtime>/hub}"
+# Resolved, never hard-coded: an absolute path here publishes the author's home
+# directory and the name of a private project to every reader of a public repo.
+# Order: explicit override, then the host repo as a sibling checkout.
+DEST="${DEST:-$(cd "$(dirname "$0")/../LLC/Hlur_Website" 2>/dev/null && pwd)/hub}"
 SITE="$(dirname "$DEST")"
 DEPLOY=0
 [[ "${1:-}" == "--deploy" ]] && DEPLOY=1
