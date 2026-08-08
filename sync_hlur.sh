@@ -153,4 +153,17 @@ echo "▶ deploy hlur.ai"
     | grep -E 'Production URL|Website URL' )
 
 echo
-echo "✓ deployed. Verify the live copy:  cd $SITE && node crosscheck_live.js"
+echo "▶ prove the live copy matches source"
+# A's sync ENDS by running its parity check; this one ended by printing a
+# suggestion a human must remember. The host's crosscheck_live covers all six
+# hub pages (200s, titles, ordered headings, link targets, SHA-256 of every
+# asset incl. style.css and app.js), and sync copies this repo's files in
+# byte-identical — so a green run transitively proves THIS source is live.
+# Fail closed: a deploy whose live copy cannot be verified is a failed deploy.
+( cd "$SITE" && node crosscheck_live.js ) || {
+  echo "✗ the LIVE site does not match source — the deploy is not done until this passes."
+  exit 1
+}
+
+echo
+echo "✓ deployed and proven live."
