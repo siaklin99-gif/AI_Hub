@@ -10,7 +10,8 @@
      WCAG AA 4.5:1 on all three surfaces. This site is aimed at older readers
      and carries real content in small type, so AA is not optional here. */
   --text: #1a1a18; --text-sec: #5f5e5a; --text-ter: #6b6a65;
-  --green: #0f6e56; --green-bg: #e1f5ee;
+  --green: #0f6e56;
+  --lur-body: #9AD3C6; --green-bg: #e1f5ee;
   --red: #a32d2d; --red-bg: #fcebeb;
   --amber: #854f0b; --amber-bg: #faeeda;
   --blue: #185fa5; --blue-bg: #e6f1fb;
@@ -54,6 +55,14 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
+    /* Declared again at the SAME value on purpose. Lur's body colour does not change
+       between modes — the footer rule is the top of Lur, and she is one colour. Saying
+       it here rather than letting it inherit tells the token guard, and the next
+       reader, that the sameness is a decision. It reads 10.4:1 on this background.
+       (This sat OUTSIDE :root for one build — a declaration where a rule belongs, which
+       made the parser discard the whole dark block and flattened dark mode on all six
+       pages. The harness caught it as a full-page diff, not a 2px one.) */
+    --lur-body: #9AD3C6;
     --bg: #1a1a18; --surface: #242422; --surface2: #2c2c2a;
     --border: rgba(255,255,255,0.08); --border-med: rgba(255,255,255,0.15);
     /* lightened from #888780 (4.31:1 on --surface) for the same reason */
@@ -555,10 +564,14 @@ tbody tr:last-child td { border-bottom: 0; }
 .peek-wrap { display: flex; justify-content: center; }
 .peek-wrap svg { width: 150px; height: 81px; display: block; margin-bottom: -2px; }
 .foot { border-top: 0; }                 /* the peek's rule replaces the old hairline */
-/* the mark's gradient as the rule above the footer — display use, no text */
+/* Lur's body teal, the same rule hlur.ai and /baseline use. It is NOT a divider —
+   it is Lur's body line continuing across the page, which is why it matches the
+   peeking SVG's own fill (#9AD3C6) exactly and why it stays the same in dark mode.
+   It measures 1.58:1 on the light background and that is the point: a contrasty
+   rule would read as a border with a mascot stuck on it, rather than as the top of
+   Lur. The mark's gradient sat here briefly; teal is the house rule. */
 .foot > .wrap {
-  border-top: 2px solid transparent;
-  border-image: var(--grad) 1;
+  border-top: 2px solid var(--lur-body);
   padding-top: 26px;
 }
 .foot-site { margin-top: 18px; padding-top: 16px; border-top: 0.5px solid var(--border); }
