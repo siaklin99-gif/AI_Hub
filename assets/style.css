@@ -39,20 +39,16 @@
     --border: rgba(255,255,255,0.08); --border-med: rgba(255,255,255,0.15);
     /* lightened from #888780 (4.31:1 on --surface) for the same reason */
     --text: #f1f0ec; --text-sec: #b4b2a9; --text-ter: #9a9992;
-    --green: #5dcaa5; --green-bg: #085041;
+    /* #085041 until 2026-08-09: at 1.85 against the page it was half again as
+       heavy as red/amber/blue (1.20/1.23/1.24), which are its peers and sit
+       uniform in light mode. On the triage table that inverted the ranking —
+       "Nothing happens" shouted and "Someone gets hurt" sank. 1.21 now, and
+       --green on it goes 4.68:1 -> 7.15:1. See the global palette note. */
+    --green: #5dcaa5; --green-bg: #093026;
     --red: #f09595; --red-bg: #501313;
     --amber: #ef9f27; --amber-bg: #412402;
     --blue: #85b7eb; --blue-bg: #042c53;
     --shadow: 0 1px 2px rgba(0,0,0,.2), 0 4px 16px rgba(0,0,0,.25);
-  }
-  /* saturate(180%) is a light-mode trick: over a near-white bar the colour it
-     pulls from the content scrolling underneath is invisible. Over a near-black
-     bar the same boost turns a tinted panel passing below into a warm smear
-     across the header, measured at 2.5x the chroma spread of the light twin.
-     Blur without the boost in dark, and a slightly more opaque bar to sit on. */
-  .nav {
-    background: color-mix(in srgb, var(--bg) 94%, transparent);
-    backdrop-filter: blur(14px);
   }
 }
 
@@ -154,6 +150,23 @@ a:hover { text-decoration: underline; }
 }
 .nav-links a:hover { background: var(--surface2); text-decoration: none; color: var(--text); }
 .nav-links a[aria-current="page"] { color: var(--text); background: var(--surface2); font-weight: 600; }
+
+/* saturate(180%) is a light-mode trick: over a near-white bar the colour it pulls
+   from the content scrolling underneath is invisible. Over a near-black bar the
+   same boost turns a tinted panel passing below into a warm smear across the
+   header. Blur without the boost in dark, on a slightly more opaque bar.
+
+   This block sits AFTER the base .nav rule deliberately. Placed up in the
+   palette block with the colour variables — which is where it reads like it
+   belongs — it lost to the base rule further down the file: equal specificity
+   means source order decides, and a media query does not change that. It was
+   written, it looked right, and it did nothing. */
+@media (prefers-color-scheme: dark) {
+  .nav {
+    background: color-mix(in srgb, var(--bg) 94%, transparent);
+    backdrop-filter: blur(14px);
+  }
+}
 
 /* ---------- hero ---------- */
 

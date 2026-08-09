@@ -679,6 +679,72 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
           `${name}: a table's text is out of the page's text column: ${tableLeft.slice(0, 3).join(', ')}`);
       }
 
+      /* EVERY DARK OVERRIDE MUST ACTUALLY WIN.
+         A dark rule was written next to the colour variables — where it reads
+         like it belongs — while the base rule it overrides sits further down
+         the file. Equal specificity means source order decides, and a media
+         query does not change that, so the override was dead: written,
+         reviewed, shipped, doing nothing. Nothing could catch it, because the
+         CSS was valid and the page rendered.
+
+         So: parse every declaration inside a prefers-color-scheme:dark block,
+         and require the DOM to actually be showing that value. The declared
+         value is normalised by feeding it to a probe element, which turns
+         colours and shorthands into whatever form the browser reports. */
+      if (combo.scheme === 'dark') {
+        const css = fs.readFileSync(path.join(ROOT, 'assets', 'style.css'), 'utf8');
+        const rules = [];
+        const re = /@media\s*\(prefers-color-scheme:\s*dark\)\s*\{/g;
+        let mm;
+        while ((mm = re.exec(css))) {
+          let i = mm.index + mm[0].length, depth = 1;
+          while (i < css.length && depth > 0) {
+            if (css[i] === '{') depth++;
+            else if (css[i] === '}') depth--;
+            i++;
+          }
+          const block = css.slice(mm.index + mm[0].length, i - 1);
+          const rr = /([^{}]+)\{([^{}]*)\}/g;
+          let r2;
+          while ((r2 = rr.exec(block))) {
+            const sel = r2[1].replace(/\/\*[\s\S]*?\*\//g, '').trim();
+            if (!sel || sel.startsWith('@')) continue;
+            r2[2].split(';').forEach((d) => {
+              const c = d.indexOf(':');
+              if (c < 0) return;
+              const prop = d.slice(0, c).replace(/\/\*[\s\S]*?\*\//g, '').trim();
+              const val = d.slice(c + 1).trim();
+              if (!prop || !val || prop.startsWith('/')) return;
+              rules.push({ sel, prop, val });
+            });
+          }
+        }
+        const dead = await page.evaluate((rs) => {
+          const probe = document.createElement('div');
+          document.body.appendChild(probe);
+          const out = [];
+          rs.forEach(({ sel, prop, val }) => {
+            let el;
+            try { el = document.querySelector(sel); } catch (e) { return; }
+            if (!el) return;
+            const got = getComputedStyle(el).getPropertyValue(prop).trim();
+            if (prop.startsWith('--')) {
+              if (got !== val) out.push(`${sel} { ${prop} } is "${got}", the dark block says "${val}"`);
+              return;
+            }
+            probe.style.cssText = '';
+            probe.style.setProperty(prop, val);
+            const want = getComputedStyle(probe).getPropertyValue(prop).trim();
+            if (!want) return;                       // browser rejected it; not our concern here
+            if (got !== want) out.push(`${sel} { ${prop} } renders "${got}", the dark block asks for "${want}"`);
+          });
+          probe.remove();
+          return out;
+        }, rules);
+        check(dead.length === 0,
+          `${name}: a dark-mode override is being overridden by a later rule and has no effect: ${dead.slice(0, 3).join('; ')}`);
+      }
+
       check(m.navH > 20, `${name}: nav collapsed (height ${m.navH})`);
       check(m.emptySections.length === 0, `${name}: sections render tall but empty: ${m.emptySections.join(', ')}`);
       check(m.escapes.length === 0, `${name}: elements escape the viewport: ${m.escapes.slice(0, 5).join(', ')}`);
