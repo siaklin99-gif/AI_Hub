@@ -472,6 +472,94 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
         `${name}: table content only reachable by scrolling sideways: ` +
         tblFit.map((x) => `#${x.what} hides ${x.hidden}px`).join(', '));
 
+      /* A DECK MUST NOT STRAND A CARD IN AN EMPTY BOX.
+         Geometry checks all passed while opening one card left a collapsed
+         neighbour floating in up to a full screen of blank deck — nothing was
+         clipped, nothing overflowed, no card was zero-height, so every existing
+         invariant was satisfied by a layout that looked broken. Simulate the
+         reader: open the card that grows the most, settle on each card in turn,
+         and measure the gap between the card and the bottom of its deck. */
+      /* Drive the REAL page, do not re-implement it here. The first version of
+         this check applied the collapse rule itself and then measured the
+         result, so it passed with the behaviour deleted — a check that verifies
+         its own arithmetic. Tap a summary, scroll the deck, wait out the
+         debounce, and measure what the reader would actually see. */
+      const deckIds = await page.evaluate(() =>
+        [...document.querySelectorAll('.acc-deck')]
+          .filter((d) => d.scrollWidth > d.clientWidth + 4)             // desktop: a plain stack
+          .map((d) => (d.closest('section') || {}).id)
+          .filter(Boolean)
+      );
+      const deckGap = [];
+      for (const sid of deckIds) {
+        const opened = await page.evaluate((s) => {
+          const deck = document.querySelector(`#${s} .acc-deck`);
+          const cards = [...deck.querySelectorAll(':scope > details.acc')];
+          if (cards.length < 2) return false;
+          let worst = cards[0], worstH = 0;
+          cards.forEach((c) => {
+            const was = c.open; c.open = true;
+            const h = c.getBoundingClientRect().height;
+            if (h > worstH) { worstH = h; worst = c; }
+            c.open = was;
+          });
+          worst.querySelector('summary').click();                       // a real tap
+          return true;
+        }, sid);
+        if (!opened) continue;
+        await page.evaluate((s) => {
+          const deck = document.querySelector(`#${s} .acc-deck`);
+          const cards = [...deck.querySelectorAll(':scope > details.acc')];
+          const target = cards.find((c) => !c.open) || cards[0];        // swipe to a collapsed one
+          deck.scrollLeft = target.offsetLeft - deck.offsetLeft;
+          deck.dispatchEvent(new Event('scroll'));
+        }, sid);
+        await page.waitForTimeout(320);                                 // the 140ms debounce, doubled
+        const gap = await page.evaluate((s) => {
+          const deck = document.querySelector(`#${s} .acc-deck`);
+          const cards = [...deck.querySelectorAll(':scope > details.acc')];
+          const x = deck.scrollLeft;
+          let here = cards[0], bd = Infinity;
+          cards.forEach((c) => { const d = Math.abs(c.offsetLeft - deck.offsetLeft - x); if (d < bd) { bd = d; here = c; } });
+          return Math.round(deck.getBoundingClientRect().height - here.getBoundingClientRect().height);
+        }, sid);
+        if (gap > 40) deckGap.push(`#${sid} strands ${gap}px of empty deck`);
+        await page.evaluate((s) => {
+          const deck = document.querySelector(`#${s} .acc-deck`);
+          deck.querySelectorAll(':scope > details.acc').forEach((c) => { c.open = c.hasAttribute('data-was-open'); });
+          deck.scrollLeft = 0;
+        }, sid);
+      }
+      check(deckGap.length === 0,
+        `${name}: swiping past an opened card leaves a card marooned in blank space: ${deckGap.join(', ')}`);
+
+      /* A DECK MUST START WHERE THE TEXT STARTS.
+         Every deck on the site rested at scrollLeft:18 — scroll-snap aligns the
+         first card with the scrollport start and, with no scroll-padding, ate
+         exactly the inline padding. Card one therefore sat flush against the
+         bezel while the label, heading and lead above it sat at 18px. Nothing
+         overflowed, nothing clipped, no text was lost, so every existing check
+         passed; it took a cold reader looking at a picture to see it. The .wrap
+         left-edge check above cannot catch this — a deck is full-bleed by
+         design, so only its FIRST CARD is comparable to the content edge. */
+      const deckLeft = await page.evaluate(() => {
+        const bad = [];
+        document.querySelectorAll('.grid-2, .grid-3, .steps, .wk-deck, .acc-deck').forEach((deck) => {
+          if (deck.scrollWidth <= deck.clientWidth + 4) return;   // a plain grid, not a deck
+          const first = deck.firstElementChild;
+          const sec = deck.closest('section');
+          const ref = sec && (sec.querySelector('.slabel') || sec.querySelector('h2'));
+          if (!first || !ref) return;
+          const d = Math.round(first.getBoundingClientRect().left - ref.getBoundingClientRect().left);
+          if (Math.abs(d) > 1) {
+            bad.push(`#${sec.id || '?'} first card is ${d}px off the content edge`);
+          }
+        });
+        return bad;
+      });
+      check(deckLeft.length === 0,
+        `${name}: a deck does not start where its text starts: ${deckLeft.slice(0, 4).join(', ')}`);
+
       check(m.navH > 20, `${name}: nav collapsed (height ${m.navH})`);
       check(m.emptySections.length === 0, `${name}: sections render tall but empty: ${m.emptySections.join(', ')}`);
       check(m.escapes.length === 0, `${name}: elements escape the viewport: ${m.escapes.slice(0, 5).join(', ')}`);

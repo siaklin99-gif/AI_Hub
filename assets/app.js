@@ -34,6 +34,19 @@
         btn.addEventListener('click', function () {
           var open = btn.getAttribute('data-acc') === 'open';
           scope.querySelectorAll('details.acc').forEach(function (d) { d.open = open; });
+
+          /* On a phone the accordions are a one-card-wide swipe deck, and
+             "expand all" is the one instruction a deck cannot carry out — the
+             row takes the height of the tallest opened card, so swiping to a
+             shorter one strands it in blank space. Expanding all drops the deck
+             and becomes the vertical stack desktop already shows; collapsing
+             restores it. The resize event is what tells the deck code to add or
+             remove its progress dots, which would otherwise sit under a stack
+             that no longer scrolls. */
+          scope.querySelectorAll('.acc-deck').forEach(function (deck) {
+            deck.classList.toggle('stacked', open);
+          });
+          window.dispatchEvent(new Event('resize'));
         });
       });
     });
@@ -250,8 +263,56 @@
     }
   }
 
+  /* ---- an open card must not leave an empty box beside it -------------------
+     A flex row is as tall as its TALLEST child, so one opened card sets the
+     height of the whole deck. Swipe to a collapsed neighbour and you are looking
+     at a 58px card floating in a 524px box: measured at 50–60% of a phone screen
+     on four decks and 101% on trust#moves, which also had a card authored `open`
+     and so showed the gap before the reader touched anything.
+
+     Fix: when the deck settles on a card, collapse the ones you have swiped away
+     from. Then the deck is either all-closed (uniform, via the :has rule in the
+     stylesheet) or exactly as tall as the one card you are reading.
+
+     Two deliberate exemptions. If EVERY card is open the reader pressed "Expand
+     all" and meant it, so nothing is collapsed. And this only runs while the deck
+     actually scrolls sideways — on a desktop the same markup is a plain stack
+     where every card is visible at once and collapsing them would destroy the
+     page. Scroll-end is debounced: collapsing mid-swipe would resize the deck
+     under the reader's thumb. */
+  function wireDeckCollapse() {
+    document.querySelectorAll('.acc-deck').forEach(function (deck) {
+      var timer = null;
+
+      function settle() {
+        if (deck.scrollWidth <= deck.clientWidth + 4) return;   // not a deck right now
+        var cards = Array.prototype.slice.call(deck.querySelectorAll(':scope > details.acc'));
+        if (!cards.length) return;
+        if (cards.every(function (c) { return c.open; })) return;   // "Expand all" — leave it
+
+        var x = deck.scrollLeft, best = null, bestD = Infinity;
+        cards.forEach(function (c) {
+          var d = Math.abs(c.offsetLeft - deck.offsetLeft - x);
+          if (d < bestD) { bestD = d; best = c; }
+        });
+        cards.forEach(function (c) { if (c !== best && c.open) c.open = false; });
+      }
+
+      deck.addEventListener('scroll', function () {
+        clearTimeout(timer);
+        timer = setTimeout(settle, 140);
+      }, { passive: true });
+
+      /* once at load: a card authored `open` further along the row produced the
+         gap before any interaction */
+      settle();
+      window.addEventListener('resize', settle);
+      window.addEventListener('orientationchange', settle);
+    });
+  }
+
   function init() {
-    var steps = [markCurrent, wireAccTools, wireChecklists, wireCopy, wireTally, wireDecks];
+    var steps = [markCurrent, wireAccTools, wireChecklists, wireCopy, wireTally, wireDecks, wireDeckCollapse];
     for (var i = 0; i < steps.length; i++) {
       try { steps[i](); } catch (e) { if (window.console) console.error('AI Hub: ' + steps[i].name + ' failed', e); }
     }

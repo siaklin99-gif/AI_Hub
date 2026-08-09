@@ -478,6 +478,14 @@ tbody tr:last-child td { border-bottom: 0; }
      as desktop — the content moves sideways, it does not disappear. Without JS the
      row is still a plain scrollable strip, so the no-script path degrades to
      something usable rather than broken. */
+  /* Snap to the CONTENT edge, not the screen edge. Without scroll-padding the
+     browser aligns the first card's start with the scrollport start and, at
+     rest, quietly scrolls the deck by exactly the inline padding — measured at
+     18px on EVERY deck on the site. The visible effect is that card one sits
+     flush against the bezel while the section label, heading and lead above it
+     sit at 18px: one element out of line, on every deck, on every page. */
+  .grid-2, .grid-3, .steps, .wk-deck, .acc-deck { scroll-padding-inline-start: var(--pad); }
+
   .grid-2, .grid-3, .steps {
     display: flex; gap: 12px;
     overflow-x: auto; -webkit-overflow-scrolling: touch;
@@ -514,6 +522,10 @@ tbody tr:last-child td { border-bottom: 0; }
   .wk-deck > .wk { flex: 0 0 82vw; scroll-snap-align: start; min-width: 0; }
   .wk-deck > .wk + .wk { margin-top: 0; }
   .wk-deck > .wk > h3:first-child { margin-top: 0; }
+  /* "Week 1 · Fluency" fits one line, the other three wrap to two, so card one
+     started 25px above its neighbours and the row read as misaligned before a
+     reader had touched it. Reserve two lines for every title. */
+  .wk-deck > .wk > h3 { min-height: calc(2 * 1.3em); }
 
   /* The five accordion lists become decks as well. Ten collapsed rows read as a
      wall of near-identical grey bars you scroll past without opening; one card at
@@ -529,6 +541,17 @@ tbody tr:last-child td { border-bottom: 0; }
     scrollbar-width: none; -ms-overflow-style: none;
   }
   .acc-deck::-webkit-scrollbar { display: none; }
+  /* "Expand all" means "I want to read them all", which a one-card-wide row
+     cannot do: every card opens to a different length, the row takes the height
+     of the tallest, and swiping to a short one strands up to a full screen of
+     blank deck beside it. So expanding all leaves deck mode and becomes the
+     plain vertical stack the desktop shows. "Collapse all" restores the deck. */
+  .acc-deck.stacked {
+    display: block; overflow-x: visible;
+    margin-inline: 0; padding-inline: 0;
+  }
+  .acc-deck.stacked > .acc { width: auto; }
+  .acc-deck.stacked > .acc + .acc { margin-top: 10px; }
   .acc-deck > .acc {
     flex: 0 0 82vw; scroll-snap-align: start; min-width: 0;
     margin: 0;   /* the stacked gap is the flex gap now */
@@ -544,6 +567,10 @@ tbody tr:last-child td { border-bottom: 0; }
      every neighbour to the tallest open body. Browsers without :has() simply keep
      the natural heights, which is the behaviour every other deck already has. */
   .acc-deck:not(:has(> .acc[open])) > .acc { align-self: stretch; }
+  /* ...and the title centres in the space it was given. Left at the top, a
+     one-line title in a card sized for a three-line one reads as a card whose
+     body failed to load rather than as a title card with room around it. */
+  .acc-deck:not(:has(> .acc[open])) > .acc > summary { height: 100%; align-items: center; }
 
   /* Progress dots. Rendered by app.js, so they only appear where a deck really
      scrolls — a dot row under a non-scrolling group would be a lie about the UI. */
