@@ -418,6 +418,28 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
       check(m.wrapLefts.length === 1, `${name}: .wrap containers do not share one left edge (${m.wrapLefts.join(', ')})`);
       check(m.wrapWidths.length === 1, `${name}: .wrap containers have different widths (${m.wrapWidths.join(', ')})`);
       check(m.navLeft === m.wrapLefts[0], `${name}: nav left edge ${m.navLeft} != content left edge ${m.wrapLefts[0]} (logo would misalign with content)`);
+
+      /* THE NAV MUST NOT NEED A SIDEWAYS SWIPE.
+         .nav-links is exempt from the escape scan above because it is a legitimate
+         scroll container — which is exactly why 157px of navigation could hide at
+         390px and every check stayed green. A reader reported it; the harness
+         could not. Being *able* to scroll is fine; needing to is not. */
+      const navFit = await page.evaluate(() => {
+        const n = document.querySelector('.nav-links');
+        if (!n) return null;
+        const links = [...n.querySelectorAll('a')];
+        return {
+          hidden: n.scrollWidth - n.clientWidth,
+          offscreen: links.filter((a) => a.getBoundingClientRect().right > innerWidth + 0.5)
+            .map((a) => a.textContent.trim()),
+        };
+      });
+      if (navFit) {
+        check(navFit.hidden <= 1,
+          `${name}: ${navFit.hidden}px of the nav is only reachable by scrolling it sideways`);
+        check(navFit.offscreen.length === 0,
+          `${name}: nav links off the right edge of the screen: ${navFit.offscreen.join(', ')}`);
+      }
       check(m.navH > 20, `${name}: nav collapsed (height ${m.navH})`);
       check(m.emptySections.length === 0, `${name}: sections render tall but empty: ${m.emptySections.join(', ')}`);
       check(m.escapes.length === 0, `${name}: elements escape the viewport: ${m.escapes.slice(0, 5).join(', ')}`);

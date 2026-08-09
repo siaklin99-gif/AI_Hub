@@ -524,7 +524,29 @@ tbody tr:last-child td { border-bottom: 0; }
   }
   .deck-dots span.on { width: 16px; border-radius: 3px; background: var(--green); }
   .brand { font-size: 14px; }
-  .nav-links a { font-size: 13px; padding: 5px 7px; }
+
+  /* ---- the nav must not need a sideways swipe ------------------------------
+     Six page links plus the wordmark and the section label wanted 370px of a
+     390px bar, so `overflow-x: auto` quietly hid 157px of it — at 320px, 227px.
+     "Tools" and "Go Further" were off-screen with no visible affordance, which
+     is the worst kind of hidden navigation: not collapsed behind a control the
+     reader can see, just gone.
+
+     Labels cannot shrink on mobile — this repo requires phone text to be
+     character-identical to desktop — so the LAYOUT gives way instead. The site
+     chrome keeps row one; the page links take their own full-width row and
+     WRAP rather than scroll, so a narrow screen gets two short rows and
+     nothing is ever out of reach. No hamburger: hiding six destinations behind
+     a tap is worse for the audience this site is aimed at. */
+  .nav-inner { flex-wrap: wrap; gap: 8px 10px; padding-bottom: 9px; }
+  .nav-links {
+    flex: 1 0 100%;
+    margin-left: 0;
+    flex-wrap: wrap;
+    overflow-x: visible;      /* replaces the base rule's auto — wrap, don't scroll */
+    gap: 4px 3px;
+  }
+  .nav-links a { font-size: 12.5px; padding: 5px 6px; }
   .hero-stat .big { font-size: 44px; }
   .btn { width: 100%; text-align: center; }
 }
