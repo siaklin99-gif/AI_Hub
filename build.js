@@ -25,6 +25,7 @@ require('./src/validate-config.js').validate(cfg);
 
 const layout = require('./src/layout.js');
 const { labelTables } = require('./src/table-labels.js');
+const { wrapSummaryTitles } = require('./src/summary-title.js');
 
 const ROOT = __dirname;
 const CHECK = process.argv.includes('--check');
@@ -53,7 +54,7 @@ for (const page of cfg.pages) {
   /* Column labels are stamped in from each table's own <th> — see
      src/table-labels.js. Done here rather than in the page sources so the
      label cannot drift from the header it names. */
-  const labelled = labelTables(body);
+  const labelled = wrapSummaryTitles(labelTables(body));
 
   const html = layout.render(page, labelled).replace('<html lang="en">', '<html lang="en">\n' + BANNER);
   const outPath = path.join(ROOT, page.file);

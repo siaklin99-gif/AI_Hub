@@ -23,6 +23,14 @@
      deliberately do not copy. */
   --wrap: 940px;
   --pad: 22px;
+  /* Native controls follow the theme. Without this the root stays
+     color-scheme:normal, so a checkbox renders in its LIGHT form whatever the
+     page is doing: on a dark card every UNTICKED box was a solid white square,
+     brighter than the headline above it, and 36 of them ran down the left edge
+     of the checklists. accent-color only ever styled the ticked state, so the
+     one that mattered — an empty box that read as already filled in — was
+     untouched. */
+  color-scheme: light dark;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -37,11 +45,30 @@
     --blue: #85b7eb; --blue-bg: #042c53;
     --shadow: 0 1px 2px rgba(0,0,0,.2), 0 4px 16px rgba(0,0,0,.25);
   }
+  /* saturate(180%) is a light-mode trick: over a near-white bar the colour it
+     pulls from the content scrolling underneath is invisible. Over a near-black
+     bar the same boost turns a tinted panel passing below into a warm smear
+     across the header, measured at 2.5x the chroma spread of the light twin.
+     Blur without the boost in dark, and a slightly more opaque bar to sit on. */
+  .nav {
+    background: color-mix(in srgb, var(--bg) 94%, transparent);
+    backdrop-filter: blur(14px);
+  }
 }
 
 * { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; }
+html {
+  -webkit-text-size-adjust: 100%;
+  /* The nav is sticky, so every in-page jump landed its target UNDERNEATH it:
+     following #triage put the section label at y=40 with the nav's bottom edge
+     at y=55, hiding the label and the top of the heading. All 28 in-page links
+     were affected, including the six that point at #main — the skip link, where
+     a keyboard user lands on content they cannot see. The nav is 55px on a
+     desktop but 87px at 390 and 122px at 320, so the value is per breakpoint,
+     and app.js refines it from the nav's measured height at runtime. */
+  scroll-padding-top: 70px;
+}
 
 body {
   margin: 0;
@@ -176,6 +203,13 @@ p { margin: 0 0 14px; }
 
 hr { border: 0; border-top: 0.5px solid var(--border); margin: 40px 0; }
 
+/* One rhythm between sections. The gap was set by whatever the section happened
+   to end with — a paragraph contributed its 14px bottom margin, a grid or table
+   contributed nothing — so the breaks measured 80, 90, 94 and 98px down a single
+   page and the tighter sections ran into the next heading. The section's own
+   padding sets the spacing now, and nothing else does. */
+section > .wrap > *:last-child { margin-bottom: 0; }
+
 /* ---------- cards ---------- */
 
 .card {
@@ -275,6 +309,11 @@ hr { border: 0; border-top: 0.5px solid var(--border); margin: 40px 0; }
   cursor: pointer; padding: 15px 19px; font-weight: 560; font-size: 16px;
   list-style: none; display: flex; align-items: center; gap: 12px;
 }
+/* The whole title is ONE flex item, so the 12px gap separates the badge from
+   the title and nothing else. Without this, any <em> or <strong> in a heading
+   becomes its own flex item and the gap replaces the word spaces around it —
+   "you can check" set with 12px between each word. See src/summary-title.js. */
+.acc > summary .acc-t { min-width: 0; }
 .acc > summary::-webkit-details-marker { display: none; }
 .acc > summary::after {
   content: "+"; margin-left: auto; color: var(--text-ter);
@@ -345,6 +384,21 @@ li:last-child { margin-bottom: 0; }
 .tscroll { overflow-x: auto; margin: 0 0 16px; }
 table { border-collapse: collapse; width: 100%; font-size: 15px; min-width: 460px; }
 th, td { text-align: left; padding: 10px 12px; border-bottom: 0.5px solid var(--border); vertical-align: top; }
+/* The outer cells lose their side padding so the table's TEXT lines up with the
+   page's text column. With it, every heading and paragraph on the page started
+   at x=192 while the table's first column started at x=204 — and the row rule
+   beneath ran 12px further left than the header sitting on it, which reads as a
+   table nudged out of the column it belongs to. */
+th:first-child, td:first-child { padding-left: 0; }
+th:last-child, td:last-child { padding-right: 0; }
+
+/* Prose columns share the space evenly. Left to itself the browser gave the
+   triage table's middle column 287px and its last 412px, so a four-line cell
+   sat beside a one-line one with half the row empty. Fixed layout plus a width
+   on the first column only: the first is a short label, and the prose columns
+   divide what remains equally without needing to know how many there are. */
+table { table-layout: fixed; }
+table thead th:first-child { width: 26%; }
 th {
   font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.06em;
   color: var(--text-ter); font-weight: 700; border-bottom: 0.5px solid var(--border-med);
@@ -620,6 +674,8 @@ tbody tr:last-child td { border-bottom: 0; }
   /* the row's subject reads as the card's title */
   .tscroll tbody td:first-child { font-size: 16px; font-weight: 650; }
   .tscroll tbody td:not(:first-child) { color: var(--text-sec); font-size: 14.5px; }
+
+  html { scroll-padding-top: 102px; }   /* 87px nav + breathing room */
 
   .brand { font-size: 14px; }
 

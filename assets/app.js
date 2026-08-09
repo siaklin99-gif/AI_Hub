@@ -311,8 +311,30 @@
     });
   }
 
+  /* ---- keep in-page targets clear of the sticky nav ------------------------
+     Following any #anchor landed the target UNDER the sticky nav: the section
+     label sat at y=40 with the nav's bottom edge at y=55. All 28 in-page links
+     were affected, the skip link to #main worst of all — a keyboard user was
+     sent to content hidden behind the header.
+
+     The stylesheet carries a floor for the no-JS case, but a fixed number
+     cannot be right: the nav is 55px on a desktop, 87px at 390 and 122px at
+     320, because it wraps. So measure it. Re-measured on resize, since a
+     rotation changes how many rows the nav takes. */
+  function wireScrollPadding() {
+    var nav = document.querySelector('.nav');
+    if (!nav) return;
+    var apply = function () {
+      var h = Math.round(nav.getBoundingClientRect().height);
+      if (h > 0) document.documentElement.style.scrollPaddingTop = (h + 16) + 'px';
+    };
+    apply();
+    window.addEventListener('resize', apply);
+    window.addEventListener('orientationchange', apply);
+  }
+
   function init() {
-    var steps = [markCurrent, wireAccTools, wireChecklists, wireCopy, wireTally, wireDecks, wireDeckCollapse];
+    var steps = [markCurrent, wireAccTools, wireChecklists, wireCopy, wireTally, wireDecks, wireDeckCollapse, wireScrollPadding];
     for (var i = 0; i < steps.length; i++) {
       try { steps[i](); } catch (e) { if (window.console) console.error('AI Hub: ' + steps[i].name + ' failed', e); }
     }

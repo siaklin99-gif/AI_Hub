@@ -560,6 +560,125 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
       check(deckLeft.length === 0,
         `${name}: a deck does not start where its text starts: ${deckLeft.slice(0, 4).join(', ')}`);
 
+      /* A HEADING THAT COUNTS MUST BE ABLE TO COUNT.
+         Twelve headings on this site state a number — "Ten things it is
+         genuinely good at", "Eight failure modes", "Six verification moves".
+         Nothing tied any of them to what actually renders, so deleting an item
+         would leave the heading lying and every check green. On a site whose
+         subject is checking claims, that is the worst available bug. Counted in
+         the rendered DOM, not the source, so a card hidden by CSS still fails.
+
+         Numbers followed by a unit are quantities, not counts ("twenty minutes
+         a day"), and a bare "one" is nearly always rhetorical ("The one fact",
+         "Round one is not the answer") — both are skipped. A section passes if
+         ANY number in its heading matches ANY countable group it contains. */
+      const claims = await page.evaluate(() => {
+        const WORD = { two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8,
+          nine: 9, ten: 10, eleven: 11, twelve: 12, sixteen: 16, twenty: 20 };
+        const UNIT = /^(minute|second|hour|day|week|month|year|per|%|px|of)/;
+        const bad = [];
+        document.querySelectorAll('section[id]').forEach((s) => {
+          const h = s.querySelector('h2');
+          if (!h) return;
+          const text = h.textContent.toLowerCase();
+          const wanted = [];
+          const re = new RegExp('\\b(' + Object.keys(WORD).join('|') + '|\\d+)\\b\\s*(\\S*)', 'g');
+          let m;
+          while ((m = re.exec(text))) {
+            if (UNIT.test(m[2])) continue;                       // a quantity, not a count
+            wanted.push(WORD[m[1]] !== undefined ? WORD[m[1]] : parseInt(m[1], 10));
+          }
+          if (!wanted.length) return;
+          const groups = {
+            accordions: s.querySelectorAll('details.acc').length,
+            'table rows': s.querySelectorAll('tbody tr').length,
+            'grid cards': [...s.querySelectorAll('.grid')].reduce((n, g) => Math.max(n, g.children.length), 0),
+            steps: s.querySelectorAll('.steps > li').length,
+            'checklist items': s.querySelectorAll('.checklist li').length,
+          };
+          const counts = Object.values(groups).filter((n) => n > 0);
+          if (!counts.length) return;                            // nothing countable to compare against
+          if (wanted.some((w) => counts.includes(w))) return;
+          bad.push(`#${s.id} says ${wanted.join('/')} but contains ` +
+            Object.entries(groups).filter(([, n]) => n > 0).map(([k, n]) => `${n} ${k}`).join(', '));
+        });
+        return bad;
+      });
+      check(claims.length === 0,
+        `${name}: a heading states a number the section does not contain: ${claims.join('; ')}`);
+
+      /* NO BARE TEXT DIRECTLY INSIDE A GAPPED FLEX CONTAINER.
+         A summary is display:flex with a 12px gap for the number badge. Flex
+         makes a separate item of every child run and DROPS the whitespace
+         between items, so a title containing <em> was torn into three items
+         with 12px where each word space belonged. Nothing overflowed or
+         clipped, so every check passed; a cold reader saw it in a screenshot.
+         The title is one element now, and this keeps it that way. */
+      const flexText = await page.evaluate(() => {
+        const bad = [];
+        document.querySelectorAll('details.acc > summary').forEach((s) => {
+          const bare = [...s.childNodes].filter((n) => n.nodeType === 3 && n.textContent.trim());
+          if (bare.length) bad.push(`"${s.textContent.trim().slice(0, 34)}" has loose text beside the badge`);
+        });
+        return bad;
+      });
+      check(flexText.length === 0,
+        `${name}: an accordion title is not a single element, so the flex gap will replace its word spaces: ${flexText.slice(0, 2).join('; ')}`);
+
+      /* AN IN-PAGE JUMP MUST NOT LAND BEHIND THE STICKY NAV.
+         Following any #anchor put the target under the header — the section
+         label at y=40 with the nav's bottom edge at y=55. All 28 in-page links
+         on the site, including the six pointing at #main: the skip link, which
+         exists precisely so a keyboard user does not have to walk the nav, and
+         which delivered them to something they could not see. The nav wraps, so
+         it is 55px on a desktop and 122px at 320 — a fixed CSS value cannot
+         cover both, which is why app.js measures it. Checked at every viewport
+         for that reason. */
+      const anchors = await page.evaluate(async () => {
+        const ids = [...document.querySelectorAll('section[id]')].map((s) => s.id).slice(0, 4);
+        const bad = [];
+        for (const id of ids) {
+          location.hash = '#' + id;
+          await new Promise((r) => setTimeout(r, 90));
+          const sec = document.getElementById(id);
+          const label = sec.querySelector('.slabel') || sec.querySelector('h2');
+          const navBottom = document.querySelector('.nav').getBoundingClientRect().bottom;
+          const top = label.getBoundingClientRect().top;
+          if (top < navBottom) bad.push(`#${id} lands ${Math.round(navBottom - top)}px behind the nav`);
+        }
+        history.replaceState(null, '', location.pathname);
+        scrollTo(0, 0);
+        return bad;
+      });
+      check(anchors.length === 0,
+        `${name}: an in-page link lands underneath the sticky nav: ${anchors.join(', ')}`);
+
+      /* A TABLE'S TEXT BELONGS IN THE PAGE'S TEXT COLUMN.
+         Cell padding pushed every table's first column 12px right of the
+         heading and paragraphs above it, so the row rule beneath a header ran
+         further left than the header sitting on it. Six tables, every page that
+         has one. The .wrap check sees the table's BOX, which was correctly
+         aligned — only the text inside it was not. Desktop only: on a phone the
+         rows are stacked cards with their own padding. */
+      const tableLeft = await page.evaluate(() => {
+        const bad = [];
+        document.querySelectorAll('section table').forEach((t) => {
+          const cell = t.querySelector('thead th') || t.querySelector('td');
+          const sec = t.closest('section');
+          const ref = sec && (sec.querySelector('.slabel') || sec.querySelector('h2'));
+          if (!cell || !ref || !cell.getBoundingClientRect().width) return;
+          if (getComputedStyle(t).display === 'none') return;
+          const textLeft = cell.getBoundingClientRect().left + parseFloat(getComputedStyle(cell).paddingLeft);
+          const d = Math.round(textLeft - ref.getBoundingClientRect().left);
+          if (Math.abs(d) > 1) bad.push(`#${sec.id || '?'} table text sits ${d}px off the column`);
+        });
+        return bad;
+      });
+      if (combo.width > 760) {
+        check(tableLeft.length === 0,
+          `${name}: a table's text is out of the page's text column: ${tableLeft.slice(0, 3).join(', ')}`);
+      }
+
       check(m.navH > 20, `${name}: nav collapsed (height ${m.navH})`);
       check(m.emptySections.length === 0, `${name}: sections render tall but empty: ${m.emptySections.join(', ')}`);
       check(m.escapes.length === 0, `${name}: elements escape the viewport: ${m.escapes.slice(0, 5).join(', ')}`);

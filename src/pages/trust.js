@@ -72,7 +72,7 @@ module.exports = `<!-- =========================================================
     <div class="tscroll">
       <table>
         <thead>
-          <tr><th style="width:22%">If it's wrong…</th><th style="width:32%">Examples</th><th>How much to check</th></tr>
+          <tr><th style="width:22%">If it's wrong…</th><th>Examples</th><th>How much to check</th></tr>
         </thead>
         <tbody>
           <tr>

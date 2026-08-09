@@ -21,6 +21,7 @@ const { validate } = require('./src/validate-config.js');
 const C = require('./src/components.js');
 const layout = require('./src/layout.js');
 const { labelTables } = require('./src/table-labels.js');
+const { wrapSummaryTitles } = require('./src/summary-title.js');
 const realCfg = require('./site.config.js');
 
 let pass = 0, fail = 0;
@@ -264,6 +265,34 @@ t('table-labels: every table in the real pages ends up fully labelled', () => {
     const tds = out.match(/<td[^>]*>/g) || [];
     const unlabelled = tds.filter((td) => !td.includes('data-label='));
     eq(unlabelled.length, 0, `${f}: ${unlabelled.length} cells would render with no column name`);
+  }
+});
+
+/* ---- accordion summary titles ------------------------------------------ */
+t('summary-title: the badge stays separate, the title becomes one item', () => {
+  const out = wrapSummaryTitles('<summary><span class="sq">04</span>Check one thing you <em>can</em> check</summary>');
+  ok(out.includes('<span class="sq">04</span><span class="acc-t">Check one thing you <em>can</em> check</span>'),
+    'the 12px gap must separate badge from title, never words from each other');
+});
+
+t('summary-title: a summary with no badge still gets a title element', () => {
+  ok(wrapSummaryTitles('<summary>Plain title</summary>').includes('<span class="acc-t">Plain title</span>'),
+    'plain summary wrapped');
+});
+
+t('summary-title: wrapping is idempotent', () => {
+  const once = wrapSummaryTitles('<summary><span class="sq">01</span>Title</summary>');
+  eq(wrapSummaryTitles(once), once, 'a second build pass must not nest another wrapper');
+});
+
+t('summary-title: every real accordion title ends up as one element', () => {
+  for (const f of fs.readdirSync(path.join(__dirname, 'src', 'pages'))) {
+    const out = wrapSummaryTitles(labelTables(require(path.join(__dirname, 'src', 'pages', f))));
+    (out.match(/<summary>[\s\S]*?<\/summary>/g) || []).forEach((s) => {
+      const stripped = s.replace(/<span class="sq">[\s\S]*?<\/span>/, '').replace(/<span class="acc-t">[\s\S]*?<\/span>\s*<\/summary>/, '');
+      eq(/[A-Za-z]/.test(stripped.replace(/<\/?summary>/g, '')), false,
+        `${f}: loose text left in a summary: ${s.slice(0, 60)}`);
+    });
   }
 });
 
