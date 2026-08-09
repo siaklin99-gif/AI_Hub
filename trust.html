@@ -131,25 +131,25 @@
     </p>
 
     <div class="tscroll">
-      <table>
+      <table role="table">
         <thead>
           <tr><th style="width:22%">If it's wrong…</th><th style="width:32%">Examples</th><th>How much to check</th></tr>
         </thead>
-        <tbody>
-          <tr>
-            <td><span class="tag tag-green">Nothing happens</span></td>
-            <td>Brainstorming, rewording your own sentence, ideas you'll judge yourself, explaining a concept you'll test in practice anyway.</td>
-            <td>Skim it. Your own judgement is the check. Move fast.</td>
+        <tbody role="rowgroup">
+          <tr role="row">
+            <td role="cell" data-label="If it's wrong…"><span class="tag tag-green">Nothing happens</span></td>
+            <td role="cell" data-label="Examples">Brainstorming, rewording your own sentence, ideas you'll judge yourself, explaining a concept you'll test in practice anyway.</td>
+            <td role="cell" data-label="How much to check">Skim it. Your own judgement is the check. Move fast.</td>
           </tr>
-          <tr>
-            <td><span class="tag tag-amber">You look wrong</span></td>
-            <td>A report to your boss, a client email, a statistic you're about to post or repost publicly, code you're about to run, numbers in a deck.</td>
-            <td>Check every specific: each number, name, date, quote and claim. Run the code. Assume nothing is right because the rest was.</td>
+          <tr role="row">
+            <td role="cell" data-label="If it's wrong…"><span class="tag tag-amber">You look wrong</span></td>
+            <td role="cell" data-label="Examples">A report to your boss, a client email, a statistic you're about to post or repost publicly, code you're about to run, numbers in a deck.</td>
+            <td role="cell" data-label="How much to check">Check every specific: each number, name, date, quote and claim. Run the code. Assume nothing is right because the rest was.</td>
           </tr>
-          <tr>
-            <td><span class="tag tag-red">Someone gets hurt</span></td>
-            <td>Health, medication, money, legal rights, contracts, safety, tax, anything public, anything you can't undo.</td>
-            <td>An independent source or a qualified human. Always. The AI is for preparing your questions, never for the final answer.</td>
+          <tr role="row">
+            <td role="cell" data-label="If it's wrong…"><span class="tag tag-red">Someone gets hurt</span></td>
+            <td role="cell" data-label="Examples">Health, medication, money, legal rights, contracts, safety, tax, anything public, anything you can't undo.</td>
+            <td role="cell" data-label="How much to check">An independent source or a qualified human. Always. The AI is for preparing your questions, never for the final answer.</td>
           </tr>
         </tbody>
       </table>
@@ -248,13 +248,13 @@
         <div class="acc-body">
           <p>You often get to choose the shape of what you ask for. Choose the testable shape.</p>
           <div class="tscroll">
-            <table>
+            <table role="table">
               <thead><tr><th>Instead of</th><th>Ask for</th></tr></thead>
-              <tbody>
-                <tr><td>"Is this contract clause fair?"</td><td>"What does this clause let the other side do that I might not expect? List each one."</td></tr>
-                <tr><td>"What's the best way to do X?"</td><td>"Give me three approaches with the trade-off of each, and what would make me pick one over another."</td></tr>
-                <tr><td>"Write me a script that does X."</td><td>"Write it, plus a tiny test I can run on sample data to prove it worked."</td></tr>
-                <tr><td>"Summarise this."</td><td>"Summarise it, then list what you left out and why."</td></tr>
+              <tbody role="rowgroup">
+                <tr role="row"><td role="cell" data-label="Instead of">"Is this contract clause fair?"</td><td role="cell" data-label="Ask for">"What does this clause let the other side do that I might not expect? List each one."</td></tr>
+                <tr role="row"><td role="cell" data-label="Instead of">"What's the best way to do X?"</td><td role="cell" data-label="Ask for">"Give me three approaches with the trade-off of each, and what would make me pick one over another."</td></tr>
+                <tr role="row"><td role="cell" data-label="Instead of">"Write me a script that does X."</td><td role="cell" data-label="Ask for">"Write it, plus a tiny test I can run on sample data to prove it worked."</td></tr>
+                <tr role="row"><td role="cell" data-label="Instead of">"Summarise this."</td><td role="cell" data-label="Ask for">"Summarise it, then list what you left out and why."</td></tr>
               </tbody>
             </table>
           </div>
@@ -370,19 +370,19 @@
     <p class="lead">Learn these by name and you'll start spotting them mid-read.</p>
 
     <div class="tscroll">
-      <table>
+      <table role="table">
         <thead>
           <tr><th style="width:24%">Failure mode</th><th>Looks like</th><th>Catch it</th></tr>
         </thead>
-        <tbody>
-          <tr><td><strong>Invented sources</strong></td><td>A confident citation with no link, or a dead one.</td><td>Search the exact title. Thirty seconds.</td></tr>
-          <tr><td><strong>Code that runs and is still wrong</strong></td><td>Clean, no errors — and using the wrong column or date range.</td><td>Run it on an example whose answer you know. "No error" is not "correct".</td></tr>
-          <tr><td><strong>Stale facts in the present tense</strong></td><td>Present-tense claims about prices, laws or versions, frozen at the cutoff.</td><td>Ask how current it is, then check a live source.</td></tr>
-          <tr><td><strong>Sycophancy</strong></td><td>Eager agreement, and a plan with no downsides.</td><td>Ask for the case against. A real one has real costs in it.</td></tr>
-          <tr><td><strong>Anchoring on your framing</strong></td><td>You asked why X beats Y, and got an essay on why X beats Y.</td><td>Ask neutrally in a fresh chat, naming neither as the favourite.</td></tr>
-          <tr><td><strong>Confident middle, invented edges</strong></td><td>The explanation is solid; the exact figure or date is invented.</td><td>Trust the shape, check the specifics. Precision is where invention hides.</td></tr>
-          <tr><td><strong>Silent unit and currency errors</strong></td><td>Millions mixed with billions, percent with percentage points — in one tidy table.</td><td>Check the units are stated, consistent, and that totals add up.</td></tr>
-          <tr><td><strong>Over-generalising from your one example</strong></td><td>You gave one sample row; it works only for that row.</td><td>Test the awkward cases: empty, duplicate, missing field.</td></tr>
+        <tbody role="rowgroup">
+          <tr role="row"><td role="cell" data-label="Failure mode"><strong>Invented sources</strong></td><td role="cell" data-label="Looks like">A confident citation with no link, or a dead one.</td><td role="cell" data-label="Catch it">Search the exact title. Thirty seconds.</td></tr>
+          <tr role="row"><td role="cell" data-label="Failure mode"><strong>Code that runs and is still wrong</strong></td><td role="cell" data-label="Looks like">Clean, no errors — and using the wrong column or date range.</td><td role="cell" data-label="Catch it">Run it on an example whose answer you know. "No error" is not "correct".</td></tr>
+          <tr role="row"><td role="cell" data-label="Failure mode"><strong>Stale facts in the present tense</strong></td><td role="cell" data-label="Looks like">Present-tense claims about prices, laws or versions, frozen at the cutoff.</td><td role="cell" data-label="Catch it">Ask how current it is, then check a live source.</td></tr>
+          <tr role="row"><td role="cell" data-label="Failure mode"><strong>Sycophancy</strong></td><td role="cell" data-label="Looks like">Eager agreement, and a plan with no downsides.</td><td role="cell" data-label="Catch it">Ask for the case against. A real one has real costs in it.</td></tr>
+          <tr role="row"><td role="cell" data-label="Failure mode"><strong>Anchoring on your framing</strong></td><td role="cell" data-label="Looks like">You asked why X beats Y, and got an essay on why X beats Y.</td><td role="cell" data-label="Catch it">Ask neutrally in a fresh chat, naming neither as the favourite.</td></tr>
+          <tr role="row"><td role="cell" data-label="Failure mode"><strong>Confident middle, invented edges</strong></td><td role="cell" data-label="Looks like">The explanation is solid; the exact figure or date is invented.</td><td role="cell" data-label="Catch it">Trust the shape, check the specifics. Precision is where invention hides.</td></tr>
+          <tr role="row"><td role="cell" data-label="Failure mode"><strong>Silent unit and currency errors</strong></td><td role="cell" data-label="Looks like">Millions mixed with billions, percent with percentage points — in one tidy table.</td><td role="cell" data-label="Catch it">Check the units are stated, consistent, and that totals add up.</td></tr>
+          <tr role="row"><td role="cell" data-label="Failure mode"><strong>Over-generalising from your one example</strong></td><td role="cell" data-label="Looks like">You gave one sample row; it works only for that row.</td><td role="cell" data-label="Catch it">Test the awkward cases: empty, duplicate, missing field.</td></tr>
         </tbody>
       </table>
     </div>

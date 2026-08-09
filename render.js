@@ -117,13 +117,22 @@ const SCREEN_BUDGET = {
      the four-week deck both landed without the budget following them down, so
      several screens of headroom were sitting there for the length to drift back
      into. Measured + ~0.4. Prior row, for the size of the move:
-       index 9.6  map 11.5  trust 11.8  leverage 11.3  tools 8.8  further 13.3 */
-  index: 6.7,     // 6.3 measured
-  map: 10.2,      // 9.8 measured — ten accordions are one swipe row, not ten rows
-  trust: 11.2,    // 10.8 measured
-  leverage: 10.0, // 9.6 measured
-  tools: 8.0,     // 7.6 measured
-  further: 10.3,  // 9.9 measured — was the longest page; four checklists remain
+       index 9.6  map 11.5  trust 11.8  leverage 11.3  tools 8.8  further 13.3
+
+     Then RAISED on the five pages with tables, deliberately, with the trade named:
+     stacking a table's rows into cards is only half a fix — without its column
+     name each cell is an unattributed paragraph, and three of the seven tables
+     read as a sentence or a contrast pair ACROSS the row, so they lost their
+     meaning entirely. A label per cell costs ~0.3 screens on those pages and is
+     worth it; 12px row padding and an 8px cell gap paid ~0.1 of it back. This
+     is the budget working as designed — the cost had to be argued for, not
+     absorbed silently. */
+  index: 6.7,     // 6.3 measured — no tables, unchanged
+  map: 10.8,      // 10.4 measured — 8 rows x 3 columns, the most labels of any page
+  trust: 11.8,    // 11.4 measured — three tables
+  leverage: 10.5, // 10.1 measured — two tables
+  tools: 8.0,     // 7.6 measured — no tables, unchanged
+  further: 10.6,  // 10.2 measured
 };
 const only = process.argv.slice(2).find((a) => !a.startsWith('--'));
 const pages = only ? PAGES.filter((p) => p === only) : PAGES;
@@ -640,10 +649,63 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
       TEXT[combo.name] = TEXT[combo.name] || {};
       TEXT[combo.name][name] = await page.evaluate(() => {
         document.querySelectorAll('details').forEach((d) => { d.open = true; });
+        /* Tables are compared separately and more strictly, below. They are cut
+           out of this string because a phone renders the SAME header words in a
+           different SHAPE: desktop prints each column name once in a header row,
+           a phone prints it on every card via ::before. Nothing is dropped —
+           but the two strings cannot be character-identical, and loosening the
+           whole-page comparison to word-sets to accommodate seven tables would
+           trade a strong invariant over the entire page for a weak one. */
+        const cut = document.createElement('style');
+        cut.textContent = '.tscroll{display:none !important}';
+        document.head.appendChild(cut);
         const t = document.body.innerText.replace(/\s+/g, ' ').trim();
+        cut.remove();
         document.querySelectorAll('details.acc').forEach((d) => { d.open = d.hasAttribute('data-was-open'); });
         return t;
       });
+
+      /* THE HEADER WORDS MUST BE ON SCREEN, ONCE PER CELL.
+         thead is display:none on a phone, which is only defensible because the
+         label is reprinted on every card. That "because" is a claim, so it gets
+         a check: read the RENDERED ::before of every cell and require it to
+         equal the text of the <th> above it. If the labels ever stop rendering
+         — a dropped data-label, a typo'd attr(), a build that skipped the
+         stamp — this fails instead of quietly hiding the column names. */
+      const labels = await page.evaluate(() => {
+        const out = { cells: 0, bad: [], headHidden: 0, headShown: 0 };
+        document.querySelectorAll('table').forEach((tbl) => {
+          /* textContent, NOT innerText: on a phone the header row is display:none
+             and innerText of a hidden element is "" — which made the check
+             compare every label against an empty string and report the site
+             broken when it was the harness that was. */
+          const ths = [...tbl.querySelectorAll('thead th')].map((t) => t.textContent.replace(/\s+/g, ' ').trim());
+          const head = tbl.querySelector('thead');
+          if (head) (getComputedStyle(head).display === 'none' ? out.headHidden++ : out.headShown++);
+          tbl.querySelectorAll('tbody tr').forEach((tr) => {
+            [...tr.children].forEach((td, i) => {
+              out.cells++;
+              const shown = getComputedStyle(td, '::before').content;
+              const want = ths[i];
+              if (shown === 'none' || shown === 'normal') {
+                /* no label rendered — fine only while the header row itself is
+                   visible, i.e. on a desktop where the columns still exist */
+                if (head && getComputedStyle(head).display === 'none') out.bad.push(`"${want}" missing on a cell`);
+                return;
+              }
+              const got = shown.replace(/^"|"$/g, '').replace(/\\"/g, '"');
+              if (got !== want) out.bad.push(`cell shows "${got}", column says "${want}"`);
+            });
+          });
+        });
+        return out;
+      });
+      check(labels.bad.length === 0,
+        `${name}: table cell labels disagree with their column: ${labels.bad.slice(0, 3).join('; ')}`);
+      if (labels.headHidden > 0) {
+        check(labels.cells > 0,
+          `${name}: a table header row is hidden but there are no cells carrying the column names`);
+      }
 
       /* --- WCAG AA contrast on every piece of rendered text --- */
       const contrast = await page.evaluate(() => {
@@ -948,7 +1010,7 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
     if (dl[name] && ml[name]) {
       const same = dl[name] === ml[name];
       check(same, `${name}: mobile shows different text from desktop (${dl[name].length} vs ${ml[name].length} chars) — a media query is hiding content`);
-      if (same) console.log(`  ${name.padEnd(9)} desktop == mobile  (${dl[name].length} chars of visible text)`);
+      if (same) console.log(`  ${name.padEnd(9)} desktop == mobile  (${dl[name].length} chars outside tables; cells checked per-label)`);
     }
     if (dl[name] && dd[name]) {
       check(dl[name] === dd[name], `${name}: dark mode shows different text from light mode`);

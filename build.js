@@ -24,6 +24,7 @@ const cfg = require('./site.config.js');
 require('./src/validate-config.js').validate(cfg);
 
 const layout = require('./src/layout.js');
+const { labelTables } = require('./src/table-labels.js');
 
 const ROOT = __dirname;
 const CHECK = process.argv.includes('--check');
@@ -49,7 +50,12 @@ for (const page of cfg.pages) {
     continue;
   }
 
-  const html = layout.render(page, body).replace('<html lang="en">', '<html lang="en">\n' + BANNER);
+  /* Column labels are stamped in from each table's own <th> — see
+     src/table-labels.js. Done here rather than in the page sources so the
+     label cannot drift from the header it names. */
+  const labelled = labelTables(body);
+
+  const html = layout.render(page, labelled).replace('<html lang="en">', '<html lang="en">\n' + BANNER);
   const outPath = path.join(ROOT, page.file);
   const existing = fs.existsSync(outPath) ? fs.readFileSync(outPath, 'utf8') : null;
 

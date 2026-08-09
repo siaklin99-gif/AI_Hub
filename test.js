@@ -15,10 +15,12 @@
    ============================================================ */
 'use strict';
 
+const fs = require('fs');
 const path = require('path');
 const { validate } = require('./src/validate-config.js');
 const C = require('./src/components.js');
 const layout = require('./src/layout.js');
+const { labelTables } = require('./src/table-labels.js');
 const realCfg = require('./site.config.js');
 
 let pass = 0, fail = 0;
@@ -222,6 +224,47 @@ t('adding a page to the config reaches nav, footer and track grid with no page e
   const bad = clone();
   bad.pages.push(Object.assign({}, c.pages[c.pages.length - 1], { track: 'Track 9 · New', eyebrow: 'Track 9 · New' }));
   throws(() => validate(bad), 'disagree', 'wrongly numbered new page');
+});
+
+/* ---- table column labels ------------------------------------------------
+   The clean case is already covered by render.js reading the rendered page.
+   These are the dirty ones: a table the transform must leave alone, markup
+   and quotes inside a header, and a malformed row that must be refused rather
+   than silently shipped as an unlabelled card. */
+t('table-labels: stamps each cell with its own column', () => {
+  const out = labelTables('<table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead>' +
+    '<tbody><tr><td>Vague ask</td><td>Say who it is for</td></tr></tbody></table>');
+  ok(out.includes('data-label="Mistake">Vague ask'), 'first cell labelled Mistake');
+  ok(out.includes('data-label="Fix">Say who it is for'), 'second cell labelled Fix');
+  ok(out.includes('role="table"') && out.includes('role="row"'),
+    'ARIA roles restored — display:block strips native table semantics');
+});
+
+t('table-labels: a header with markup and a quote survives as an attribute', () => {
+  const out = labelTables('<table><thead><tr><th>Say <em>"no"</em></th></tr></thead>' +
+    '<tbody><tr><td>x</td></tr></tbody></table>');
+  ok(out.includes('data-label="Say &quot;no&quot;"'),
+    'tags stripped and quotes escaped so the attribute cannot be terminated early');
+});
+
+t('table-labels: leaves a table with no header row untouched', () => {
+  const src = '<table><tbody><tr><td>a</td></tr></tbody></table>';
+  eq(labelTables(src), src, 'nothing to derive a label from, so nothing is changed');
+});
+
+t('table-labels: refuses a row with more cells than columns', () => {
+  throws(() => labelTables('<table><thead><tr><th>One</th></tr></thead>' +
+    '<tbody><tr><td>a</td><td>b</td></tr></tbody></table>'),
+    'cells', 'a cell with no column cannot be labelled — shipping it unlabelled is the bug');
+});
+
+t('table-labels: every table in the real pages ends up fully labelled', () => {
+  for (const f of fs.readdirSync(path.join(__dirname, 'src', 'pages'))) {
+    const out = labelTables(require(path.join(__dirname, 'src', 'pages', f)));
+    const tds = out.match(/<td[^>]*>/g) || [];
+    const unlabelled = tds.filter((td) => !td.includes('data-label='));
+    eq(unlabelled.length, 0, `${f}: ${unlabelled.length} cells would render with no column name`);
+  }
 });
 
 console.log('\n' + '='.repeat(58));
