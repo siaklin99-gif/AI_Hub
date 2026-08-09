@@ -192,90 +192,92 @@ End with an open offer to hear objections.</div>
       <button type="button" data-acc="close">Collapse all</button>
     </div>
 
-    <details class="acc" open>
-      <summary><span class="sq">01</span>The tutor</summary>
-      <div class="acc-body">
-        <div class="prompt-wrap"><button class="copy-btn" type="button">Copy</button>
-        <div class="prompt">Teach me [topic]. I know nothing about it. Don't lecture — go one small step at a time, and after each step ask me a question to check I followed. If I get it wrong, explain what I misunderstood before moving on.</div></div>
-      </div>
-    </details>
+    <div class="acc-deck">
+      <details class="acc" open>
+        <summary><span class="sq">01</span>The tutor</summary>
+        <div class="acc-body">
+          <div class="prompt-wrap"><button class="copy-btn" type="button">Copy</button>
+          <div class="prompt">Teach me [topic]. I know nothing about it. Don't lecture — go one small step at a time, and after each step ask me a question to check I followed. If I get it wrong, explain what I misunderstood before moving on.</div></div>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">02</span>The critic</summary>
-      <div class="acc-body">
-        <div class="prompt-wrap"><button class="copy-btn" type="button">Copy</button>
-        <div class="prompt">Here is [my work]. Don't tell me what's good. Tell me the three weakest things about it, why each is weak, and what would fix it. Be blunt — I'd rather hear it from you than from my audience.</div></div>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">02</span>The critic</summary>
+        <div class="acc-body">
+          <div class="prompt-wrap"><button class="copy-btn" type="button">Copy</button>
+          <div class="prompt">Here is [my work]. Don't tell me what's good. Tell me the three weakest things about it, why each is weak, and what would fix it. Be blunt — I'd rather hear it from you than from my audience.</div></div>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">03</span>The translator</summary>
-      <div class="acc-body">
-        <div class="prompt-wrap"><button class="copy-btn" type="button">Copy</button>
-        <div class="prompt">Rewrite this for [audience], who [what they care about and what they don't]. Same meaning, nothing added or softened. Then tell me which parts I'm likely to be challenged on.</div></div>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">03</span>The translator</summary>
+        <div class="acc-body">
+          <div class="prompt-wrap"><button class="copy-btn" type="button">Copy</button>
+          <div class="prompt">Rewrite this for [audience], who [what they care about and what they don't]. Same meaning, nothing added or softened. Then tell me which parts I'm likely to be challenged on.</div></div>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">04</span>The explainer</summary>
-      <div class="acc-body">
-        <div class="prompt-wrap"><button class="copy-btn" type="button">Copy</button>
-        <div class="prompt">Explain [thing] to me three times: once as if I'm ten, once as if I'm a smart adult with no background, and once as if I work in the field. Then tell me which one I probably need.</div></div>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">04</span>The explainer</summary>
+        <div class="acc-body">
+          <div class="prompt-wrap"><button class="copy-btn" type="button">Copy</button>
+          <div class="prompt">Explain [thing] to me three times: once as if I'm ten, once as if I'm a smart adult with no background, and once as if I work in the field. Then tell me which one I probably need.</div></div>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">05</span>The devil's advocate</summary>
-      <div class="acc-body">
-        <div class="prompt-wrap"><button class="copy-btn" type="button">Copy</button>
-        <div class="prompt">I'm about to [decision]. Argue against it as forcefully as you can. Then tell me which of your arguments is strongest, and what evidence would change my mind.</div></div>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">05</span>The devil's advocate</summary>
+        <div class="acc-body">
+          <div class="prompt-wrap"><button class="copy-btn" type="button">Copy</button>
+          <div class="prompt">I'm about to [decision]. Argue against it as forcefully as you can. Then tell me which of your arguments is strongest, and what evidence would change my mind.</div></div>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">06</span>The rehearsal partner</summary>
-      <div class="acc-body">
-        <div class="prompt-wrap"><button class="copy-btn" type="button">Copy</button>
-        <div class="prompt">You are [the other person: interviewer / my landlord / a sceptical client]. I'm going to [what I want]. Play them realistically, including being difficult. One exchange at a time — wait for my reply before continuing.</div></div>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">06</span>The rehearsal partner</summary>
+        <div class="acc-body">
+          <div class="prompt-wrap"><button class="copy-btn" type="button">Copy</button>
+          <div class="prompt">You are [the other person: interviewer / my landlord / a sceptical client]. I'm going to [what I want]. Play them realistically, including being difficult. One exchange at a time — wait for my reply before continuing.</div></div>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">07</span>The extractor</summary>
-      <div class="acc-body">
-        <div class="prompt-wrap"><button class="copy-btn" type="button">Copy</button>
-        <div class="prompt">Here is [messy text]. Turn it into a table with these exact columns: [columns]. If a value isn't stated, write "not stated" — do not guess or fill it in. List anything that didn't fit the table underneath.</div></div>
-        <p class="small muted" style="margin-top:10px">The "do not guess" instruction is the important half. Without it, gaps get quietly filled with plausible inventions.</p>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">07</span>The extractor</summary>
+        <div class="acc-body">
+          <div class="prompt-wrap"><button class="copy-btn" type="button">Copy</button>
+          <div class="prompt">Here is [messy text]. Turn it into a table with these exact columns: [columns]. If a value isn't stated, write "not stated" — do not guess or fill it in. List anything that didn't fit the table underneath.</div></div>
+          <p class="small muted" style="margin-top:10px">The "do not guess" instruction is the important half. Without it, gaps get quietly filled with plausible inventions.</p>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">08</span>The pre-mortem</summary>
-      <div class="acc-body">
-        <p class="small muted">A technique from decision researcher Gary Klein
-        (<em>Harvard Business Review</em>, 2007): imagine the failure has already happened,
-        then explain how. The idea is his; the wording below is ours.</p>
-        <div class="prompt-wrap"><button class="copy-btn" type="button">Copy</button>
-        <div class="prompt">It's six months from now and [my plan] has failed badly. Write the story of how it failed. Then rank the causes by how likely they are, and tell me which one I could cheaply protect against this week.</div></div>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">08</span>The pre-mortem</summary>
+        <div class="acc-body">
+          <p class="small muted">A technique from decision researcher Gary Klein
+          (<em>Harvard Business Review</em>, 2007): imagine the failure has already happened,
+          then explain how. The idea is his; the wording below is ours.</p>
+          <div class="prompt-wrap"><button class="copy-btn" type="button">Copy</button>
+          <div class="prompt">It's six months from now and [my plan] has failed badly. Write the story of how it failed. Then rank the causes by how likely they are, and tell me which one I could cheaply protect against this week.</div></div>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">09</span>The question-finder</summary>
-      <div class="acc-body">
-        <div class="prompt-wrap"><button class="copy-btn" type="button">Copy</button>
-        <div class="prompt">I'm about to meet [a doctor / lawyer / builder / recruiter] about [situation]. What should I ask them that someone in my position usually doesn't think to ask? What would I regret not asking?</div></div>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">09</span>The question-finder</summary>
+        <div class="acc-body">
+          <div class="prompt-wrap"><button class="copy-btn" type="button">Copy</button>
+          <div class="prompt">I'm about to meet [a doctor / lawyer / builder / recruiter] about [situation]. What should I ask them that someone in my position usually doesn't think to ask? What would I regret not asking?</div></div>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">10</span>The unsticker</summary>
-      <div class="acc-body">
-        <div class="prompt-wrap"><button class="copy-btn" type="button">Copy</button>
-        <div class="prompt">I'm stuck on [problem]. I've already tried [what you tried]. Ask me questions until you understand the situation properly — don't propose anything until you do.</div></div>
-        <p class="small muted" style="margin-top:10px">Making it interview <em>you</em> is the most underused move there is. It surfaces the thing you left out because it seemed obvious.</p>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">10</span>The unsticker</summary>
+        <div class="acc-body">
+          <div class="prompt-wrap"><button class="copy-btn" type="button">Copy</button>
+          <div class="prompt">I'm stuck on [problem]. I've already tried [what you tried]. Ask me questions until you understand the situation properly — don't propose anything until you do.</div></div>
+          <p class="small muted" style="margin-top:10px">Making it interview <em>you</em> is the most underused move there is. It surfaces the thing you left out because it seemed obvious.</p>
+        </div>
+      </details>
+    </div>
   </div>
 </section>
 

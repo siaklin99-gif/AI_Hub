@@ -116,105 +116,107 @@ module.exports = `<!-- =========================================================
       <button type="button" data-acc="close">Collapse all</button>
     </div>
 
-    <details class="acc">
-      <summary><span class="sq">01</span>Ask for sources — then actually open them</summary>
-      <div class="acc-body">
-        <p>A citation from an AI is a <em>claim that a source exists</em>. It is not evidence.
-        Systems that don't genuinely search the web can produce references with a real-sounding
-        author, a real-sounding journal, and a title that was never written. Lawyers in
-        several countries have been fined or formally reprimanded for filing invented case
-        citations — the court checked, and the cases did not exist.</p>
-        <p><strong>The move:</strong> ask for the source, then click it. If there's no link,
-        search the exact title. If it doesn't exist, discard everything that rested on it —
-        and be sceptical of the rest of the answer too.</p>
-        <p class="small muted">The common version of this burn: reposting a tidy statistic,
-        and three days later someone in the comments asks for the source. There isn't one.</p>
-        <div class="note note-do"><span class="nlabel">Two-second tell</span>
-        <p>Sources with no links, or links you can't open, are the ones to check first.
-        A tool that genuinely searched will normally hand you something clickable.</p></div>
-      </div>
-    </details>
-
-    <details class="acc">
-      <summary><span class="sq">02</span>Ask again cold — and in a second model</summary>
-      <div class="acc-body">
-        <p>Open a brand-new conversation and ask the same question without any of your
-        earlier framing. Then ask a different AI product entirely.</p>
-        <ul>
-          <li><strong>Same answer twice</strong> — mild encouragement, not proof. Two systems trained on overlapping text can be confidently wrong in the same way.</li>
-          <li><strong>Different answers</strong> — strong signal. You've just located exactly which claim needs a real source, for about thirty seconds of effort.</li>
-        </ul>
-        <p class="small muted">The "cold" part matters. Inside the same conversation it is
-        anchored on everything already said, including your assumptions. A fresh chat drops that.</p>
-      </div>
-    </details>
-
-    <details class="acc">
-      <summary><span class="sq">03</span>Make it argue against itself</summary>
-      <div class="acc-body">
-        <p>Paste the answer back and ask it to attack it. This works far better than asking
-        "are you sure?", because you're giving it a different job rather than a chance to
-        reassure you.</p>
-        <div class="prompt-wrap">
-          <button class="copy-btn" type="button">Copy</button>
-          <div class="prompt">Here is an answer you gave me. Make the strongest possible case that it is wrong.
-List every factual claim in it separately, and for each one say: how could I verify this myself, and how confident should I be?</div>
+    <div class="acc-deck">
+      <details class="acc">
+        <summary><span class="sq">01</span>Ask for sources — then actually open them</summary>
+        <div class="acc-body">
+          <p>A citation from an AI is a <em>claim that a source exists</em>. It is not evidence.
+          Systems that don't genuinely search the web can produce references with a real-sounding
+          author, a real-sounding journal, and a title that was never written. Lawyers in
+          several countries have been fined or formally reprimanded for filing invented case
+          citations — the court checked, and the cases did not exist.</p>
+          <p><strong>The move:</strong> ask for the source, then click it. If there's no link,
+          search the exact title. If it doesn't exist, discard everything that rested on it —
+          and be sceptical of the rest of the answer too.</p>
+          <p class="small muted">The common version of this burn: reposting a tidy statistic,
+          and three days later someone in the comments asks for the source. There isn't one.</p>
+          <div class="note note-do"><span class="nlabel">Two-second tell</span>
+          <p>Sources with no links, or links you can't open, are the ones to check first.
+          A tool that genuinely searched will normally hand you something clickable.</p></div>
         </div>
-        <p class="small muted">The list of separate claims is the real prize. Prose hides
-        how many assertions you were handed; a list makes them countable and checkable.</p>
-      </div>
-    </details>
+      </details>
 
-    <details class="acc" open>
-      <summary><span class="sq">04</span>Check one thing you <em>can</em> check</summary>
-      <div class="acc-body">
-        <p>The highest value per second on this page. In any answer there is usually
-        something verifiable in under a minute: a total that should equal the sum of the
-        parts, a date, a name, one link, one line of code.</p>
-        <p><strong>Check exactly one.</strong> If it's wrong, stop trusting the whole answer —
-        not just that line. Sloppiness in the checkable part is your best available evidence
-        about the uncheckable part.</p>
-        <div class="note note-do"><span class="nlabel">Make it a reflex</span>
-        <p>Never accept a set of numbers without adding them up once yourself. Silent
-        arithmetic errors inside a well-formatted table are one of the most common ways
-        AI mistakes reach a real audience.</p></div>
-      </div>
-    </details>
-
-    <details class="acc">
-      <summary><span class="sq">05</span>Prefer questions whose answers can be tested</summary>
-      <div class="acc-body">
-        <p>You often get to choose the shape of what you ask for. Choose the testable shape.</p>
-        <div class="tscroll">
-          <table>
-            <thead><tr><th>Instead of</th><th>Ask for</th></tr></thead>
-            <tbody>
-              <tr><td>"Is this contract clause fair?"</td><td>"What does this clause let the other side do that I might not expect? List each one."</td></tr>
-              <tr><td>"What's the best way to do X?"</td><td>"Give me three approaches with the trade-off of each, and what would make me pick one over another."</td></tr>
-              <tr><td>"Write me a script that does X."</td><td>"Write it, plus a tiny test I can run on sample data to prove it worked."</td></tr>
-              <tr><td>"Summarise this."</td><td>"Summarise it, then list what you left out and why."</td></tr>
-            </tbody>
-          </table>
+      <details class="acc">
+        <summary><span class="sq">02</span>Ask again cold — and in a second model</summary>
+        <div class="acc-body">
+          <p>Open a brand-new conversation and ask the same question without any of your
+          earlier framing. Then ask a different AI product entirely.</p>
+          <ul>
+            <li><strong>Same answer twice</strong> — mild encouragement, not proof. Two systems trained on overlapping text can be confidently wrong in the same way.</li>
+            <li><strong>Different answers</strong> — strong signal. You've just located exactly which claim needs a real source, for about thirty seconds of effort.</li>
+          </ul>
+          <p class="small muted">The "cold" part matters. Inside the same conversation it is
+          anchored on everything already said, including your assumptions. A fresh chat drops that.</p>
         </div>
-        <p class="small muted">Each right-hand version converts an opinion you'd have to
-        trust into a set of statements you can inspect.</p>
-      </div>
-    </details>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">06</span>Calibrate on ground you own</summary>
-      <div class="acc-body">
-        <p>Ask it about the thing you know best in the world — your job, your hobby, your
-        home town, the subject you studied. Read carefully. Count the errors, including the
-        subtle ones a non-expert would sail past.</p>
-        <p><strong>That number becomes your working assumption</strong> — your rough
-        expectation of how often it's wrong — for every topic you <em>can't</em> check.
-        Whatever you find, your own figure is worth more than any general claim about AI
-        accuracy, including the ones on this page, because you measured it.</p>
-        <p class="small muted">Repeat it when you switch tools, and once or twice a year.
-        It moves.</p>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">03</span>Make it argue against itself</summary>
+        <div class="acc-body">
+          <p>Paste the answer back and ask it to attack it. This works far better than asking
+          "are you sure?", because you're giving it a different job rather than a chance to
+          reassure you.</p>
+          <div class="prompt-wrap">
+            <button class="copy-btn" type="button">Copy</button>
+            <div class="prompt">Here is an answer you gave me. Make the strongest possible case that it is wrong.
+  List every factual claim in it separately, and for each one say: how could I verify this myself, and how confident should I be?</div>
+          </div>
+          <p class="small muted">The list of separate claims is the real prize. Prose hides
+          how many assertions you were handed; a list makes them countable and checkable.</p>
+        </div>
+      </details>
+
+      <details class="acc" open>
+        <summary><span class="sq">04</span>Check one thing you <em>can</em> check</summary>
+        <div class="acc-body">
+          <p>The highest value per second on this page. In any answer there is usually
+          something verifiable in under a minute: a total that should equal the sum of the
+          parts, a date, a name, one link, one line of code.</p>
+          <p><strong>Check exactly one.</strong> If it's wrong, stop trusting the whole answer —
+          not just that line. Sloppiness in the checkable part is your best available evidence
+          about the uncheckable part.</p>
+          <div class="note note-do"><span class="nlabel">Make it a reflex</span>
+          <p>Never accept a set of numbers without adding them up once yourself. Silent
+          arithmetic errors inside a well-formatted table are one of the most common ways
+          AI mistakes reach a real audience.</p></div>
+        </div>
+      </details>
+
+      <details class="acc">
+        <summary><span class="sq">05</span>Prefer questions whose answers can be tested</summary>
+        <div class="acc-body">
+          <p>You often get to choose the shape of what you ask for. Choose the testable shape.</p>
+          <div class="tscroll">
+            <table>
+              <thead><tr><th>Instead of</th><th>Ask for</th></tr></thead>
+              <tbody>
+                <tr><td>"Is this contract clause fair?"</td><td>"What does this clause let the other side do that I might not expect? List each one."</td></tr>
+                <tr><td>"What's the best way to do X?"</td><td>"Give me three approaches with the trade-off of each, and what would make me pick one over another."</td></tr>
+                <tr><td>"Write me a script that does X."</td><td>"Write it, plus a tiny test I can run on sample data to prove it worked."</td></tr>
+                <tr><td>"Summarise this."</td><td>"Summarise it, then list what you left out and why."</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="small muted">Each right-hand version converts an opinion you'd have to
+          trust into a set of statements you can inspect.</p>
+        </div>
+      </details>
+
+      <details class="acc">
+        <summary><span class="sq">06</span>Calibrate on ground you own</summary>
+        <div class="acc-body">
+          <p>Ask it about the thing you know best in the world — your job, your hobby, your
+          home town, the subject you studied. Read carefully. Count the errors, including the
+          subtle ones a non-expert would sail past.</p>
+          <p><strong>That number becomes your working assumption</strong> — your rough
+          expectation of how often it's wrong — for every topic you <em>can't</em> check.
+          Whatever you find, your own figure is worth more than any general claim about AI
+          accuracy, including the ones on this page, because you measured it.</p>
+          <p class="small muted">Repeat it when you switch tools, and once or twice a year.
+          It moves.</p>
+        </div>
+      </details>
+    </div>
   </div>
 </section>
 

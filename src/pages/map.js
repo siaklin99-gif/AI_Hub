@@ -45,122 +45,124 @@ module.exports = `<!-- =========================================================
       <button type="button" data-acc="close">Collapse all</button>
     </div>
 
-    <details class="acc">
-      <summary><span class="sq">01</span>Turning one form into another</summary>
-      <div class="acc-body">
-        <p>Messy notes into a clean summary. A transcript into minutes with action items.
-        A table into a paragraph. A paragraph into a table. An email chain into a timeline.
-        A spec into a checklist.</p>
-        <p class="small muted">This is the single most reliable category, because the answer
-        is already contained in what you gave it. Nothing has to be invented, so there's
-        much less to get wrong.</p>
-      </div>
-    </details>
+    <div class="acc-deck">
+      <details class="acc">
+        <summary><span class="sq">01</span>Turning one form into another</summary>
+        <div class="acc-body">
+          <p>Messy notes into a clean summary. A transcript into minutes with action items.
+          A table into a paragraph. A paragraph into a table. An email chain into a timeline.
+          A spec into a checklist.</p>
+          <p class="small muted">This is the single most reliable category, because the answer
+          is already contained in what you gave it. Nothing has to be invented, so there's
+          much less to get wrong.</p>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">02</span>Explaining anything at any level</summary>
-      <div class="acc-body">
-        <p>The same idea explained to a ten-year-old, to a smart adult with no background,
-        and to a specialist. You can say "I got lost at the third sentence — start again
-        from there" as many times as you need, and it never gets impatient.</p>
-        <p class="small muted">Underrated: paste in the thing you don't understand — a legal
-        clause, an error message, a letter you can't parse — and ask what it means in
-        ordinary words. Take the names and numbers out first, and treat the answer as a way
-        to understand the document, not as a ruling on it. See
-        <a href="trust.html#privacy">what not to paste</a>.</p>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">02</span>Explaining anything at any level</summary>
+        <div class="acc-body">
+          <p>The same idea explained to a ten-year-old, to a smart adult with no background,
+          and to a specialist. You can say "I got lost at the third sentence — start again
+          from there" as many times as you need, and it never gets impatient.</p>
+          <p class="small muted">Underrated: paste in the thing you don't understand — a legal
+          clause, an error message, a letter you can't parse — and ask what it means in
+          ordinary words. Take the names and numbers out first, and treat the answer as a way
+          to understand the document, not as a ruling on it. See
+          <a href="trust.html#privacy">what not to paste</a>.</p>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">03</span>Beating the blank page</summary>
-      <div class="acc-body">
-        <p>A first draft of anything: an awkward email, a complaint letter, a job
-        description, a speech, a policy, a plan. Not because the draft is good — usually
-        it's mediocre — but because most people find reacting to a mediocre draft far
-        easier than starting from nothing.</p>
-        <div class="note note-warn"><span class="nlabel">Careful</span>
-        <p>Mediocre is the risk. If you ship the first draft, you ship generic. The value
-        is in what <em>you</em> change.</p></div>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">03</span>Beating the blank page</summary>
+        <div class="acc-body">
+          <p>A first draft of anything: an awkward email, a complaint letter, a job
+          description, a speech, a policy, a plan. Not because the draft is good — usually
+          it's mediocre — but because most people find reacting to a mediocre draft far
+          easier than starting from nothing.</p>
+          <div class="note note-warn"><span class="nlabel">Careful</span>
+          <p>Mediocre is the risk. If you ship the first draft, you ship generic. The value
+          is in what <em>you</em> change.</p></div>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">04</span>Criticising work — including yours</summary>
-      <div class="acc-body">
-        <p>"What's the weakest part of this argument?" "What would a hostile reviewer
-        attack first?" "What am I assuming here without saying so?" "What's missing that
-        an expert would expect to see?"</p>
-        <p class="small muted">This is where a lot of the real value hides, and almost
-        nobody uses it. It's more useful than asking it to write for you, because a
-        critique you disagree with is still information.</p>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">04</span>Criticising work — including yours</summary>
+        <div class="acc-body">
+          <p>"What's the weakest part of this argument?" "What would a hostile reviewer
+          attack first?" "What am I assuming here without saying so?" "What's missing that
+          an expert would expect to see?"</p>
+          <p class="small muted">This is where a lot of the real value hides, and almost
+          nobody uses it. It's more useful than asking it to write for you, because a
+          critique you disagree with is still information.</p>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">05</span>Pulling structure out of mess</summary>
-      <div class="acc-body">
-        <p>Fifty customer emails into five themes with counts. A pile of receipts into
-        categories. A long thread into "who is asking for what, and by when."
-        An unstructured page of notes into a table with consistent columns.</p>
-        <p class="small muted">Ask for the output as a table or a list with fixed fields —
-        structure in the request produces structure in the answer, and structured answers
-        are far easier to check.</p>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">05</span>Pulling structure out of mess</summary>
+        <div class="acc-body">
+          <p>Fifty customer emails into five themes with counts. A pile of receipts into
+          categories. A long thread into "who is asking for what, and by when."
+          An unstructured page of notes into a table with consistent columns.</p>
+          <p class="small muted">Ask for the output as a table or a list with fixed fields —
+          structure in the request produces structure in the answer, and structured answers
+          are far easier to check.</p>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">06</span>Being a tutor with infinite patience</summary>
-      <div class="acc-body">
-        <p>Not "explain X" but "teach me X. Ask me a question, wait for my answer,
-        tell me what I got wrong, then go one step further." A tutor that never sighs,
-        never runs out of time, and doesn't mind that you asked the same thing twice.</p>
-        <p class="small muted">For anyone who left school long ago, or never had access to
-        good teaching, this may be the most valuable thing on this page.</p>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">06</span>Being a tutor with infinite patience</summary>
+        <div class="acc-body">
+          <p>Not "explain X" but "teach me X. Ask me a question, wait for my answer,
+          tell me what I got wrong, then go one step further." A tutor that never sighs,
+          never runs out of time, and doesn't mind that you asked the same thing twice.</p>
+          <p class="small muted">For anyone who left school long ago, or never had access to
+          good teaching, this may be the most valuable thing on this page.</p>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">07</span>Rehearsal for something real</summary>
-      <div class="acc-body">
-        <p>"You are the hiring manager. Interview me for this job, one question at a time,
-        and be tough." Or the difficult conversation with a colleague. Or the negotiation.
-        Or explaining your diagnosis back to your doctor so you know you understood it.</p>
-        <p class="small muted">Nobody sees you get it wrong. That's the whole point.</p>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">07</span>Rehearsal for something real</summary>
+        <div class="acc-body">
+          <p>"You are the hiring manager. Interview me for this job, one question at a time,
+          and be tough." Or the difficult conversation with a colleague. Or the negotiation.
+          Or explaining your diagnosis back to your doctor so you know you understood it.</p>
+          <p class="small muted">Nobody sees you get it wrong. That's the whole point.</p>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">08</span>Translation — between languages, and between worlds</summary>
-      <div class="acc-body">
-        <p>Between human languages, yes. But also: engineer to executive, legal to plain
-        English, doctor to patient, angry to professional. "Rewrite this so it says the
-        same thing but doesn't sound furious" is a genuinely valuable service.</p>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">08</span>Translation — between languages, and between worlds</summary>
+        <div class="acc-body">
+          <p>Between human languages, yes. But also: engineer to executive, legal to plain
+          English, doctor to patient, angry to professional. "Rewrite this so it says the
+          same thing but doesn't sound furious" is a genuinely valuable service.</p>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">09</span>Writing and fixing code — even if you can't</summary>
-      <div class="acc-body">
-        <p>A spreadsheet formula. A script that renames 400 files. A small web page.
-        A fix for an error message you don't understand. You do not need to be a
-        programmer to get real use out of this — you need to be able to test the result.</p>
-        <div class="note note-warn"><span class="nlabel">The rule</span>
-        <p>Never run code you can't test the effect of, and never run something that
-        deletes or overwrites without a copy of the original. Code that runs is not the
-        same as code that is correct.</p></div>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">09</span>Writing and fixing code — even if you can't</summary>
+        <div class="acc-body">
+          <p>A spreadsheet formula. A script that renames 400 files. A small web page.
+          A fix for an error message you don't understand. You do not need to be a
+          programmer to get real use out of this — you need to be able to test the result.</p>
+          <div class="note note-warn"><span class="nlabel">The rule</span>
+          <p>Never run code you can't test the effect of, and never run something that
+          deletes or overwrites without a copy of the original. Code that runs is not the
+          same as code that is correct.</p></div>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">10</span>Thinking out loud with something that answers</summary>
-      <div class="acc-body">
-        <p>Half-formed idea, no audience, 11pm. "Here's what I'm thinking, poke holes."
-        "Give me three ways to look at this that I haven't considered." "What would
-        someone who disagrees with me say?"</p>
-        <p class="small muted">Not because it's wise. Because articulating a problem to
-        something that responds is how a lot of people find out what they actually think.</p>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">10</span>Thinking out loud with something that answers</summary>
+        <div class="acc-body">
+          <p>Half-formed idea, no audience, 11pm. "Here's what I'm thinking, poke holes."
+          "Give me three ways to look at this that I haven't considered." "What would
+          someone who disagrees with me say?"</p>
+          <p class="small muted">Not because it's wise. Because articulating a problem to
+          something that responds is how a lot of people find out what they actually think.</p>
+        </div>
+      </details>
+    </div>
   </div>
 </section>
 

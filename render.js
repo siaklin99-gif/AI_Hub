@@ -112,14 +112,18 @@ const NO_REFS = process.argv.includes('--no-refs');
    this table and say why — growth becomes a decision, not a drift.
    Values are the 2026-08-08 measurement plus ~0.8 screen of headroom. */
 const SCREEN_BUDGET = {
-  /* Tightened 2026-08-08 after the cut pass, to lock the reduction in rather
-     than leave the old headroom for it to drift back into. Measured + ~0.4. */
-  index: 10,      //  9.6 measured — problem cards cut to one sentence each
-  map: 12,        // 11.5 measured — the 16-item self-audit earns its height
-  trust: 12.2,    // 11.8 measured — failure modes are a scannable table now
-  leverage: 11.7, // 11.3 measured
-  tools: 9.2,     //  8.8 measured
-  further: 13.7,  // 13.3 measured — four checklists; longest page by design
+  /* Re-tightened 2026-08-08 after the accordion decks and the table restack.
+     The previous numbers had gone stale twice over — the grid/step decks and
+     the four-week deck both landed without the budget following them down, so
+     several screens of headroom were sitting there for the length to drift back
+     into. Measured + ~0.4. Prior row, for the size of the move:
+       index 9.6  map 11.5  trust 11.8  leverage 11.3  tools 8.8  further 13.3 */
+  index: 6.7,     // 6.3 measured
+  map: 10.2,      // 9.8 measured — ten accordions are one swipe row, not ten rows
+  trust: 11.2,    // 10.8 measured
+  leverage: 10.0, // 9.6 measured
+  tools: 8.0,     // 7.6 measured
+  further: 10.3,  // 9.9 measured — was the longest page; four checklists remain
 };
 const only = process.argv.slice(2).find((a) => !a.startsWith('--'));
 const pages = only ? PAGES.filter((p) => p === only) : PAGES;
@@ -440,6 +444,25 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
         check(navFit.offscreen.length === 0,
           `${name}: nav links off the right edge of the screen: ${navFit.offscreen.join(', ')}`);
       }
+      /* SAME FAILURE, SECOND PLACE: every table carried min-width:460px, so on a
+         390px phone six sections each hid 106px of a comparison behind a sideways
+         scroll on a table with no visible affordance. .tscroll is exempt from the
+         clipped-text scan for the same reason .nav-links was, so nothing failed.
+         Rows stack into cards on a phone now; this is the guard that keeps them
+         stacked. A deck the reader can SEE is swipeable is fine — a table is not. */
+      const tblFit = await page.evaluate(() =>
+        [...document.querySelectorAll('.tscroll')]
+          .filter((d) => d.clientWidth > 0)
+          .map((d) => ({
+            hidden: Math.round(d.scrollWidth - d.clientWidth),
+            what: (d.closest('section') || {}).id || '?',
+          }))
+          .filter((x) => x.hidden > 1)
+      );
+      check(tblFit.length === 0,
+        `${name}: table content only reachable by scrolling sideways: ` +
+        tblFit.map((x) => `#${x.what} hides ${x.hidden}px`).join(', '));
+
       check(m.navH > 20, `${name}: nav collapsed (height ${m.navH})`);
       check(m.emptySections.length === 0, `${name}: sections render tall but empty: ${m.emptySections.join(', ')}`);
       check(m.escapes.length === 0, `${name}: elements escape the viewport: ${m.escapes.slice(0, 5).join(', ')}`);

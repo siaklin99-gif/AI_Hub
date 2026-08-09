@@ -515,6 +515,36 @@ tbody tr:last-child td { border-bottom: 0; }
   .wk-deck > .wk + .wk { margin-top: 0; }
   .wk-deck > .wk > h3:first-child { margin-top: 0; }
 
+  /* The five accordion lists become decks as well. Ten collapsed rows read as a
+     wall of near-identical grey bars you scroll past without opening; one card at
+     a time gives each item the whole screen and makes the count obvious from the
+     dots. An opened card grows on its own — align-items:flex-start keeps its
+     neighbours at their natural height instead of stretching the whole row. */
+  .acc-deck {
+    display: flex; gap: 12px; align-items: flex-start;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    margin-inline: calc(var(--pad) * -1); padding-inline: var(--pad);
+    padding-bottom: 2px;
+    scrollbar-width: none; -ms-overflow-style: none;
+  }
+  .acc-deck::-webkit-scrollbar { display: none; }
+  .acc-deck > .acc {
+    flex: 0 0 82vw; scroll-snap-align: start; min-width: 0;
+    margin: 0;   /* the stacked gap is the flex gap now */
+  }
+  /* A summary is one line on a wide screen and three on a narrow card, so the
+     rows would otherwise sit at different heights and the deck would look ragged
+     before anything is even opened. */
+  .acc-deck > .acc > summary { align-items: flex-start; }
+  /* Closed, the deck is a row of title cards and should read as one: a 58px card
+     next to a 110px one left 52px of blank deck under the short ones, which looks
+     like a rendering fault rather than a design. Match them — but only while the
+     whole deck is shut, because once a card is open the same rule would stretch
+     every neighbour to the tallest open body. Browsers without :has() simply keep
+     the natural heights, which is the behaviour every other deck already has. */
+  .acc-deck:not(:has(> .acc[open])) > .acc { align-self: stretch; }
+
   /* Progress dots. Rendered by app.js, so they only appear where a deck really
      scrolls — a dot row under a non-scrolling group would be a lie about the UI. */
   .deck-dots { display: flex; gap: 6px; justify-content: center; margin-top: 10px; }
@@ -523,6 +553,34 @@ tbody tr:last-child td { border-bottom: 0; }
     background: var(--border-med); transition: background .18s, width .18s;
   }
   .deck-dots span.on { width: 16px; border-radius: 3px; background: var(--green); }
+  /* ---- tables fit the screen instead of scrolling sideways -----------------
+     Every table carried `min-width: 460px`, so on a 354px content column each
+     one hid exactly 106px behind a horizontal scroll — six sections' worth of
+     comparison data reachable only by swiping a table nobody knows is swipeable.
+
+     On a phone each ROW becomes a card and each CELL a line. The header row
+     stays visible and readable as a legend above them rather than being hidden:
+     display:none on a <thead> would strip that text from phone users, which is
+     the same rule that stopped the section labels being hidden earlier. */
+  .tscroll { overflow-x: visible; }
+  .tscroll table { min-width: 0; width: 100%; }
+  .tscroll thead tr {
+    display: flex; flex-wrap: wrap; gap: 4px 10px;
+    padding: 0 0 8px; border-bottom: 0.5px solid var(--border-med);
+  }
+  .tscroll thead th { padding: 0; border: 0; width: auto; }
+  /* separator trails its own label, so a wrap never orphans a dot at line-start */
+  .tscroll thead th:not(:last-child)::after { content: ' ·'; color: var(--border-med); }
+  .tscroll tbody tr {
+    display: block; padding: 13px 0; border-bottom: 0.5px solid var(--border);
+  }
+  .tscroll tbody tr:last-child { border-bottom: 0; }
+  .tscroll tbody td { display: block; padding: 0 0 6px; border: 0; }
+  .tscroll tbody td:last-child { padding-bottom: 0; }
+  /* the first cell is the row's subject — give it the weight of a heading */
+  .tscroll tbody td:first-child { font-size: 15.5px; margin-bottom: 2px; }
+  .tscroll tbody td:not(:first-child) { color: var(--text-sec); font-size: 14.5px; }
+
   .brand { font-size: 14px; }
 
   /* ---- the nav must not need a sideways swipe ------------------------------

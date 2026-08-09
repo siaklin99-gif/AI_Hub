@@ -27,78 +27,80 @@ module.exports = `<div class="wrap">
       <button type="button" data-acc="close">Collapse all</button>
     </div>
 
-    <details class="acc" open>
-      <summary><span class="sq">01</span>General chat — the everyday one</summary>
-      <div class="acc-body">
-        <p>The one most people mean by "AI". Fast, conversational, good at writing,
-        explaining, summarising and reformatting. This handles the large majority of
-        ordinary use.</p>
-        <p class="small muted"><strong>Pick it for:</strong> writing, explaining, drafting,
-        tidying, translating, everyday questions.</p>
-      </div>
-    </details>
+    <div class="acc-deck">
+      <details class="acc" open>
+        <summary><span class="sq">01</span>General chat — the everyday one</summary>
+        <div class="acc-body">
+          <p>The one most people mean by "AI". Fast, conversational, good at writing,
+          explaining, summarising and reformatting. This handles the large majority of
+          ordinary use.</p>
+          <p class="small muted"><strong>Pick it for:</strong> writing, explaining, drafting,
+          tidying, translating, everyday questions.</p>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">02</span>Reasoning — the slow, careful one</summary>
-      <div class="acc-body">
-        <p>A mode or model that spends noticeably longer before answering, working through
-        the problem in steps. Better on multi-step logic, tricky analysis, maths and
-        debugging. Slower, and usually more expensive or capped at fewer uses per day.</p>
-        <p class="small muted"><strong>Pick it for:</strong> problems where the answer
-        depends on getting several steps right in order. Don't use it to reword an email —
-        you'll wait longer for no benefit.</p>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">02</span>Reasoning — the slow, careful one</summary>
+        <div class="acc-body">
+          <p>A mode or model that spends noticeably longer before answering, working through
+          the problem in steps. Better on multi-step logic, tricky analysis, maths and
+          debugging. Slower, and usually more expensive or capped at fewer uses per day.</p>
+          <p class="small muted"><strong>Pick it for:</strong> problems where the answer
+          depends on getting several steps right in order. Don't use it to reword an email —
+          you'll wait longer for no benefit.</p>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">03</span>Search-connected — the one that reads the web now</summary>
-      <div class="acc-body">
-        <p>Looks things up live and cites what it found, instead of relying only on training
-        data. Essential for anything current: prices, news, laws, product comparisons,
-        who-currently-holds-what.</p>
-        <div class="note note-do"><span class="nlabel">The habit</span>
-        <p>Its value is the links. Open them. A search-connected answer you didn't click
-        through is no more verified than any other — see <a href="trust.html">Trust</a>.</p></div>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">03</span>Search-connected — the one that reads the web now</summary>
+        <div class="acc-body">
+          <p>Looks things up live and cites what it found, instead of relying only on training
+          data. Essential for anything current: prices, news, laws, product comparisons,
+          who-currently-holds-what.</p>
+          <div class="note note-do"><span class="nlabel">The habit</span>
+          <p>Its value is the links. Open them. A search-connected answer you didn't click
+          through is no more verified than any other — see <a href="trust.html">Trust</a>.</p></div>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">04</span>Agents and coding tools — the ones that act</summary>
-      <div class="acc-body">
-        <p>Take multiple steps without asking each time: search, run code, edit files,
-        check their own output, retry. The biggest jump in capability, and the biggest jump
-        in what can go wrong unattended.</p>
-        <p class="small muted"><strong>Pick it for:</strong> real multi-step work — building
-        something, processing many files, anything that would take you an afternoon of
-        repetitive steps.</p>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">04</span>Agents and coding tools — the ones that act</summary>
+        <div class="acc-body">
+          <p>Take multiple steps without asking each time: search, run code, edit files,
+          check their own output, retry. The biggest jump in capability, and the biggest jump
+          in what can go wrong unattended.</p>
+          <p class="small muted"><strong>Pick it for:</strong> real multi-step work — building
+          something, processing many files, anything that would take you an afternoon of
+          repetitive steps.</p>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">05</span>Media — images, audio, video, voice</summary>
-      <div class="acc-body">
-        <p>Generating or editing pictures, transcribing recordings, reading text aloud,
-        holding a spoken conversation, producing video. Moving faster than any other
-        category, so nothing specific is worth memorising.</p>
-        <div class="note note-warn"><span class="nlabel">Two things to know</span>
-        <p>Who owns what you generate varies by product and by plan — check before using it
-        commercially. And generated people, voices and events can be indistinguishable from
-        real ones, which is now your problem as a consumer of media too, not just as a maker.</p></div>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">05</span>Media — images, audio, video, voice</summary>
+        <div class="acc-body">
+          <p>Generating or editing pictures, transcribing recordings, reading text aloud,
+          holding a spoken conversation, producing video. Moving faster than any other
+          category, so nothing specific is worth memorising.</p>
+          <div class="note note-warn"><span class="nlabel">Two things to know</span>
+          <p>Who owns what you generate varies by product and by plan — check before using it
+          commercially. And generated people, voices and events can be indistinguishable from
+          real ones, which is now your problem as a consumer of media too, not just as a maker.</p></div>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">06</span>Local / open-weights — the one that runs on your machine</summary>
-      <div class="acc-body">
-        <p>Models you download and run on your own computer — "open-weights" simply means
-        the model file is yours to download. Typically less capable than the best hosted
-        ones, but nothing is sent to a company's server, there is no subscription (you pay
-        in hardware and electricity instead), and it works offline.</p>
-        <p class="small muted"><strong>Pick it for:</strong> genuinely sensitive material,
-        or curiosity. Needs a reasonably powerful computer and some patience. Not the place
-        to start.</p>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">06</span>Local / open-weights — the one that runs on your machine</summary>
+        <div class="acc-body">
+          <p>Models you download and run on your own computer — "open-weights" simply means
+          the model file is yours to download. Typically less capable than the best hosted
+          ones, but nothing is sent to a company's server, there is no subscription (you pay
+          in hardware and electricity instead), and it works offline.</p>
+          <p class="small muted"><strong>Pick it for:</strong> genuinely sensitive material,
+          or curiosity. Needs a reasonably powerful computer and some patience. Not the place
+          to start.</p>
+        </div>
+      </details>
+    </div>
   </div>
 </section>
 

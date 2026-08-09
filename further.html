@@ -175,14 +175,18 @@
         <li><input type="checkbox" id="d20"><label for="d20">Write five lines: what it's genuinely good at for <em>you</em>, and what you'll never trust it with.</label></li>
       </ul>
       <div class="progress"><span data-count>0 of 5</span><span class="bar"><i></i></span><button type="button" class="reset-btn">reset</button></div>
-    </div></div>
+    </div></div></div>
 
+    <!-- Sits AFTER the deck, not inside it: as a fifth child it became a fifth
+         swipe card on a phone — a note shaped like a week that isn't one, and a
+         fifth progress dot for four weeks. It closes the deck, so it belongs
+         under it, below the dots. -->
     <div class="note note-do">
       <span class="nlabel">The end of week 4</span>
       <p>That last item is the deliverable. Anyone who can write those five lines from
       their own experience is no longer guessing in the dark — and is ahead of most people
       currently being told to embrace AI.</p>
-    </div></div>
+    </div>
   </div>
 </section>
 
@@ -309,91 +313,93 @@
       <button type="button" data-acc="close">Collapse all</button>
     </div>
 
-    <details class="acc" open>
-      <summary><span class="sq">01</span>A thin wrapper around a model is not a business</summary>
-      <div class="acc-body">
-        <p>If your product is a text box that passes the request to someone else's model
-        with a clever instruction attached, then a competitor rebuilds it in a weekend, and
-        the model provider may ship it as a feature for free. That's not a reason not to
-        start — it's a reason not to stop there.</p>
-        <p><strong>What actually holds:</strong> access to data nobody else has; a workflow
-        so deep in a specific job that switching is painful; distribution and trust in a
-        market that's hard to enter; being the one who carries the regulatory or liability
-        burden customers won't carry themselves.</p>
-      </div>
-    </details>
+    <div class="acc-deck">
+      <details class="acc" open>
+        <summary><span class="sq">01</span>A thin wrapper around a model is not a business</summary>
+        <div class="acc-body">
+          <p>If your product is a text box that passes the request to someone else's model
+          with a clever instruction attached, then a competitor rebuilds it in a weekend, and
+          the model provider may ship it as a feature for free. That's not a reason not to
+          start — it's a reason not to stop there.</p>
+          <p><strong>What actually holds:</strong> access to data nobody else has; a workflow
+          so deep in a specific job that switching is painful; distribution and trust in a
+          market that's hard to enter; being the one who carries the regulatory or liability
+          burden customers won't carry themselves.</p>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">02</span>Every use costs you money — this isn't normal software</summary>
-      <div class="acc-body">
-        <p>Traditional software has near-zero cost per extra user. AI products don't:
-        every answer burns computation you pay for. A free tier can lose money on your most
-        enthusiastic users, and the heaviest users are often the ones you most wanted.</p>
-        <p><strong>Work out early:</strong> what one typical customer costs you per month to
-        serve, and what happens to that number if they use it ten times more than you assumed.
-        Do this before you price anything, not after.</p>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">02</span>Every use costs you money — this isn't normal software</summary>
+        <div class="acc-body">
+          <p>Traditional software has near-zero cost per extra user. AI products don't:
+          every answer burns computation you pay for. A free tier can lose money on your most
+          enthusiastic users, and the heaviest users are often the ones you most wanted.</p>
+          <p><strong>Work out early:</strong> what one typical customer costs you per month to
+          serve, and what happens to that number if they use it ten times more than you assumed.
+          Do this before you price anything, not after.</p>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">03</span>The demo is the easy part</summary>
-      <div class="acc-body">
-        <p>An impressive demo can take a weekend. Almost all of the remaining work is what
-        happens when it's wrong in front of a paying customer: how you detect it, how the
-        product behaves, who's accountable, what you promise, and how you improve it without
-        breaking what already worked.</p>
-        <p class="small muted">Teams routinely underestimate that second part, because the
-        demo felt like the product.</p>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">03</span>The demo is the easy part</summary>
+        <div class="acc-body">
+          <p>An impressive demo can take a weekend. Almost all of the remaining work is what
+          happens when it's wrong in front of a paying customer: how you detect it, how the
+          product behaves, who's accountable, what you promise, and how you improve it without
+          breaking what already worked.</p>
+          <p class="small muted">Teams routinely underestimate that second part, because the
+          demo felt like the product.</p>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">04</span>Do it manually for five customers first</summary>
-      <div class="acc-body">
-        <p>The cheapest validation there is. Find five people with the problem and solve it
-        by hand — you, an AI chat window, and an afternoon each. No product, no code.</p>
-        <ul>
-          <li>If nobody will let you do it free, they won't pay for the automated version.</li>
-          <li>Doing it by hand teaches you the actual workflow, including the messy parts that would have broken your design.</li>
-          <li>You find out what "good enough to be trusted" means in that job — which is the number your whole product has to hit.</li>
-        </ul>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">04</span>Do it manually for five customers first</summary>
+        <div class="acc-body">
+          <p>The cheapest validation there is. Find five people with the problem and solve it
+          by hand — you, an AI chat window, and an afternoon each. No product, no code.</p>
+          <ul>
+            <li>If nobody will let you do it free, they won't pay for the automated version.</li>
+            <li>Doing it by hand teaches you the actual workflow, including the messy parts that would have broken your design.</li>
+            <li>You find out what "good enough to be trusted" means in that job — which is the number your whole product has to hit.</li>
+          </ul>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">05</span>Build on shifting ground, deliberately</summary>
-      <div class="acc-body">
-        <p>Models, prices and capabilities change on a timescale of months. Two consequences
-        worth designing for from day one:</p>
-        <ul>
-          <li><strong>Don't marry one provider.</strong> Keep the model swappable, and keep your own set of test cases so you can tell whether a swap actually improved anything.</li>
-          <li><strong>Assume the base models get better.</strong> If your entire value is a gap in the current model's ability, the next release may close it. Build where improvement helps you rather than erases you.</li>
-        </ul>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">05</span>Build on shifting ground, deliberately</summary>
+        <div class="acc-body">
+          <p>Models, prices and capabilities change on a timescale of months. Two consequences
+          worth designing for from day one:</p>
+          <ul>
+            <li><strong>Don't marry one provider.</strong> Keep the model swappable, and keep your own set of test cases so you can tell whether a swap actually improved anything.</li>
+            <li><strong>Assume the base models get better.</strong> If your entire value is a gap in the current model's ability, the next release may close it. Build where improvement helps you rather than erases you.</li>
+          </ul>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">06</span>You are accountable for what it outputs</summary>
-      <div class="acc-body">
-        <p>"The model said it" is not a defence to a customer, a regulator or a court. If
-        your product gives advice, handles money, touches health, or makes decisions about
-        people, get real advice about your obligations before you launch, not after.</p>
-        <p class="small muted">It is also, incidentally, hard to copy. Being the company
-        willing and able to stand behind the output is a real advantage, not just a cost.</p>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">06</span>You are accountable for what it outputs</summary>
+        <div class="acc-body">
+          <p>"The model said it" is not a defence to a customer, a regulator or a court. If
+          your product gives advice, handles money, touches health, or makes decisions about
+          people, get real advice about your obligations before you launch, not after.</p>
+          <p class="small muted">It is also, incidentally, hard to copy. Being the company
+          willing and able to stand behind the output is a real advantage, not just a cost.</p>
+        </div>
+      </details>
 
-    <details class="acc">
-      <summary><span class="sq">07</span>The unglamorous version usually wins</summary>
-      <div class="acc-body">
-        <p>The durable opportunities are rarely the exciting general-purpose ones. They're
-        narrow, specific and slightly boring: one industry, one workflow, one painful hour
-        of someone's week that you know intimately and your competitors don't.</p>
-        <p><strong>Which means your existing career is an asset, not a handicap.</strong> The
-        AI expertise is learnable in months. The twenty years of knowing exactly where a
-        particular job hurts is not.</p>
-      </div>
-    </details>
+      <details class="acc">
+        <summary><span class="sq">07</span>The unglamorous version usually wins</summary>
+        <div class="acc-body">
+          <p>The durable opportunities are rarely the exciting general-purpose ones. They're
+          narrow, specific and slightly boring: one industry, one workflow, one painful hour
+          of someone's week that you know intimately and your competitors don't.</p>
+          <p><strong>Which means your existing career is an asset, not a handicap.</strong> The
+          AI expertise is learnable in months. The twenty years of knowing exactly where a
+          particular job hurts is not.</p>
+        </div>
+      </details>
+    </div>
   </div>
 </section>
 
