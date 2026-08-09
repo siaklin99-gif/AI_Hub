@@ -204,7 +204,7 @@
      The scroll listener is rAF-throttled: a snap scroll fires this continuously,
      and recomputing on every event janks exactly the phones this site is for. */
   function wireDecks() {
-    var decks = document.querySelectorAll('.grid-2, .grid-3, .steps');
+    var decks = document.querySelectorAll('.grid-2, .grid-3, .steps, .wk-deck');
 
     function sync(deck, dots) {
       var kids = deck.children, x = deck.scrollLeft, best = 0, bestD = Infinity;

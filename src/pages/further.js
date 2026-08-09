@@ -68,7 +68,7 @@ module.exports = `<!-- =========================================================
       One job per week, five things in each. Tick as you go — saved on this device.
     </p>
 
-    <h3>Week 1 · Fluency — get comfortable</h3>
+    <div class="wk-deck"><div class="wk"><h3>Week 1 · Fluency — get comfortable</h3>
     <div class="card">
       <ul class="checklist">
         <li><input type="checkbox" id="d1"><label for="d1">Read <a href="index.html#sixty">the short version</a> and the <a href="https://hlur.ai/baseline">foundations guide</a>. Nothing else.</label></li>
@@ -78,9 +78,9 @@ module.exports = `<!-- =========================================================
         <li><input type="checkbox" id="d5"><label for="d5">Deliberately break it: push one task until the answers go wrong. Notice where the edge was.</label></li>
       </ul>
       <div class="progress"><span data-count>0 of 5</span><span class="bar"><i></i></span><button type="button" class="reset-btn">reset</button></div>
-    </div>
+    </div></div>
 
-    <h3>Week 2 · Your own life — make it useful</h3>
+    <div class="wk"><h3>Week 2 · Your own life — make it useful</h3>
     <div class="card">
       <ul class="checklist">
         <li><input type="checkbox" id="d6"><label for="d6">Start a friction log: one line every time something is tedious. Keep it all week.</label></li>
@@ -90,9 +90,9 @@ module.exports = `<!-- =========================================================
         <li><input type="checkbox" id="d10"><label for="d10">Pick the worst item in your friction log and hand it over properly, with the real material.</label></li>
       </ul>
       <div class="progress"><span data-count>0 of 5</span><span class="bar"><i></i></span><button type="button" class="reset-btn">reset</button></div>
-    </div>
+    </div></div>
 
-    <h3>Week 3 · Checking — the week that earns the trust</h3>
+    <div class="wk"><h3>Week 3 · Checking — the week that earns the trust</h3>
     <div class="card">
       <ul class="checklist">
         <li><input type="checkbox" id="d11"><label for="d11">Run the <a href="trust.html#moves">calibration test</a>: ask about your own area of expertise and count the errors.</label></li>
@@ -102,9 +102,9 @@ module.exports = `<!-- =========================================================
         <li><input type="checkbox" id="d15"><label for="d15">Run the <a href="trust.html#checklist">one-page check</a> on something real before you send it.</label></li>
       </ul>
       <div class="progress"><span data-count>0 of 5</span><span class="bar"><i></i></span><button type="button" class="reset-btn">reset</button></div>
-    </div>
+    </div></div>
 
-    <h3>Week 4 · Make something — proof it's real</h3>
+    <div class="wk"><h3>Week 4 · Make something — proof it's real</h3>
     <div class="card">
       <ul class="checklist">
         <li><input type="checkbox" id="d16"><label for="d16">Build your own <a href="tools.html#bench">five-prompt test</a> and run it on two products.</label></li>
@@ -114,14 +114,14 @@ module.exports = `<!-- =========================================================
         <li><input type="checkbox" id="d20"><label for="d20">Write five lines: what it's genuinely good at for <em>you</em>, and what you'll never trust it with.</label></li>
       </ul>
       <div class="progress"><span data-count>0 of 5</span><span class="bar"><i></i></span><button type="button" class="reset-btn">reset</button></div>
-    </div>
+    </div></div>
 
     <div class="note note-do">
       <span class="nlabel">The end of week 4</span>
       <p>That last item is the deliverable. Anyone who can write those five lines from
       their own experience is no longer guessing in the dark — and is ahead of most people
       currently being told to embrace AI.</p>
-    </div>
+    </div></div>
   </div>
 </section>
 

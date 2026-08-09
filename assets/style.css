@@ -406,6 +406,15 @@ tbody tr:last-child td { border-bottom: 0; }
 .pager .dir { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-ter); font-weight: 700; }
 .pager .ttl { font-weight: 600; display: block; margin-top: 3px; }
 
+
+/* The four-week plan: each week is a heading plus its checklist and progress bar.
+   Wrapped so the group can become one swipe deck on a phone, where stacked they
+   ran 1998px — the single biggest remaining block on any hub page.
+   Desktop adds NOTHING here on purpose: an earlier version set a 22px gap between
+   weeks and zeroed the heading's own top margin, which shortened the desktop page
+   by 24px — a change I had said would not happen. The wrapper is layout-neutral
+   until the mobile block turns it sideways. */
+
 /* ---------- footer ---------- */
 
 .foot {
@@ -490,6 +499,21 @@ tbody tr:last-child td { border-bottom: 0; }
      row, and equal heights stop one tall card leaving the others stunted. */
   .steps > li { margin-bottom: 0; }
   .grid-2 > *, .grid-3 > * { height: auto; }
+
+  /* The four-week plan becomes a deck too: four week-cards, one per swipe, instead
+     of 1998px of stacking. Same 82vw card as every other deck so the rhythm holds. */
+  .wk-deck {
+    display: flex; gap: 12px;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    margin-inline: calc(var(--pad) * -1); padding-inline: var(--pad);
+    padding-bottom: 2px;
+    scrollbar-width: none; -ms-overflow-style: none;
+  }
+  .wk-deck::-webkit-scrollbar { display: none; }
+  .wk-deck > .wk { flex: 0 0 82vw; scroll-snap-align: start; min-width: 0; }
+  .wk-deck > .wk + .wk { margin-top: 0; }
+  .wk-deck > .wk > h3:first-child { margin-top: 0; }
 
   /* Progress dots. Rendered by app.js, so they only appear where a deck really
      scrolls — a dot row under a non-scrolling group would be a lie about the UI. */
