@@ -41,7 +41,10 @@ const HTML = `<!doctype html><meta charset="utf-8"><style>
   }
   .rings { position: absolute; right: -140px; top: 50%; transform: translateY(-50%); opacity: .13; }
   .brand { display: flex; align-items: center; gap: 14px; margin-bottom: 34px; }
-  .dot { width: 20px; height: 20px; border-radius: 50%; background: #0f6e56; }
+  /* Was a flat #0f6e56 dot — the pre-mark identity, still on the card long after
+     the site itself started wearing the orbit mark. The card is the first thing
+     anyone sees when the link is shared, so it should look like where it leads. */
+  .mark { width: 34px; height: 34px; flex: 0 0 auto; }
   .brand span { font-size: 27px; font-weight: 650; letter-spacing: -0.01em; }
   h1 { font-size: 68px; line-height: 1.1; letter-spacing: -0.03em; font-weight: 640; max-width: 15.5em; }
   p { font-size: 27px; line-height: 1.45; color: #5f5e5a; margin-top: 26px; max-width: 24em; }
@@ -51,12 +54,24 @@ const HTML = `<!doctype html><meta charset="utf-8"><style>
   }
 </style>
 <svg class="rings" width="620" height="620" viewBox="0 0 620 620" aria-hidden="true">
-  <circle cx="310" cy="310" r="70"  fill="#0f6e56"/>
-  <circle cx="310" cy="310" r="150" fill="none" stroke="#0f6e56" stroke-width="16"/>
-  <circle cx="310" cy="310" r="235" fill="none" stroke="#0f6e56" stroke-width="16"/>
-  <circle cx="310" cy="310" r="310" fill="none" stroke="#0f6e56" stroke-width="16"/>
+  <defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#2563EB"/><stop offset=".5" stop-color="#5B3DF5"/><stop offset="1" stop-color="#10B981"/>
+  </linearGradient></defs>
+  <circle cx="310" cy="310" r="70"  fill="url(#rg)"/>
+  <circle cx="310" cy="310" r="150" fill="none" stroke="url(#rg)" stroke-width="16"/>
+  <circle cx="310" cy="310" r="235" fill="none" stroke="url(#rg)" stroke-width="16"/>
+  <circle cx="310" cy="310" r="310" fill="none" stroke="url(#rg)" stroke-width="16"/>
 </svg>
-<div class="brand"><span class="dot"></span><span>AI Hub</span></div>
+<div class="brand">
+  <svg class="mark" viewBox="0 0 96 96" aria-hidden="true"><defs>
+    <linearGradient id="nm-l" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2563EB"/><stop offset="1" stop-color="#5B3DF5"/></linearGradient>
+    <linearGradient id="nm-r" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2563EB"/><stop offset=".5" stop-color="#06B6D4"/><stop offset="1" stop-color="#10B981"/></linearGradient>
+    <linearGradient id="nm-d" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5B3DF5"/><stop offset="1" stop-color="#2563EB"/></linearGradient></defs>
+    <path d="M56.2 15 A34 34 0 0 1 56.2 81" fill="none" stroke="url(#nm-r)" stroke-width="11.5" stroke-linecap="round"/>
+    <path d="M39.8 81 A34 34 0 0 1 39.8 15" fill="none" stroke="url(#nm-l)" stroke-width="11.5" stroke-linecap="round"/>
+    <circle cx="48" cy="48" r="11" fill="url(#nm-d)"/></svg>
+  <span>AI Hub</span>
+</div>
 <h1>Everyone is confused. That is the honest starting line.</h1>
 <p>Build the basics — then learn the part almost no one teaches: how to check what the AI gives you.</p>
 <div class="foot">Free &middot; No sign-up &middot; ${cfg.site.name === 'AI Hub' ? 'hlur.ai/hub' : ''}</div>
