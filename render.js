@@ -344,7 +344,19 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
           const st = getComputedStyle(e);
           if (st.position === 'absolute' || st.position === 'fixed') return false;
           if (st.overflowX === 'auto' || st.overflowX === 'scroll') return false;
-          if (e.closest('.tscroll') || e.closest('.nav-links')) return false;
+          /* An element inside a horizontally scrollable ancestor cannot push the
+             PAGE sideways — the ancestor scrolls instead. This used to be a list of
+             known scroller classes (.tscroll, .nav-links), which meant every new
+             scrolling region had to be added by hand or it produced a false red;
+             the mobile swipe decks did exactly that on all six pages while
+             document.scrollWidth stayed equal to clientWidth at both 390px and
+             320px. Ask the DOM whether an ancestor scrolls instead of naming them,
+             and the exemption list stops growing. The authoritative page-level
+             signal is still docOverflow above, which is unaffected by this. */
+          for (var a = e.parentElement; a && a !== document.body; a = a.parentElement) {
+            var as = getComputedStyle(a);
+            if (as.overflowX === 'auto' || as.overflowX === 'scroll') return false;
+          }
           const r = e.getBoundingClientRect();
           return r.width > 0 && (r.right > vw + 1 || r.left < -1);
         }).map((e) => e.tagName.toLowerCase() + (e.className ? '.' + String(e.className).split(' ')[0] : ''));
@@ -434,7 +446,19 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
           const st = getComputedStyle(e);
           if (st.position === 'absolute' || st.position === 'fixed') return false;
           if (st.overflowX === 'auto' || st.overflowX === 'scroll') return false;
-          if (e.closest('.tscroll') || e.closest('.nav-links')) return false;
+          /* An element inside a horizontally scrollable ancestor cannot push the
+             PAGE sideways — the ancestor scrolls instead. This used to be a list of
+             known scroller classes (.tscroll, .nav-links), which meant every new
+             scrolling region had to be added by hand or it produced a false red;
+             the mobile swipe decks did exactly that on all six pages while
+             document.scrollWidth stayed equal to clientWidth at both 390px and
+             320px. Ask the DOM whether an ancestor scrolls instead of naming them,
+             and the exemption list stops growing. The authoritative page-level
+             signal is still docOverflow above, which is unaffected by this. */
+          for (var a = e.parentElement; a && a !== document.body; a = a.parentElement) {
+            var as = getComputedStyle(a);
+            if (as.overflowX === 'auto' || as.overflowX === 'scroll') return false;
+          }
           const r = e.getBoundingClientRect();
           return r.width > 0 && (r.right > vw + 1 || r.left < -1);
         }).map((e) => e.tagName.toLowerCase() + '.' + String(e.className).split(' ')[0]);

@@ -190,8 +190,68 @@
     });
   }
 
+  /* ---- swipe-deck progress dots ---------------------------------------------
+     On a phone the card grids and numbered steps become horizontal scroll-snap
+     decks (see the mobile block in style.css). A row that scrolls sideways gives
+     no hint of how much is left, so each deck gets a dot per card with the
+     current one widened.
+
+     Dots are added ONLY when the deck actually overflows. On a desktop the same
+     markup is a normal grid that does not scroll, and a dot row there would be
+     furniture that lies about the interface. Re-checked on resize and on
+     orientation change for the same reason.
+
+     The scroll listener is rAF-throttled: a snap scroll fires this continuously,
+     and recomputing on every event janks exactly the phones this site is for. */
+  function wireDecks() {
+    var decks = document.querySelectorAll('.grid-2, .grid-3, .steps');
+
+    function sync(deck, dots) {
+      var kids = deck.children, x = deck.scrollLeft, best = 0, bestD = Infinity;
+      for (var i = 0; i < kids.length; i++) {
+        var d = Math.abs(kids[i].offsetLeft - deck.offsetLeft - x);
+        if (d < bestD) { bestD = d; best = i; }
+      }
+      for (var j = 0; j < dots.children.length; j++) {
+        dots.children[j].className = (j === best) ? 'on' : '';
+      }
+    }
+
+    for (var i = 0; i < decks.length; i++) {
+      (function (deck) {
+        var dots = null, ticking = false;
+
+        function build() {
+          var scrolls = deck.scrollWidth > deck.clientWidth + 4;
+          if (scrolls && !dots) {
+            dots = document.createElement('div');
+            dots.className = 'deck-dots';
+            dots.setAttribute('aria-hidden', 'true');   // the cards themselves are the content
+            for (var k = 0; k < deck.children.length; k++) dots.appendChild(document.createElement('span'));
+            deck.parentNode.insertBefore(dots, deck.nextSibling);
+            sync(deck, dots);
+          } else if (!scrolls && dots) {
+            dots.parentNode.removeChild(dots); dots = null;
+          } else if (scrolls && dots) {
+            sync(deck, dots);
+          }
+        }
+
+        deck.addEventListener('scroll', function () {
+          if (ticking || !dots) return;
+          ticking = true;
+          requestAnimationFrame(function () { sync(deck, dots); ticking = false; });
+        }, { passive: true });
+
+        window.addEventListener('resize', build);
+        window.addEventListener('orientationchange', build);
+        build();
+      })(decks[i]);
+    }
+  }
+
   function init() {
-    var steps = [markCurrent, wireAccTools, wireChecklists, wireCopy, wireTally];
+    var steps = [markCurrent, wireAccTools, wireChecklists, wireCopy, wireTally, wireDecks];
     for (var i = 0; i < steps.length; i++) {
       try { steps[i](); } catch (e) { if (window.console) console.error('AI Hub: ' + steps[i].name + ' failed', e); }
     }
