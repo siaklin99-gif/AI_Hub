@@ -1036,6 +1036,29 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
           let cum = 1;
           for (let n = e; n; n = n.parentElement) cum *= Number(getComputedStyle(n).opacity);
           fgRaw[3] *= cum;
+          /* Gradient-clipped text is painted by its BACKGROUND, so `color` is
+             transparent by design and reads as invisible here. It is not exempt:
+             judge it by its stops, and hold the WORST one to the same bar. This
+             is what stops the display gradient creeping onto type — its teal end
+             is 2.35:1 on the light background, so only the AA-safe --grad-text
+             pair can pass. */
+          const clip = st.webkitBackgroundClip || st.backgroundClip;
+          if (fgRaw[3] < 0.02 && clip === 'text') {
+            const stops = (st.backgroundImage.match(/rgba?\([^)]*\)/g) || []);
+            if (!stops.length) { bad.push(`${st.fontSize} clipped to a gradient with no readable stops "${e.innerText.slice(0, 28)}"`); return; }
+            const back = bgOf(e);
+            const size0 = parseFloat(st.fontSize), bold0 = parseInt(st.fontWeight, 10) >= 700;
+            const min0 = (size0 >= 24 || (size0 >= 18.66 && bold0)) ? 3 : 4.5;
+            let worst = Infinity, worstStop = '';
+            stops.forEach((sc) => {
+              const n = sc.match(/[\d.]+/g).map(Number);
+              const La = lum(over([n[0], n[1], n[2], n[3] === undefined ? 1 : n[3]], back)), Lb = lum(back);
+              const r = (Math.max(La, Lb) + 0.05) / (Math.min(La, Lb) + 0.05);
+              if (r < worst) { worst = r; worstStop = sc; }
+            });
+            if (worst < min0) bad.push(`${st.fontSize} gradient stop ${worstStop} ${worst.toFixed(2)}:1 <${min0} "${e.innerText.slice(0, 28)}"`);
+            return;
+          }
           if (fgRaw[3] < 0.02) { bad.push(`${st.fontSize} INVISIBLE (effective alpha ${fgRaw[3].toFixed(2)}) "${e.innerText.slice(0, 28)}"`); return; }
           const bg = bgOf(e);
           const L1 = lum(over(fgRaw, bg)), L2 = lum(bg);

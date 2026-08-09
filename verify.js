@@ -299,6 +299,21 @@ check(afterMq === '', 'style.css: rules appear AFTER the mobile media query — 
 
 check(/\.skip:focus/.test(CSS), 'style.css: the skip link never becomes visible on focus');
 check(/:focus-visible/.test(CSS), 'style.css: no visible focus indicator');
+/* GRADIENT BUDGET — identity, not wallpaper.
+   /baseline holds itself to 19 uses for the same reason: the mark's gradient
+   earns attention precisely because it is rare, and a gradient on everything is
+   just a loud page. Raising this number is a decision to be argued for in the
+   diff, the same way the phone-screen budget works. */
+const gradUses = (CSS.match(/var\(--grad\)/g) || []).length;
+check(gradUses <= 8, `style.css: the mark's gradient is used ${gradUses} times (budget 8) — identity, not wallpaper`);
+/* The display gradient must never be the paint for TEXT. Its teal stop is
+   2.35:1 on the light background, so clipped type would end illegibly; that is
+   what --grad-text exists for. render.js measures the rendered stops; this
+   catches the pairing in the source, where it is written. */
+const clipRules = all(/\{[^{}]*background-clip:\s*text[^{}]*\}/g, CSS).map((m) => m[0]);
+const badClip = clipRules.filter((r) => /var\(--grad\)/.test(r));
+check(badClip.length === 0, 'style.css: --grad is clipped to text somewhere — use --grad-text (the display gradient ends at 2.35:1)');
+
 check(/prefers-reduced-motion/.test(CSS), 'style.css: does not honour prefers-reduced-motion');
 for (const v of ['--bg', '--surface', '--text', '--green', '--red', '--amber', '--blue', '--radius']) {
   check(CSS.includes(v + ':'), `style.css: theme token ${v} not defined`);
@@ -309,7 +324,19 @@ const lightBlock = (CSS.match(/:root \{[\s\S]*?\n\}/) || [''])[0];
 const darkBlock = (CSS.match(/@media \(prefers-color-scheme: dark\) \{[\s\S]*?\n  \}/) || [''])[0];
 const tokensOf = (b) => new Set(all(/(--[a-z0-9-]+):/g, b).map((m) => m[1]));
 const lightTokens = tokensOf(lightBlock), darkTokens = tokensOf(darkBlock);
-const colourish = [...lightTokens].filter((t) => !['--radius', '--radius-sm', '--wrap', '--pad'].includes(t));
+/* A token whose value is BUILT from other tokens follows the theme on its own —
+   custom properties resolve at use time, so --grad: linear-gradient(var(--g1)…)
+   already paints the dark stops once --g1 is redefined. Verified in both themes
+   before this exemption was added; requiring it to be restated in the dark block
+   would mean maintaining the same gradient twice, which is how the two drift. */
+const composed = new Set(
+  all(/(--[a-z0-9-]+):\s*([^;]*)/g, lightBlock)
+    .filter((m) => m[2].includes('var(--'))
+    .map((m) => m[1])
+);
+const colourish = [...lightTokens].filter(
+  (t) => !['--radius', '--radius-sm', '--wrap', '--pad'].includes(t) && !composed.has(t)
+);
 for (const t of colourish) {
   check(darkTokens.has(t), `style.css: ${t} has no dark-mode value — it will render a light colour on a dark background`);
 }

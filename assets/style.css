@@ -14,6 +14,25 @@
   --red: #a32d2d; --red-bg: #fcebeb;
   --amber: #854f0b; --amber-bg: #faeeda;
   --blue: #185fa5; --blue-bg: #e6f1fb;
+
+  /* ---- the mark ------------------------------------------------------------
+     The Hlur mark's identity, matching hlur.ai/baseline so the two sub-sites
+     read as one site: electric blue -> violet -> teal.
+
+     --accent is the SOLID form and does the work — links, the primary button,
+     focus. --grad is DISPLAY only and never touches text: its teal stop is
+     2.35:1 on the light background, under even the 3.0 large-text floor, so
+     gradient-clipped type would have an illegible end. --grad-text is the
+     AA-safe pair for that (no teal; 6.09:1 and 6.51:1 on light, 8.2:1 on dark).
+     --teal is site chrome, shared with the hlur.ai wordmark. */
+  --accent: #285bd9;
+  --g1: #2f6bff; --g2: #7a5cff; --g3: #12b8a6;
+  --grad: linear-gradient(115deg, var(--g1), var(--g2) 52%, var(--g3));
+  --grad-text: linear-gradient(115deg, #2456c9, #5b3bd6);
+  /* hlur.ai's own --teal-deep. Its plain --teal (#2d8e7e) is only 3.75:1 here:
+     the homepage wordmark is 33px, which clears AA as large text, but this nav
+     sets it at 18px, where the same colour fails. Same brand hue, 5.64:1. */
+  --teal: #1f6f62;
   --radius: 10px; --radius-sm: 6px;
   --shadow: 0 1px 2px rgba(0,0,0,.04), 0 4px 16px rgba(0,0,0,.04);
   /* Container matched to hlur.ai/baseline, measured in a real browser at
@@ -48,6 +67,10 @@
     --red: #f09595; --red-bg: #501313;
     --amber: #ef9f27; --amber-bg: #412402;
     --blue: #85b7eb; --blue-bg: #042c53;
+    --accent: #7ba1ff;
+    --g1: #6f97ff; --g2: #a48cff; --g3: #3fd6c4;
+    --grad-text: linear-gradient(115deg, #85b7eb, #b9a5ff);
+    --teal: #4fae9d;
     --shadow: 0 1px 2px rgba(0,0,0,.2), 0 4px 16px rgba(0,0,0,.25);
   }
 }
@@ -94,7 +117,7 @@ body {
    defaults did survive — but they are thin and low-contrast against these
    surfaces, and this site is aimed partly at older readers. */
 :focus-visible {
-  outline: 2px solid var(--blue);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
   border-radius: 3px;
 }
@@ -104,7 +127,7 @@ body {
   * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }
 
-a { color: var(--blue); text-decoration: none; }
+a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
 /* ---------- nav ---------- */
@@ -131,7 +154,8 @@ a:hover { text-decoration: underline; }
   display: inline-flex; align-items: center; gap: 7px; flex: 0 0 auto;
 }
 .wordmark:hover { text-decoration: none; }
-.wordmark span { color: var(--green); }
+/* the dot is site chrome — teal on hlur.ai and /baseline, and it was green here */
+.wordmark span { color: var(--teal); }
 .nav-mark { width: 22px; height: 22px; flex: 0 0 auto; }
 .nav-sect {
   font-weight: 600; font-size: 13.5px; color: var(--text-sec);
@@ -170,10 +194,35 @@ a:hover { text-decoration: underline; }
 
 /* ---------- hero ---------- */
 
-.hero { padding: 72px 0 44px; }
+/* The mark's glow behind the hero — colour without clutter, and the one place
+   --grad touches a large area. Purely decorative: no text sits on it, it cannot
+   be tabbed to, and it is contained by the hero's own stacking context so it
+   can never paint over content. */
+.hero { padding: 72px 0 44px; position: relative; isolation: isolate; }
+.hero::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(38% 52% at 30% 28%, color-mix(in srgb, var(--g1) 20%, transparent), transparent 70%),
+    radial-gradient(34% 46% at 68% 22%, color-mix(in srgb, var(--g2) 18%, transparent), transparent 70%),
+    radial-gradient(40% 50% at 52% 46%, color-mix(in srgb, var(--g3) 14%, transparent), transparent 72%);
+}
+.hero > .wrap { position: relative; }
+
 .eyebrow {
   font-size: 12px; text-transform: uppercase; letter-spacing: 0.07em;
-  color: var(--text-ter); font-weight: 600; margin: 0 0 14px;
+  font-weight: 600; margin: 0 0 14px;
+  /* The page's identity line carries the mark. --grad-text, never --grad: this
+     is 12px type, and the display gradient's teal stop is 2.35:1 on light.
+     The solid --accent is set FIRST so a browser without background-clip:text
+     shows a readable colour rather than transparent — i.e. nothing at all. */
+  color: var(--accent);
+}
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .eyebrow {
+    background: var(--grad-text);
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent;
+  }
 }
 .hero h1 {
   font-size: 52px; line-height: 1.15; letter-spacing: -0.025em;
@@ -190,7 +239,7 @@ a:hover { text-decoration: underline; }
   font-size: 14.5px; font-weight: 560; border: 0.5px solid transparent;
 }
 .btn:hover { text-decoration: none; }
-.btn-primary { background: var(--green); color: var(--bg); }
+.btn-primary { background: var(--accent); color: var(--bg); }
 .btn-primary:hover { filter: brightness(1.08); }
 .btn-ghost { background: var(--surface); color: var(--text); border-color: var(--border-med); box-shadow: var(--shadow); }
 .btn-ghost:hover { background: var(--surface2); }
@@ -248,9 +297,9 @@ section > .wrap > *:last-child { margin-bottom: 0; }
   border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow);
   color: var(--text);
 }
-.track:hover { text-decoration: none; border-color: var(--green); }
+.track:hover { text-decoration: none; border-color: var(--accent); }
 .track .tnum {
-  font-size: 11.5px; font-weight: 700; color: var(--green);
+  font-size: 11.5px; font-weight: 700; color: var(--accent);
   letter-spacing: 0.08em; text-transform: uppercase;
 }
 .track h3 { margin: 5px 0 5px; font-size: 17.5px; }
@@ -265,7 +314,7 @@ section > .wrap > *:last-child { margin-bottom: 0; }
 }
 .hero-stat .big {
   font-size: 54px; font-weight: 300; letter-spacing: -0.03em;
-  line-height: 1; color: var(--green); display: block;
+  line-height: 1; color: var(--accent); display: block;
 }
 .hero-stat .cap { font-size: 13.5px; color: var(--text-sec); margin-top: 10px; display: block; }
 
@@ -386,7 +435,7 @@ li:last-child { margin-bottom: 0; }
   display: flex; align-items: center; gap: 10px;
 }
 .bar { flex: 1; height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
-.bar > i { display: block; height: 100%; background: var(--green); width: 0; transition: width .2s; }
+.bar > i { display: block; height: 100%; background: var(--grad); width: 0; transition: width .2s; }
 .reset-btn {
   font: inherit; font-size: 12.5px; color: var(--text-ter); background: none;
   border: 0; cursor: pointer; text-decoration: underline; padding: 0;
@@ -469,7 +518,7 @@ tbody tr:last-child td { border-bottom: 0; }
   flex: 1 1 240px; background: var(--surface); border: 0.5px solid var(--border-med);
   border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); color: var(--text);
 }
-.pager a:hover { text-decoration: none; border-color: var(--green); }
+.pager a:hover { text-decoration: none; border-color: var(--accent); }
 .pager .dir { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-ter); font-weight: 700; }
 .pager .ttl { font-weight: 600; display: block; margin-top: 3px; }
 
@@ -506,7 +555,12 @@ tbody tr:last-child td { border-bottom: 0; }
 .peek-wrap { display: flex; justify-content: center; }
 .peek-wrap svg { width: 150px; height: 81px; display: block; margin-bottom: -2px; }
 .foot { border-top: 0; }                 /* the peek's rule replaces the old hairline */
-.foot > .wrap { border-top: 2px solid var(--green); padding-top: 26px; }
+/* the mark's gradient as the rule above the footer — display use, no text */
+.foot > .wrap {
+  border-top: 2px solid transparent;
+  border-image: var(--grad) 1;
+  padding-top: 26px;
+}
 .foot-site { margin-top: 18px; padding-top: 16px; border-top: 0.5px solid var(--border); }
 .foot-site-links { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 12px; }
 .foot-copy { font-size: 13.5px; color: var(--text-ter); margin: 0; }
@@ -646,7 +700,7 @@ tbody tr:last-child td { border-bottom: 0; }
     width: 6px; height: 6px; border-radius: 50%;
     background: var(--border-med); transition: background .18s, width .18s;
   }
-  .deck-dots span.on { width: 16px; border-radius: 3px; background: var(--green); }
+  .deck-dots span.on { width: 16px; border-radius: 3px; background: var(--grad); }
   /* ---- tables fit the screen instead of scrolling sideways -----------------
      Every table carried `min-width: 460px`, so on a 354px content column each
      one hid exactly 106px behind a horizontal scroll — six sections' worth of
