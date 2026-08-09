@@ -38,7 +38,14 @@ function nav() {
     .join('\n');
   return `<nav class="nav">
   <div class="nav-inner">
-    <a class="brand" href="index.html"><span class="dot"></span>${cfg.site.name}</a>
+    <a class="wordmark" href="https://hlur.ai/" aria-label="Hlur \u2014 home"><svg class="nav-mark" viewBox="0 0 96 96" aria-hidden="true"><defs>
+      <linearGradient id="nm-l" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2563EB"/><stop offset="1" stop-color="#5B3DF5"/></linearGradient>
+      <linearGradient id="nm-r" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2563EB"/><stop offset=".5" stop-color="#06B6D4"/><stop offset="1" stop-color="#10B981"/></linearGradient>
+      <linearGradient id="nm-d" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5B3DF5"/><stop offset="1" stop-color="#2563EB"/></linearGradient></defs>
+      <path d="M56.2 15 A34 34 0 0 1 56.2 81" fill="none" stroke="url(#nm-r)" stroke-width="11.5" stroke-linecap="round"/>
+      <path d="M39.8 81 A34 34 0 0 1 39.8 15" fill="none" stroke="url(#nm-l)" stroke-width="11.5" stroke-linecap="round"/>
+      <circle cx="48" cy="48" r="11" fill="url(#nm-d)"/></svg>Hlur<span>.</span></a>
+    <a class="nav-sect" href="index.html">${cfg.site.name.replace(/ /g, '&nbsp;')}</a>
     <div class="nav-links">
 ${links}
     </div>
@@ -106,8 +113,37 @@ function footer(page) {
     .map((t) => `      <a href="${attr(t.href)}">${t.footLabel}</a>`);
   const note = page.footNote ? ' ' + page.footNote : '';
 
+  /* Lur peeking over the rule — the same sign-off hlur.ai and /baseline use.
+     /hub carried none of the site chrome and read as a separate property. */
+  const peek = `  <div class="peek-wrap" aria-hidden="true">
+    <svg viewBox="0 20 200 108" xmlns="http://www.w3.org/2000/svg">
+      <path d="M84 36 Q94 24 106 30 Q114 34 120 28" fill="none" stroke="#2D8E7E" stroke-width="3.2" stroke-linecap="round"/>
+      <circle cx="127" cy="25" r="2.5" fill="#2D8E7E"/>
+      <path d="M100 52 C136 52 158 82 158 116 C158 140 152 158 141 165 C136 169 130 161 123 167 C116 173 110 164 100 171 C90 164 84 173 77 167 C70 161 64 169 59 165 C48 157 42 140 42 116 C42 82 64 52 100 52 Z" fill="#9AD3C6"/>
+      <circle cx="79" cy="104" r="9.5" fill="#1D1D1F"/><circle cx="121" cy="104" r="9.5" fill="#1D1D1F"/>
+      <circle cx="81" cy="100" r="3.1" fill="#fff"/><circle cx="123" cy="100" r="3.1" fill="#fff"/>
+      <ellipse cx="63" cy="118" rx="9" ry="5.5" fill="#F2B8A4"/><ellipse cx="137" cy="118" rx="9" ry="5.5" fill="#F2B8A4"/>
+      <ellipse cx="70" cy="126" rx="8.5" ry="5.5" fill="#9AD3C6"/>
+      <ellipse cx="130" cy="126" rx="8.5" ry="5.5" fill="#9AD3C6"/>
+    </svg>
+  </div>
+`;
+  /* Deliberately no mailto here. hlur.ai's own footer carries the address, but this
+     repo's leak sweep forbids a published email in shipped HTML, and weakening
+     another project's guard to fit a cosmetic change is the wrong trade. */
+  const site = `    <div class="foot-site">
+      <div class="foot-site-links">
+        <a href="https://hlur.ai/">Home</a>
+        <a href="https://hlur.ai/baseline/">AI literacy</a>
+        <a href="https://hlur.ai/lur">Meet Lur</a>
+        <a href="https://hlur.ai/mindfulness">Mindfulness</a>
+      </div>
+      <p class="foot-copy"><b>Still here.</b> &mdash; Lur &middot; Hlur, a one-person lab</p>
+    </div>
+`;
+
   return `<footer class="foot">
-  <div class="wrap">
+${peek}  <div class="wrap">
     <div class="foot-links">
 ${internal.concat(external).join('\n')}
     </div>
@@ -115,7 +151,7 @@ ${internal.concat(external).join('\n')}
       ${cfg.footerNote} Written ${cfg.site.written}.${note}
     </p>
     <p class="tiny legal">${cfg.legal}</p>
-  </div>
+${site}  </div>
 </footer>`;
 }
 

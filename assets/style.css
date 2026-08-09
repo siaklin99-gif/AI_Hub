@@ -96,15 +96,26 @@ a:hover { text-decoration: underline; }
   max-width: var(--wrap); margin: 0 auto; padding: 10px var(--pad);
   display: flex; align-items: center; gap: 18px;
 }
-.brand {
-  font-weight: 650; font-size: 15px; color: var(--text);
-  letter-spacing: -0.01em; white-space: nowrap;
+/* Site chrome. /hub used its own "* AI Hub" brand and read as a separate site
+   next to hlur.ai and hlur.ai/baseline, which share the orbit mark and wordmark.
+   Same mark, same weight and tracking as the rest of the site — but sized to this
+   nav rather than copied at 33px, which would tower over 13.5px section links and
+   crowd out the six of them on a phone. The section name sits beside it so the
+   page still says where you are. */
+.wordmark {
+  font-weight: 700; font-size: 21px; color: var(--text);
+  letter-spacing: -0.02em; white-space: nowrap; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 7px; flex: 0 0 auto;
 }
-.brand:hover { text-decoration: none; }
-.brand .dot {
-  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
-  background: var(--green); margin-right: 7px; vertical-align: 1px;
+.wordmark:hover { text-decoration: none; }
+.wordmark span { color: var(--green); }
+.nav-mark { width: 22px; height: 22px; flex: 0 0 auto; }
+.nav-sect {
+  font-weight: 600; font-size: 13.5px; color: var(--text-sec);
+  white-space: nowrap; padding-left: 12px; margin-left: 2px;
+  border-left: 0.5px solid var(--border-med); flex: 0 0 auto;
 }
+.nav-sect:hover { text-decoration: none; color: var(--text); }
 .nav-links {
   display: flex; gap: 4px; margin-left: auto;
   overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none;
@@ -413,9 +424,31 @@ tbody tr:last-child td { border-bottom: 0; }
    links elsewhere keep their natural line box. */
 .foot p a { padding: 5px 3px; margin: -5px -3px; }
 
+
+/* Footer signature, shared with hlur.ai and /baseline: Lur peeking over a 2px rule.
+   Sits above hub's own privacy and licence text, which is unchanged. */
+.peek-wrap { display: flex; justify-content: center; }
+.peek-wrap svg { width: 150px; height: 81px; display: block; margin-bottom: -2px; }
+.foot { border-top: 0; }                 /* the peek's rule replaces the old hairline */
+.foot > .wrap { border-top: 2px solid var(--green); padding-top: 26px; }
+.foot-site { margin-top: 18px; padding-top: 16px; border-top: 0.5px solid var(--border); }
+.foot-site-links { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 12px; }
+.foot-copy { font-size: 13.5px; color: var(--text-ter); margin: 0; }
+
 /* ---------- mobile (MUST stay last: equal specificity, source order wins) ---------- */
 
 @media (max-width: 760px) {
+  /* The wordmark costs ~140px of a 390px bar, squeezing the scrolling nav links.
+     The first fix hid the section label on mobile — and this repo's rendered harness
+     rejected it: mobile must show the same text as desktop, and display:none on a
+     label IS hiding content from phone users. That rule is stricter than the main
+     site's .nav-sm-hide pattern, and it is the right rule; a phone reader should not
+     silently get less. So the label stays and the chrome gets compact instead. */
+  .wordmark { font-size: 18px; gap: 5px; }
+  .nav-mark { width: 19px; height: 19px; }
+  .nav-sect { font-size: 12.5px; padding-left: 9px; margin-left: 0; }
+  .nav-inner { gap: 10px; }
+
   :root { --pad: 18px; }
   .hero { padding: 40px 0 28px; }
   .hero h1 { font-size: 34px; }
