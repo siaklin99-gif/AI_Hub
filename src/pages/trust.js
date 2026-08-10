@@ -24,11 +24,11 @@ module.exports = `<!-- =========================================================
     <figure class="fig" style="margin-top:26px">
       <svg viewBox="0 0 380 150" role="img" aria-label="Diagram: a correct answer and a wrong answer drawn as two speech bubbles with identical steady voice lines">
         <rect x="22" y="30" width="150" height="62" rx="12" fill="var(--surface)" stroke="var(--border-med)" stroke-width="1.2"/>
-        <path d="M52 92 L60 106 L70 92" fill="var(--surface)" stroke="var(--border-med)" stroke-width="1.2"/>
+        <path d="M88 92 L97 106 L106 92" fill="var(--surface)" stroke="var(--border-med)" stroke-width="1.2"/>
         <rect x="208" y="30" width="150" height="62" rx="12" fill="var(--surface)" stroke="var(--border-med)" stroke-width="1.2"/>
-        <path d="M238 92 L246 106 L256 92" fill="var(--surface)" stroke="var(--border-med)" stroke-width="1.2"/>
-        <path d="M40 61 h22 v-8 h18 v16 h20 v-8 h34" stroke="var(--text-sec)" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <path d="M226 61 h22 v-8 h18 v16 h20 v-8 h34" stroke="var(--text-sec)" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M274 92 L283 106 L292 92" fill="var(--surface)" stroke="var(--border-med)" stroke-width="1.2"/>
+        <path d="M50 61 h22 v-8 h18 v16 h20 v-8 h34" stroke="var(--text-sec)" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M236 61 h22 v-8 h18 v16 h20 v-8 h34" stroke="var(--text-sec)" stroke-width="2" fill="none" stroke-linecap="round"/>
         <text x="97" y="130" text-anchor="middle" font-size="12" fill="var(--green)" font-weight="620">✓ a right answer</text>
         <text x="283" y="130" text-anchor="middle" font-size="12" fill="var(--red)" font-weight="620">✕ an invented one</text>
       </svg>

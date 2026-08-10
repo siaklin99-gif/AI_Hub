@@ -72,8 +72,15 @@
        uniform in light mode. On the triage table that inverted the ranking —
        "Nothing happens" shouted and "Someone gets hurt" sank. 1.21 now, and
        --green on it goes 4.68:1 -> 7.15:1. See the global palette note. */
-    --green: #5dcaa5; --green-bg: #093026;
-    --red: #f09595; --red-bg: #501313;
+    /* INK, not fill. The four FILLS were balanced in the #093026 pass; the inks
+       were left alone and their order ran backwards: green 8.68, amber 8.02,
+       red 7.83 — descending, where light climbs 5.84 / 6.34 / 6.66. So on the
+       triage table "Nothing happens" was the crispest thing in the column and
+       "Someone gets hurt" the softest, and every tick/cross pair emphasised the
+       tick. Green down to 7.15, red up to 8.65; amber unchanged in the middle.
+       Every pairing stays >=4.5 on page, surface and its own tint. */
+    --green: #4fb894; --green-bg: #093026;
+    --red: #f5a0a0; --red-bg: #501313;
     --amber: #ef9f27; --amber-bg: #412402;
     --blue: #85b7eb; --blue-bg: #042c53;
     --accent: #7ba1ff;
@@ -220,6 +227,12 @@ a:hover { text-decoration: underline; }
 .eyebrow {
   font-size: 12px; text-transform: uppercase; letter-spacing: 0.07em;
   font-weight: 600; margin: 0 0 14px;
+  /* The gradient is painted across the ELEMENT, and a <p> is full-width: the
+     text occupied 158px of an 896px box, so the glyphs sampled the first 18%
+     and rendered as flat #2455C9 — indistinguishable from the #285BD9 link
+     colour, which made every hero eyebrow look clickable. Shrink the box to
+     the text and the gradient actually spans the letters. */
+  width: fit-content;
   /* The page's identity line carries the mark. --grad-text, never --grad: this
      is 12px type, and the display gradient's teal stop is 2.35:1 on light.
      The solid --accent is set FIRST so a browser without background-clip:text
@@ -287,7 +300,10 @@ section > .wrap > *:last-child { margin-bottom: 0; }
   background: var(--surface); border: 0.5px solid var(--border-med);
   border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow);
 }
-.grid { display: grid; gap: 12px; }
+/* 20px, not 12: the gutter BETWEEN two cards was smaller than the 18px padding
+   INSIDE one, so a row read as a single merged slab rather than discrete items.
+   The mobile deck sets its own 12px gap and is unaffected. */
+.grid { display: grid; gap: 20px; }
 .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
@@ -639,7 +655,10 @@ tbody tr:last-child td { border-bottom: 0; }
   }
   /* Vertical rhythm between stacked steps becomes dead space once they sit in a
      row, and equal heights stop one tall card leaving the others stunted. */
-  .steps > li { margin-bottom: 0; }
+  /* The grids got height:auto when they became decks; .steps did not, so every
+     step stretched to the tallest and map#habits step 3 carried 223px of blank
+     card. Ragged heights are what the other decks already do. */
+  .steps > li { margin-bottom: 0; height: auto; }
   .grid-2 > *, .grid-3 > * { height: auto; }
 
   /* The four-week plan becomes a deck too: four week-cards, one per swipe, instead
