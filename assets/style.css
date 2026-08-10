@@ -71,17 +71,22 @@
        heavy as red/amber/blue (1.20/1.23/1.24), which are its peers and sit
        uniform in light mode. On the triage table that inverted the ranking —
        "Nothing happens" shouted and "Someone gets hurt" sank. 1.21 now, and
-       --green on it goes 4.68:1 -> 7.15:1. See the global palette note. */
+       --green on it went 4.68:1 -> 7.15:1 at the time. The ink changed afterwards
+       (see below), so that pairing now measures 5.89:1 and 7.15 is green on the
+       PAGE — two different pairings, one number, which is how a comment starts
+       lying. */
     /* INK, not fill. The four FILLS were balanced in the #093026 pass; the inks
        were left alone and their order ran backwards: green 8.68, amber 8.02,
        red 7.83 — descending, where light climbs 5.84 / 6.34 / 6.66. So on the
        triage table "Nothing happens" was the crispest thing in the column and
        "Someone gets hurt" the softest, and every tick/cross pair emphasised the
-       tick. Green down to 7.15, red up to 8.65; amber unchanged in the middle.
+       tick. Ladder raised as a whole (7.90 / 8.66 / 9.23) rather than only lowering green:
+       the smallest SVG diagram labels render at 7.5px at 320px, and a darker green
+       lost the raster headroom that kept them legible there.
        Every pairing stays >=4.5 on page, surface and its own tint. */
-    --green: #4fb894; --green-bg: #093026;
-    --red: #f5a0a0; --red-bg: #501313;
-    --amber: #ef9f27; --amber-bg: #412402;
+    --green: #57c19d; --green-bg: #093026;
+    --red: #f7a8a8; --red-bg: #501313;
+    --amber: #f2a838; --amber-bg: #412402;
     --blue: #85b7eb; --blue-bg: #042c53;
     --accent: #7ba1ff;
     --g1: #6f97ff; --g2: #a48cff; --g3: #3fd6c4;
@@ -655,10 +660,18 @@ tbody tr:last-child td { border-bottom: 0; }
   }
   /* Vertical rhythm between stacked steps becomes dead space once they sit in a
      row, and equal heights stop one tall card leaving the others stunted. */
-  /* The grids got height:auto when they became decks; .steps did not, so every
-     step stretched to the tallest and map#habits step 3 carried 223px of blank
-     card. Ragged heights are what the other decks already do. */
-  .steps > li { margin-bottom: 0; height: auto; }
+  /* Steps size to their own content. `height: auto` does NOT do this — it is the
+     initial value, and it is precisely the state in which align-items:stretch
+     applies, so the first attempt at this was a no-op that measured identical
+     before and after (724,724,724,724 either way). The container has to opt out
+     of stretching, which is what .acc-deck already does. Measured on
+     further#work: 724,724,724,724 -> 724,120,166,145, i.e. step 2 was carrying
+     618px of empty card.
+     Grid cards keep equal heights deliberately — they have a surface and a
+     border, so the extra reads as padding. A step has neither, so it reads as a
+     hole in the page. */
+  .steps { align-items: flex-start; }
+  .steps > li { margin-bottom: 0; }
   .grid-2 > *, .grid-3 > * { height: auto; }
 
   /* The four-week plan becomes a deck too: four week-cards, one per swipe, instead

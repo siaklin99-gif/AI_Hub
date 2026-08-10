@@ -12,7 +12,7 @@ module.exports = `<!-- =========================================================
     <figure class="fig">
       <svg viewBox="0 0 380 175" role="img" aria-label="Diagram: three roads of increasing length from a single starting point — everyday user in about a month, the person at work in months, builder or founder in a year or more">
         <circle cx="30" cy="88" r="9" fill="var(--green)"/>
-        <text x="30" y="115" text-anchor="middle" font-size="11" fill="var(--text-sec)">start</text>
+        <text x="30" y="115" text-anchor="middle" font-size="12" fill="var(--text-sec)">start</text>
         <path d="M40 84 C 80 60, 110 48, 148 42"  stroke="var(--green)" stroke-width="2.4" fill="none" stroke-linecap="round"/>
         <path d="M40 88 C 110 84, 180 80, 252 74" stroke="var(--text-sec)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-dasharray="7 5"/>
         <path d="M40 92 C 130 116, 250 132, 352 128" stroke="var(--text-ter)" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="2 5"/>
@@ -20,11 +20,11 @@ module.exports = `<!-- =========================================================
         <circle cx="252" cy="74" r="5.5" fill="var(--text-sec)"/>
         <circle cx="352" cy="128" r="5.5" fill="var(--text-ter)"/>
         <text x="152" y="26" text-anchor="middle" font-size="12" font-weight="620" fill="var(--text)">A · everyday user</text>
-        <text x="152" y="60" text-anchor="middle" font-size="11" fill="var(--text-ter)">~a month</text>
+        <text x="152" y="60" text-anchor="middle" font-size="12" fill="var(--text-ter)">~a month</text>
         <text x="256" y="58" text-anchor="middle" font-size="12" font-weight="620" fill="var(--text)">B · at work</text>
-        <text x="256" y="94" text-anchor="middle" font-size="11" fill="var(--text-ter)">months</text>
+        <text x="256" y="94" text-anchor="middle" font-size="12" fill="var(--text-ter)">months</text>
         <text x="330" y="152" text-anchor="middle" font-size="12" font-weight="620" fill="var(--text)">C · builder</text>
-        <text x="330" y="168" text-anchor="middle" font-size="11" fill="var(--text-ter)">a year or more</text>
+        <text x="330" y="168" text-anchor="middle" font-size="12" fill="var(--text-ter)">a year or more</text>
       </svg>
       <figcaption>Every road shares the first mile: fluency plus the checking habit.</figcaption>
     </figure>

@@ -112,38 +112,38 @@ module.exports = `<div class="wrap">
 
     <figure class="fig">
       <svg viewBox="0 0 380 300" role="img" aria-label="Flowchart: four yes-or-no questions, asked in order, route you to an approved private tool, search-connected, reasoning, or agent; otherwise general chat">
-        <rect x="14" y="10" width="212" height="34" rx="8" fill="var(--surface)" stroke="var(--amber)" stroke-width="1.3"/>
-        <text x="120" y="31" text-anchor="middle" font-size="12" fill="var(--text)">Genuinely confidential?</text>
+        <rect x="14" y="10" width="200" height="34" rx="8" fill="var(--surface)" stroke="var(--amber)" stroke-width="1.3"/>
+        <text x="114" y="31" text-anchor="middle" font-size="12" fill="var(--text)">Genuinely confidential?</text>
         <rect x="252" y="10" width="116" height="34" rx="8" fill="var(--amber-bg)"/>
         <text x="310" y="31" text-anchor="middle" font-size="12" fill="var(--amber)">approved tool only</text>
-        <path d="M226 27 h20" stroke="var(--text-ter)" stroke-width="1.6"/>
-        <text x="236" y="21" text-anchor="middle" font-size="10" fill="var(--text-ter)">yes</text>
+        <path d="M214 27 h32" stroke="var(--text-ter)" stroke-width="1.6"/>
+        <text x="232" y="21" text-anchor="middle" font-size="12" fill="var(--text-ter)">yes</text>
 
-        <rect x="14" y="76" width="212" height="34" rx="8" fill="var(--surface)" stroke="var(--border-med)" stroke-width="1.2"/>
-        <text x="120" y="97" text-anchor="middle" font-size="12" fill="var(--text)">About something recent?</text>
+        <rect x="14" y="76" width="200" height="34" rx="8" fill="var(--surface)" stroke="var(--border-med)" stroke-width="1.2"/>
+        <text x="114" y="97" text-anchor="middle" font-size="12" fill="var(--text)">About something recent?</text>
         <rect x="252" y="76" width="116" height="34" rx="8" fill="var(--blue-bg)"/>
         <text x="310" y="97" text-anchor="middle" font-size="12" fill="var(--blue)">search-connected</text>
-        <path d="M226 93 h20" stroke="var(--text-ter)" stroke-width="1.6"/>
-        <text x="236" y="87" text-anchor="middle" font-size="10" fill="var(--text-ter)">yes</text>
+        <path d="M214 93 h32" stroke="var(--text-ter)" stroke-width="1.6"/>
+        <text x="232" y="87" text-anchor="middle" font-size="12" fill="var(--text-ter)">yes</text>
 
-        <rect x="14" y="142" width="212" height="34" rx="8" fill="var(--surface)" stroke="var(--border-med)" stroke-width="1.2"/>
-        <text x="120" y="163" text-anchor="middle" font-size="12" fill="var(--text)">Steps must be right in order?</text>
+        <rect x="14" y="142" width="200" height="34" rx="8" fill="var(--surface)" stroke="var(--border-med)" stroke-width="1.2"/>
+        <text x="114" y="163" text-anchor="middle" font-size="12" fill="var(--text)">Steps must be right in order?</text>
         <rect x="252" y="142" width="116" height="34" rx="8" fill="var(--blue-bg)"/>
         <text x="310" y="163" text-anchor="middle" font-size="12" fill="var(--blue)">reasoning mode</text>
-        <path d="M226 159 h20" stroke="var(--text-ter)" stroke-width="1.6"/>
-        <text x="236" y="153" text-anchor="middle" font-size="10" fill="var(--text-ter)">yes</text>
+        <path d="M214 159 h32" stroke="var(--text-ter)" stroke-width="1.6"/>
+        <text x="232" y="153" text-anchor="middle" font-size="12" fill="var(--text-ter)">yes</text>
 
-        <rect x="14" y="208" width="212" height="34" rx="8" fill="var(--surface)" stroke="var(--border-med)" stroke-width="1.2"/>
-        <text x="120" y="229" text-anchor="middle" font-size="12" fill="var(--text)">Needs doing, not just writing?</text>
+        <rect x="14" y="208" width="200" height="34" rx="8" fill="var(--surface)" stroke="var(--border-med)" stroke-width="1.2"/>
+        <text x="114" y="229" text-anchor="middle" font-size="12" fill="var(--text)">Needs doing, not just writing?</text>
         <rect x="252" y="208" width="116" height="34" rx="8" fill="var(--blue-bg)"/>
         <text x="310" y="229" text-anchor="middle" font-size="12" fill="var(--blue)">agent / coding tool</text>
-        <path d="M226 225 h20" stroke="var(--text-ter)" stroke-width="1.6"/>
-        <text x="236" y="219" text-anchor="middle" font-size="10" fill="var(--text-ter)">yes</text>
+        <path d="M214 225 h32" stroke="var(--text-ter)" stroke-width="1.6"/>
+        <text x="232" y="219" text-anchor="middle" font-size="12" fill="var(--text-ter)">yes</text>
 
         <path d="M120 44 v32 M120 110 v32 M120 176 v32 M120 242 v16" stroke="var(--text-ter)" stroke-width="1.4" stroke-dasharray="3 3"/>
         <rect x="60" y="262" width="120" height="30" rx="8" fill="var(--green-bg)" stroke="var(--green)" stroke-width="1.4"/>
         <text x="120" y="282" text-anchor="middle" font-size="12" font-weight="620" fill="var(--green)">general chat</text>
-        <text x="196" y="281" font-size="10" fill="var(--text-ter)">no to all four</text>
+        <text x="196" y="281" font-size="12" fill="var(--text-ter)">no to all four</text>
       </svg>
       <figcaption>Confidentiality is the first question, not the last — everything else is reversible.</figcaption>
     </figure>

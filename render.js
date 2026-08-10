@@ -1039,7 +1039,13 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
           return out;
         };
         const bad = [];
-        document.querySelectorAll('p,li,h1,h2,h3,h4,span,td,th,a,label,summary,button,strong,em').forEach((e) => {
+        /* `svg text` was absent, and that is where MOST of the coloured ink on
+           this site lives — the diagram labels using --green/--red/--amber.
+           So the scan was careful about alpha compositing and gradient-clipped
+           type while never looking at the largest surface those tokens paint,
+           which is how an ink change could drop a label to 3.94:1 with 1706
+           checks green. */
+        document.querySelectorAll('p,li,h1,h2,h3,h4,span,td,th,a,label,summary,button,strong,em,svg text').forEach((e) => {
           if (!e.innerText || !e.innerText.trim()) return;
           if (e.querySelector('p,li,div,td,h2,h3,h4')) return;      // measure leaves only
           if (e.getBoundingClientRect().height === 0) return;        // hidden

@@ -49,25 +49,25 @@ module.exports = `<!-- =========================================================
         <text x="95" y="18" text-anchor="middle" font-size="14" font-weight="620" fill="var(--text)">Search finds</text>
         <text x="285" y="18" text-anchor="middle" font-size="14" font-weight="620" fill="var(--text)">AI composes</text>
         <circle cx="95" cy="45" r="10" fill="var(--blue-bg)" stroke="var(--blue)" stroke-width="1.5"/>
-        <text x="95" y="49" text-anchor="middle" font-size="11" fill="var(--blue)">?</text>
+        <text x="95" y="49" text-anchor="middle" font-size="12" fill="var(--blue)">?</text>
         <circle cx="285" cy="45" r="10" fill="var(--blue-bg)" stroke="var(--blue)" stroke-width="1.5"/>
-        <text x="285" y="49" text-anchor="middle" font-size="11" fill="var(--blue)">?</text>
+        <text x="285" y="49" text-anchor="middle" font-size="12" fill="var(--blue)">?</text>
         <line x1="95" y1="57" x2="95" y2="76" stroke="var(--text-ter)" stroke-width="1.5"/>
         <line x1="285" y1="57" x2="285" y2="76" stroke="var(--text-ter)" stroke-width="1.5"/>
         <rect x="30" y="82" width="130" height="16" rx="4" fill="var(--surface2)" stroke="var(--border-med)" stroke-width="1"/>
         <rect x="30" y="103" width="130" height="18" rx="4" fill="var(--green-bg)" stroke="var(--green)" stroke-width="1.2"/>
         <rect x="30" y="126" width="130" height="16" rx="4" fill="var(--surface2)" stroke="var(--border-med)" stroke-width="1"/>
-        <text x="95" y="116" text-anchor="middle" font-size="10.5" fill="var(--green)">a page someone wrote</text>
+        <text x="95" y="116" text-anchor="middle" font-size="12" fill="var(--green)">a page someone wrote</text>
         <rect x="216" y="96" width="30" height="20" rx="4" fill="var(--green-bg)" stroke="var(--green)" stroke-width="1.2"/>
         <rect x="251" y="96" width="30" height="20" rx="4" fill="var(--green-bg)" stroke="var(--green)" stroke-width="1.2"/>
         <rect x="286" y="96" width="30" height="20" rx="4" fill="var(--green-bg)" stroke="var(--green)" stroke-width="1.2"/>
         <rect x="321" y="96" width="30" height="20" rx="4" fill="none" stroke="var(--border-med)" stroke-width="1" stroke-dasharray="3 3"/>
-        <text x="231" y="110" text-anchor="middle" font-size="10" fill="var(--green)">word</text>
-        <text x="266" y="110" text-anchor="middle" font-size="10" fill="var(--green)">by</text>
-        <text x="301" y="110" text-anchor="middle" font-size="10" fill="var(--green)">word</text>
+        <text x="231" y="110" text-anchor="middle" font-size="12" fill="var(--green)">word</text>
+        <text x="266" y="110" text-anchor="middle" font-size="12" fill="var(--green)">by</text>
+        <text x="301" y="110" text-anchor="middle" font-size="12" fill="var(--green)">word</text>
         <text x="336" y="110" text-anchor="middle" font-size="12" fill="var(--text-ter)">…</text>
-        <text x="95" y="162" text-anchor="middle" font-size="11" fill="var(--text-sec)">picked from what exists</text>
-        <text x="285" y="162" text-anchor="middle" font-size="11" fill="var(--text-sec)">assembled on the spot</text>
+        <text x="95" y="162" text-anchor="middle" font-size="12" fill="var(--text-sec)">picked from what exists</text>
+        <text x="285" y="162" text-anchor="middle" font-size="12" fill="var(--text-sec)">assembled on the spot</text>
       </svg>
       <figcaption>Search retrieves. A chatbot composes — one word at a time.</figcaption>
     </figure>
