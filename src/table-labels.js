@@ -49,6 +49,9 @@ function labelTables(html) {
     const head = /<thead>([\s\S]*?)<\/thead>/.exec(table);
     if (!head) return table;                       // no header row: nothing to derive from
 
+    if (/<th[^>]*\s(?:col|row)span\s*=/i.test(head[1])) {
+      throw new Error('table-labels: a spanning <th> shifts every column index — labels are derived by position');
+    }
     const headers = [...head[1].matchAll(/<th(?:\s[^>]*)?>([\s\S]*?)<\/th>/g)].map((m) => labelOf(m[1]));
     if (!headers.length) return table;
 
@@ -72,7 +75,7 @@ function labelTables(html) {
              one column left — and the "independent" re-derivation in render.js
              indexes tr.children the same way, so it agrees with the mistake.
              Refuse the input rather than ship a quietly mislabelled table. */
-          if (/\scolspan=/i.test(td) || /\srowspan=/i.test(td)) {
+          if (/\s(?:col|row)span\s*=/i.test(td)) {
             throw new Error('table-labels: colspan/rowspan is not supported — the label is derived by column POSITION, and a spanning cell shifts every label after it');
           }
           return `<td${attrs || ''} role="cell" data-label="${label}">`;

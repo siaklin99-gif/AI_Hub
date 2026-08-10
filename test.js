@@ -296,6 +296,38 @@ t('summary-title: every real accordion title ends up as one element', () => {
   }
 });
 
+/* ---- the two transform bugs a cold reviewer found shipped untested -------- */
+t('table-labels: a cell containing $& does not splice the tbody into itself', () => {
+  const out = labelTables('<table><thead><tr><th>A</th></tr></thead>' +
+    '<tbody><tr><td>costs $& more</td></tr></tbody></table>');
+  eq((out.match(/<tbody/g) || []).length, 1, 'exactly one <tbody> survives');
+  ok(out.includes('costs $& more'), 'the cell text is intact');
+  ok(!out.includes('<tbody><tr><td>costs'), 'the original tbody was not re-injected');
+});
+
+t('table-labels: $` and $\' are also inert', () => {
+  for (const bad of ['a $` b', "a $' b", 'a $$ b']) {
+    const out = labelTables('<table><thead><tr><th>A</th></tr></thead>' +
+      `<tbody><tr><td>${bad}</td></tr></tbody></table>`);
+    eq((out.match(/<tbody/g) || []).length, 1, `one tbody for ${bad}`);
+    ok(out.includes(bad), `cell text intact for ${bad}`);
+  }
+});
+
+t('table-labels: a spanning cell is refused, however it is spaced', () => {
+  for (const attr of ['colspan="2"', 'colspan = "2"', 'ROWSPAN="2"', "colspan='2'"]) {
+    throws(() => labelTables('<table><thead><tr><th>A</th><th>B</th></tr></thead>' +
+      `<tbody><tr><td ${attr}>x</td></tr></tbody></table>`),
+      'span', `refused: ${attr}`);
+  }
+});
+
+t('table-labels: a spanning HEADER is refused too', () => {
+  throws(() => labelTables('<table><thead><tr><th colspan="2">A</th><th>B</th></tr></thead>' +
+    '<tbody><tr><td>x</td><td>y</td></tr></tbody></table>'),
+    'span', 'a spanning <th> shifts every column index');
+});
+
 console.log('\n' + '='.repeat(58));
 if (fail === 0) {
   console.log(`\x1b[32mPASS\x1b[0m  ${pass} adversarial tests, 0 failures.`);

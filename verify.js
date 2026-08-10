@@ -537,21 +537,59 @@ head('Usage counting');
     if (!fs.existsSync(hostTally)) {
       console.log('  SKIP  tally event names — host repo not checked out here (expected in CI)');
     } else {
-      const server = new Set(
-        (fs.readFileSync(hostTally, 'utf8').match(/hub:\s*\{[\s\S]*?events:\s*\[([\s\S]*?)\]/) || [, ''])[1]
-          .match(/'([^']+)'/g)?.map((x) => x.slice(1, -1)) || []
-      );
+      /* RUN THE REAL FUNCTION AGAINST THE REAL DEPLOYED PATHS.
+         The first version of this guard built its names from config FILENAMES,
+         so it produced index:load — a name that was already allowlisted — and
+         therefore could not catch the very bug it was written for: the client
+         reduces the deployed URL, and /hub/ reduces to the DIRECTORY, "hub".
+         Reverting the app.js fix left this green. Lift slugOf/pageSlug out of
+         app.js and run them on the paths the host actually serves. */
       const appSrc = fs.readFileSync(path.join(ROOT, 'assets', 'app.js'), 'utf8');
-      const suffixes = (appSrc.match(/var TALLY = \[([^\]]*)\]/) || [, ''])[1]
-        .match(/'([^']+)'/g)?.map((x) => x.slice(1, -1)) || [];
-      const slugs = cfg.pages.map((pg) => pg.file.replace(/\.html$/, ''));
-      const canSend = [];
-      for (const sl of slugs) for (const suf of ['load', 'deep']) if (suffixes.includes(suf)) canSend.push(`${sl}:${suf}`);
-      for (const suf of suffixes) if (!['load', 'deep'].includes(suf)) canSend.push(suf);
+      const grab = (fn) => {
+        const i = appSrc.indexOf(`function ${fn}(`);
+        if (i < 0) return null;
+        let d = 0, j = appSrc.indexOf('{', i);
+        for (let k = j; k < appSrc.length; k++) {
+          if (appSrc[k] === '{') d++;
+          else if (appSrc[k] === '}' && --d === 0) return appSrc.slice(i, k + 1);
+        }
+        return null;
+      };
+      const srcSlug = grab('slugOf'), srcPage = grab('pageSlug');
+      /* Fail LOUD if extraction breaks. The previous version had no such check
+         on its client half: rename a variable and it compared nothing at all,
+         silently. A guard that cannot read its input must say so. */
+      check(!!srcSlug && !!srcPage, 'could not lift slugOf/pageSlug out of app.js — this cross-check compared nothing');
+      const suffixes = ((appSrc.match(/var TALLY = \[([^\]]*)\]/) || [, ''])[1].match(/'([^']+)'/g) || [])
+        .map((x) => x.slice(1, -1));
+      check(suffixes.length > 0, 'could not read the TALLY suffix list out of app.js — this cross-check compared nothing');
+
+      /* Comments inside the events array were being ingested as entries, so a
+         commented-out event counted as allowlisted. Strip them first. */
+      const hostSrc = fs.readFileSync(hostTally, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+      const server = new Set(
+        ((hostSrc.match(/hub:\s*\{[\s\S]*?events:\s*\[([\s\S]*?)\]/) || [, ''])[1].match(/'([^']+)'/g) || [])
+          .map((x) => x.slice(1, -1))
+      );
       check(server.size > 0, 'could not read the hub event allowlist out of the host tally function');
-      const orphans = canSend.filter((e) => !server.has(e));
-      check(orphans.length === 0,
-        `app.js can send ${orphans.join(', ')} but the server allowlist drops them — those visits are never counted`);
+
+      if (srcSlug && srcPage && suffixes.length && server.size) {
+        /* `location` is a free variable inside pageSlug, so it must be injected
+           into the function's scope — .call({location}) cannot reach it. */
+        const makeSlug = new Function('location', `${srcSlug}\n${srcPage}\nreturn pageSlug;`);
+        const base = new URL(cfg.site.baseUrl).pathname.replace(/\/$/, '');
+        const deployed = cfg.pages.map((pg) =>
+          pg.file === 'index.html' ? `${base}/` : `${base}/${pg.file.replace(/\.html$/, '')}`);
+        const canSend = [];
+        for (const url of deployed) {
+          const slug = makeSlug({ pathname: url })();
+          for (const suf of suffixes) if (suf === 'load' || suf === 'deep') canSend.push(`${slug}:${suf}`);
+        }
+        for (const suf of suffixes) if (suf !== 'load' && suf !== 'deep') canSend.push(suf);
+        const orphans = [...new Set(canSend)].filter((e) => !server.has(e));
+        check(orphans.length === 0,
+          `app.js sends ${orphans.join(', ')} from the deployed URLs, but the server allowlist drops them — those visits are never counted`);
+      }
     }
 
     console.log('  counting is disclosed, event-named, host-gated and fail-soft');
@@ -574,9 +612,15 @@ head('Repo-wide sweep');
      Tracked-by-git IS the definition of "would be published", so use it: it
      admits .github/ and the extensionless scripts (selfcheck, hooks/pre-commit)
      and excludes everything ignored, with no list to keep up to date. */
+  /* git ls-files reports the INDEX; this reads the WORKTREE. A tracked file
+     deleted on disk therefore threw ENOENT out of the sweep, killing the run
+     before it could print a single result — non-zero, so it blocked, but it
+     discarded every failure found up to that point. Report it as a finding. */
+  const missing = [];
   const isScript = (f) => {
     if (path.extname(f)) return false;
-    try { return fs.readFileSync(path.join(ROOT, f), 'utf8').startsWith('#!'); } catch (e) { return false; }
+    try { return fs.readFileSync(path.join(ROOT, f), 'utf8').startsWith('#!'); }
+    catch (e) { missing.push(f); return false; }
   };
 
   let files;
