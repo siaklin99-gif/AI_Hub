@@ -168,7 +168,16 @@
 
   /* page slug from the URL, reduced the same way the nav highlight is, so a
      host serving pretty URLs does not produce a second set of event names */
-  function pageSlug() { return slugOf(location.pathname); }
+  function pageSlug() {
+    var s = slugOf(location.pathname);
+    /* The live front door is served at /hub/, so slugOf() returns the DIRECTORY
+       name — "hub" — not "index". The server allowlist only accepts index:load,
+       so every arrival at the entry page has been dropped since counting began:
+       the one page that answers "does anyone find this site" was the one page
+       that could not. Nothing caught it because tally is host-gated to hlur.ai,
+       so no harness can exercise the send path — the guard exempted itself. */
+    return s === 'hub' ? 'index' : s;
+  }
 
   function wireTally() {
     tally(pageSlug() + ':load');

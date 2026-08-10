@@ -146,8 +146,10 @@ for (const p of PAGES) {
   const fl = footLinksOf(SRC[p]);
   for (const dest of PAGES) {
     if (dest === 'index.html' && p === 'index.html') continue; // index footer links out, not to itself
-    check(fl.includes(`href="${dest}"`) || (dest === 'index.html'),
-      `${p}: footer is missing a link to ${dest}`);
+    /* `|| dest === 'index.html'` made this check(true) for the home link on every
+       page — the link could be deleted site-wide and stay green. The footer does
+       carry it, so the exemption was never needed. */
+    check(fl.includes(`href="${dest}"`), `${p}: footer is missing a link to ${dest}`);
   }
 }
 
@@ -278,7 +280,10 @@ for (const p of PAGES) {
     check(open === close, `${p}: <${tag}> opened ${open}x but closed ${close}x`);
   }
   // every table that could overflow must sit in a scroll container
-  const tables = all(/<table>/g, s).length;
+  /* /<table>/ matched nothing once the build began stamping role="table" on every
+     table (src/table-labels.js), so this was check(N >= 0) and could not fail —
+     the one guard whose whole job is "a wide table would break the page". */
+  const tables = all(/<table[\s>]/g, s).length;
   const scrolls = all(/<div class="tscroll">/g, s).length;
   check(scrolls >= tables, `${p}: ${tables} tables but only ${scrolls} .tscroll wrappers — a wide table would break the page`);
 }
@@ -519,6 +524,36 @@ head('Usage counting');
     check(/TALLY\.indexOf/.test(JS), 'app.js: tally does not check its own allowlist');
     check(/catch \(e\) \{ \/\* never let counting break anything \*\/ \}/.test(JS),
       'app.js: tally is not wrapped to fail soft');
+    /* EVERY NAME THE CLIENT CAN SEND MUST BE ON THE SERVER'S LIST.
+       This is the check that was missing. The client derives its event name from
+       the URL slug, the live front door is /hub/, so it sent "hub:load" — and the
+       server allowlist only had "index:load", so every arrival at the entry page
+       was silently discarded from the day counting began. Neither side was wrong
+       on its own; they simply never agreed, and nothing compared them. Tally is
+       host-gated to hlur.ai, so no rendered test can exercise the send path —
+       this static cross-check is the only place the two lists can be reconciled.
+       Skips loudly when the host repo is not checked out (the CI case). */
+    const hostTally = path.join(ROOT, '..', 'LLC', 'Hlur_Website', 'netlify', 'functions', 'tally.mjs');
+    if (!fs.existsSync(hostTally)) {
+      console.log('  SKIP  tally event names — host repo not checked out here (expected in CI)');
+    } else {
+      const server = new Set(
+        (fs.readFileSync(hostTally, 'utf8').match(/hub:\s*\{[\s\S]*?events:\s*\[([\s\S]*?)\]/) || [, ''])[1]
+          .match(/'([^']+)'/g)?.map((x) => x.slice(1, -1)) || []
+      );
+      const appSrc = fs.readFileSync(path.join(ROOT, 'assets', 'app.js'), 'utf8');
+      const suffixes = (appSrc.match(/var TALLY = \[([^\]]*)\]/) || [, ''])[1]
+        .match(/'([^']+)'/g)?.map((x) => x.slice(1, -1)) || [];
+      const slugs = cfg.pages.map((pg) => pg.file.replace(/\.html$/, ''));
+      const canSend = [];
+      for (const sl of slugs) for (const suf of ['load', 'deep']) if (suffixes.includes(suf)) canSend.push(`${sl}:${suf}`);
+      for (const suf of suffixes) if (!['load', 'deep'].includes(suf)) canSend.push(suf);
+      check(server.size > 0, 'could not read the hub event allowlist out of the host tally function');
+      const orphans = canSend.filter((e) => !server.has(e));
+      check(orphans.length === 0,
+        `app.js can send ${orphans.join(', ')} but the server allowlist drops them — those visits are never counted`);
+    }
+
     console.log('  counting is disclosed, event-named, host-gated and fail-soft');
   }
 }
@@ -526,23 +561,30 @@ head('Usage counting');
 /* ---------- 12. repo-wide leak sweep ----------------------------- */
 head('Repo-wide sweep');
 {
-  const SKIP_DIRS = new Set(['node_modules', '.git', 'render_shots']);
   // .sh added 2026-08-08: sync_hlur.sh hard-coded an absolute home path and the
   // sweep never looked at shell scripts — the one file type that holds deploy
   // paths by nature. Found one step before this repo was made public.
   const TEXTY = /\.(html|css|js|md|json|csv|txt|svg|sh|ya?ml)$/;
-  const walk = (dir, out = []) => {
-    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
-      if (e.name.startsWith('.')) continue;   // .gitignore has no extension and never passes TEXTY
-      if (e.isDirectory()) { if (!SKIP_DIRS.has(e.name)) walk(path.join(dir, e.name), out); }
-      else if (TEXTY.test(e.name)) out.push(path.join(dir, e.name));
-    }
-    return out;
+
+  /* ASK GIT WHAT IS PUBLISHED, do not guess by filename.
+     The walk this replaces skipped every dot-entry, so .github/ was never
+     entered and the workflows went unswept — the same blind spot the .sh line
+     above was written for. Widening it to dot-dirs then swept .claude/, which
+     is gitignored and local-only, and produced a false leak on the first run.
+     Tracked-by-git IS the definition of "would be published", so use it: it
+     admits .github/ and the extensionless scripts (selfcheck, hooks/pre-commit)
+     and excludes everything ignored, with no list to keep up to date. */
+  const isScript = (f) => {
+    if (path.extname(f)) return false;
+    try { return fs.readFileSync(path.join(ROOT, f), 'utf8').startsWith('#!'); } catch (e) { return false; }
   };
 
   let files;
   try {
-    files = walk(ROOT);
+    const tracked = require('child_process').execSync('git ls-files -z', { cwd: ROOT, maxBuffer: 1 << 24 })
+      .toString().split('\0').filter(Boolean);
+    if (!tracked.length) throw new Error('git ls-files returned nothing');
+    files = tracked.filter((f) => TEXTY.test(f) || isScript(f)).map((f) => path.join(ROOT, f));
   } catch (e) {
     // FAIL CLOSED: a guard that cannot read the tree must block, not pass.
     files = null;

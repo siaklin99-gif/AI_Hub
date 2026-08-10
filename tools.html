@@ -76,7 +76,7 @@
 <!-- ============================================================ -->
 <section id="categories">
   <div class="wrap">
-    <p class="slabel">The map</p>
+    <p class="slabel">The six shapes</p>
     <h2>Six categories. Almost every AI product is one of these.</h2>
     <p class="lead">
       Vendors blur the lines and bundle several into one app. That's fine — you still need
@@ -173,31 +173,31 @@
 
     <figure class="fig">
       <svg viewBox="0 0 380 300" role="img" aria-label="Flowchart: four yes-or-no questions route you to search-connected, reasoning, agent, or an approved private tool; otherwise general chat">
-        <rect x="14" y="10" width="212" height="34" rx="8" fill="var(--surface)" stroke="var(--border-med)" stroke-width="1.2"/>
-        <text x="120" y="31" text-anchor="middle" font-size="12" fill="var(--text)">About something recent?</text>
-        <rect x="252" y="10" width="116" height="34" rx="8" fill="var(--blue-bg)"/>
-        <text x="310" y="31" text-anchor="middle" font-size="12" fill="var(--blue)">search-connected</text>
+        <rect x="14" y="10" width="212" height="34" rx="8" fill="var(--surface)" stroke="var(--amber)" stroke-width="1.3"/>
+        <text x="120" y="31" text-anchor="middle" font-size="12" fill="var(--text)">Genuinely confidential?</text>
+        <rect x="252" y="10" width="116" height="34" rx="8" fill="var(--amber-bg)"/>
+        <text x="310" y="31" text-anchor="middle" font-size="12" fill="var(--amber)">approved tool only</text>
         <path d="M226 27 h20" stroke="var(--text-ter)" stroke-width="1.6"/>
         <text x="236" y="21" text-anchor="middle" font-size="10" fill="var(--text-ter)">yes</text>
 
         <rect x="14" y="76" width="212" height="34" rx="8" fill="var(--surface)" stroke="var(--border-med)" stroke-width="1.2"/>
-        <text x="120" y="97" text-anchor="middle" font-size="12" fill="var(--text)">Steps must be right in order?</text>
+        <text x="120" y="97" text-anchor="middle" font-size="12" fill="var(--text)">About something recent?</text>
         <rect x="252" y="76" width="116" height="34" rx="8" fill="var(--blue-bg)"/>
-        <text x="310" y="97" text-anchor="middle" font-size="12" fill="var(--blue)">reasoning mode</text>
+        <text x="310" y="97" text-anchor="middle" font-size="12" fill="var(--blue)">search-connected</text>
         <path d="M226 93 h20" stroke="var(--text-ter)" stroke-width="1.6"/>
         <text x="236" y="87" text-anchor="middle" font-size="10" fill="var(--text-ter)">yes</text>
 
         <rect x="14" y="142" width="212" height="34" rx="8" fill="var(--surface)" stroke="var(--border-med)" stroke-width="1.2"/>
-        <text x="120" y="163" text-anchor="middle" font-size="12" fill="var(--text)">Needs doing, not just writing?</text>
+        <text x="120" y="163" text-anchor="middle" font-size="12" fill="var(--text)">Steps must be right in order?</text>
         <rect x="252" y="142" width="116" height="34" rx="8" fill="var(--blue-bg)"/>
-        <text x="310" y="163" text-anchor="middle" font-size="12" fill="var(--blue)">agent / coding tool</text>
+        <text x="310" y="163" text-anchor="middle" font-size="12" fill="var(--blue)">reasoning mode</text>
         <path d="M226 159 h20" stroke="var(--text-ter)" stroke-width="1.6"/>
         <text x="236" y="153" text-anchor="middle" font-size="10" fill="var(--text-ter)">yes</text>
 
-        <rect x="14" y="208" width="212" height="34" rx="8" fill="var(--surface)" stroke="var(--amber)" stroke-width="1.3"/>
-        <text x="120" y="229" text-anchor="middle" font-size="12" fill="var(--text)">Genuinely confidential?</text>
-        <rect x="252" y="208" width="116" height="34" rx="8" fill="var(--amber-bg)"/>
-        <text x="310" y="229" text-anchor="middle" font-size="12" fill="var(--amber)">approved tool only</text>
+        <rect x="14" y="208" width="212" height="34" rx="8" fill="var(--surface)" stroke="var(--border-med)" stroke-width="1.2"/>
+        <text x="120" y="229" text-anchor="middle" font-size="12" fill="var(--text)">Needs doing, not just writing?</text>
+        <rect x="252" y="208" width="116" height="34" rx="8" fill="var(--blue-bg)"/>
+        <text x="310" y="229" text-anchor="middle" font-size="12" fill="var(--blue)">agent / coding tool</text>
         <path d="M226 225 h20" stroke="var(--text-ter)" stroke-width="1.6"/>
         <text x="236" y="219" text-anchor="middle" font-size="10" fill="var(--text-ter)">yes</text>
 
@@ -206,10 +206,13 @@
         <text x="120" y="282" text-anchor="middle" font-size="12" font-weight="620" fill="var(--green)">general chat</text>
         <text x="196" y="281" font-size="10" fill="var(--text-ter)">no to all four</text>
       </svg>
-      <figcaption>The last question overrides the other three.</figcaption>
+      <figcaption>Confidentiality is the first question, not the last — everything else is reversible.</figcaption>
     </figure>
 
     <ol class="steps">
+      <li><h3>Is the material genuinely confidential?</h3>
+        <p class="muted">Yes → your employer's approved tool, or a local model, or redact
+        before pasting. Ask this before the other three: the rest are reversible, and this one is not.</p></li>
       <li><h3>Does the answer depend on something recent?</h3>
         <p class="muted">Yes → search-connected, and open the links. No → carry on.</p></li>
       <li><h3>Does it need several steps to be right in sequence?</h3>
@@ -218,9 +221,6 @@
       <li><h3>Does something need to be <em>done</em>, not just written?</h3>
         <p class="muted">Yes → an agent or coding tool, working on copies, with you reading
         what it did. No → stay in chat.</p></li>
-      <li><h3>Is the material genuinely confidential?</h3>
-        <p class="muted">Yes → your employer's approved tool, or a local model, or redact
-        before pasting. This question overrides all the others.</p></li>
     </ol>
 
     <div class="note note-info">
@@ -318,7 +318,7 @@
       <li><strong>Go to the source, not the commentary.</strong> Each major lab publishes its own model list, limits and pricing. The provider's own documentation is the only thing that is current by definition.</li>
       <li><strong>Read your own account page.</strong> Your plan, your limits and your data-sharing setting are all there, and they're specific to you rather than to an article.</li>
       <li><strong>Use a search-connected AI to summarise the change</strong> — then open the links it gives you. That's the whole point of that category.</li>
-      <li><strong>Re-run your five prompts.</strong> Twenty minutes, and it answers the only question you actually had.</li>
+      <li><strong>Re-run your five prompts.</strong> Not part of the five minutes — give this one twenty, once or twice a year. It answers the only question you actually had.</li>
       <li><strong>Ignore anything that ranks models without telling you what it tested.</strong> An unexplained ranking is an opinion in a table.</li>
     </ul>
 

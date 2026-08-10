@@ -757,7 +757,6 @@ tbody tr:last-child td { border-bottom: 0; }
 
   html { scroll-padding-top: 102px; }   /* 87px nav + breathing room */
 
-  .brand { font-size: 14px; }
 
   /* ---- the nav must not need a sideways swipe ------------------------------
      Six page links plus the wordmark and the section label wanted 370px of a

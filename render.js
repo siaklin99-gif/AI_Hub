@@ -165,6 +165,14 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
       await page.goto('file://' + path.join(ROOT, name + '.html'));
       await page.waitForLoadState('networkidle');
 
+      /* Stamp the attribute the restores below actually read. Both of them (the
+         deck-gap cleanup and the text-parity capture) close every accordion and
+         then "restore" by testing data-was-open — which nothing ever set, so the
+         restore closed the four cards this site authors OPEN and left the page in
+         a state no visitor sees. Set it once, here, before anything mutates. */
+      await page.evaluate(() =>
+        document.querySelectorAll('details.acc[open]').forEach((d) => d.setAttribute('data-was-open', '')));
+
       /* Screenshot FIRST, before anything below mutates the page. Taking it at
          the end captured the post-test state: every accordion forced closed
          (the old restore looked for a data-was-open attribute that is set
@@ -981,6 +989,14 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
       }
 
       /* --- WCAG AA contrast on every piece of rendered text --- */
+      /* Expand first. The probe below skips zero-height elements and a closed
+         .acc-body is zero-height, so ~13% of trust.html's text — every accordion
+         body on the site — was never graded while the banner claimed "every
+         piece of rendered text". Opening hides nothing (summaries stay visible),
+         so the expanded page is a strict superset of the collapsed one. */
+      await page.evaluate(() => document.querySelectorAll('details').forEach((d) => { d.open = true; }));
+      await page.waitForTimeout(60);
+
       const contrast = await page.evaluate(() => {
         // Chrome reports color-mix() backgrounds as "color(srgb 0..1 ...)".
         // Parsing those as 0-255 produced false failures on the first run —
@@ -1070,6 +1086,9 @@ const check = (cond, msg) => { if (cond) checks++; else { fails++; console.log('
         return [...new Set(bad)];
       });
       check(contrast.length === 0, `${name}: text below WCAG AA contrast: ${contrast.slice(0, 3).join(' | ')}`);
+      await page.evaluate(() => document.querySelectorAll('details.acc').forEach((d) => {
+        d.open = d.hasAttribute('data-was-open');
+      }));
 
       /* --- the interactive parts must actually work --- */
       if (m.accClosed > 0) {

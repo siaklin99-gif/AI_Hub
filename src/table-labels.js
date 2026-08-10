@@ -22,7 +22,8 @@
    data-label is copied out of the table's OWN <th> at build time, so a label
    cannot drift from the column it names — the failure mode you get the moment
    someone hand-writes 100 data-label attributes and later edits a header.
-   verify.js re-derives them and asserts the match.
+   render.js re-derives them from the rendered page and asserts the match (verify.js
+   does not — it has no data-label check at all).
 
    The rendered label is CSS ::before content, i.e. presentational: the real
    semantic link is still the native <th>/<td> relationship, which the explicit
@@ -67,13 +68,24 @@ function labelTables(html) {
           if (label === undefined) {
             throw new Error(`table-labels: row has ${col} cells but the header has ${headers.length}`);
           }
+          /* A spanning cell consumes two columns, so every label after it points
+             one column left — and the "independent" re-derivation in render.js
+             indexes tr.children the same way, so it agrees with the mistake.
+             Refuse the input rather than ship a quietly mislabelled table. */
+          if (/\scolspan=/i.test(td) || /\srowspan=/i.test(td)) {
+            throw new Error('table-labels: colspan/rowspan is not supported — the label is derived by column POSITION, and a spanning cell shifts every label after it');
+          }
           return `<td${attrs || ''} role="cell" data-label="${label}">`;
         });
     });
 
     return table
       .replace(/<table(\s[^>]*)?>/, (m, a) => `<table${a || ''} role="table">`)
-      .replace(/<tbody>[\s\S]*?<\/tbody>/, `<tbody role="rowgroup">${stamped}</tbody>`);
+      /* FUNCTION replacement, not a string: in a string replacement `$&`, `$\`` and
+         `$'` are substitution patterns, so a cell containing "costs $& more" spliced
+         the entire original <tbody> back into itself. A page about prompts is exactly
+         where a stray $& shows up, and nothing downstream checks <tbody> balance. */
+      .replace(/<tbody>[\s\S]*?<\/tbody>/, () => `<tbody role="rowgroup">${stamped}</tbody>`);
   });
 }
 
