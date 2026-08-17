@@ -89,10 +89,16 @@ for (const p of PAGES) {
   check(!!d, `${p}: no meta description`);
   if (d) check(d.length >= 60 && d.length <= 260, `${p}: meta description length ${d.length} (want 60-260)`);
 
+  /* The favicon must draw the mark, not a retired identity. */
+  // (file-level check lives outside the per-page loop; see below)
   /* The stamp is REQUIRED, not merely tolerated. hub's HTML and CSS are separate cache
      entries; a browser holding old style.css with new HTML renders the nav mark's link
      with no stroke rule and the crossbar disappears. Demanding ?v= here means a build
      that forgets to stamp cannot pass. */
+  /* The favicon is an asset like any other and must carry its stamp. It also must be
+     the MARK, not a leftover brand: this file stayed green through the whole mark swap
+     because no page-level check ever looked at it. */
+  check(/href="assets\/favicon\.svg\?v=[0-9a-f]{8}"/.test(s), `${p}: favicon not stamped`);
   check(/<link rel="stylesheet" href="assets\/style\.css\?v=[0-9a-f]{8}">/.test(s), `${p}: stylesheet not loaded, or loaded without its content stamp`);
   check(/<script src="assets\/app\.js\?v=[0-9a-f]{8}"><\/script>/.test(s), `${p}: script not loaded, or loaded without its content stamp`);
   check((s.match(/<h1[ >]/g) || []).length === 1, `${p}: must have exactly one <h1>`);

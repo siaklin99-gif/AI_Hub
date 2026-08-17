@@ -1,8 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="AI Hub">
-  <!-- The brand mark is the nav's green dot: one clear point to start from.
-       Two rings for the tracks that radiate out of it. Drawn, not borrowed. -->
-  <rect width="64" height="64" rx="14" fill="#0f6e56"/>
-  <circle cx="32" cy="32" r="7" fill="#e1f5ee"/>
-  <circle cx="32" cy="32" r="15.5" fill="none" stroke="#e1f5ee" stroke-opacity="0.55" stroke-width="3"/>
-  <circle cx="32" cy="32" r="24" fill="none" stroke="#e1f5ee" stroke-opacity="0.28" stroke-width="3"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Hlur — AI Hub">
+  <!-- The Hlur mark on a tile. This was the pre-mark identity — a green dot with two
+       rings — and it survived the whole mark swap because nothing referenced it from a
+       page I was checking: the nav mark and this file are different assets, and I kept
+       verifying the nav. It is the icon a reader actually sees most, in the tab strip.
+       Uses the SMALL master's geometry (2 uprights + one band), because a favicon lives
+       at 16px where the six-token detail measures 0.12 device px and never arrives. -->
+  <rect width="64" height="64" rx="14" fill="#1D1D1F"/>
+  <g fill="#F2F1EE">
+    <rect x="16" y="17" width="10" height="30" rx="2.5"/>
+    <rect x="38" y="17" width="10" height="30" rx="2.5"/>
+  </g>
+  <rect x="16" y="27" width="32" height="9" rx="2.5" fill="#4fae9d"/>
 </svg>
