@@ -219,7 +219,11 @@ a:hover { text-decoration: underline; }
    from the standalone dark SVG, which lifts to #4fae9d (6.53:1). One mark should not
    have two accents depending on which file drew it. */
 .nm-acc { fill: #2D8E7E }
-@media (prefers-color-scheme: dark) { .nm-acc { fill: #4fae9d } }
+/* The link stroke carries the accent too — it is half the "accent on the joint" idea.
+   It was missing entirely from the inlined mark for one deploy: six blocks and no bar,
+   which reads as II rather than an H. */
+.nm-bar { stroke: #2D8E7E }
+@media (prefers-color-scheme: dark) { .nm-acc { fill: #4fae9d } .nm-bar { stroke: #4fae9d } }
 
 /* ---------- hero ---------- */
 
