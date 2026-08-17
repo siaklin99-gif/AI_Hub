@@ -55,7 +55,7 @@ const HTML = `<!doctype html><meta charset="utf-8"><style>
 </style>
 <svg class="rings" width="620" height="620" viewBox="0 0 620 620" aria-hidden="true">
   <defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#2563EB"/><stop offset=".5" stop-color="#5B3DF5"/><stop offset="1" stop-color="#10B981"/>
+    <stop offset="0" stop-color="#1D1D1F"/><stop offset="1" stop-color="#2D8E7E"/>
   </linearGradient></defs>
   <circle cx="310" cy="310" r="70"  fill="url(#rg)"/>
   <circle cx="310" cy="310" r="150" fill="none" stroke="url(#rg)" stroke-width="16"/>
@@ -63,13 +63,7 @@ const HTML = `<!doctype html><meta charset="utf-8"><style>
   <circle cx="310" cy="310" r="310" fill="none" stroke="url(#rg)" stroke-width="16"/>
 </svg>
 <div class="brand">
-  <svg class="mark" viewBox="0 0 96 96" aria-hidden="true"><defs>
-    <linearGradient id="nm-l" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2563EB"/><stop offset="1" stop-color="#5B3DF5"/></linearGradient>
-    <linearGradient id="nm-r" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2563EB"/><stop offset=".5" stop-color="#06B6D4"/><stop offset="1" stop-color="#10B981"/></linearGradient>
-    <linearGradient id="nm-d" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5B3DF5"/><stop offset="1" stop-color="#2563EB"/></linearGradient></defs>
-    <path d="M56.2 15 A34 34 0 0 1 56.2 81" fill="none" stroke="url(#nm-r)" stroke-width="11.5" stroke-linecap="round"/>
-    <path d="M39.8 81 A34 34 0 0 1 39.8 15" fill="none" stroke="url(#nm-l)" stroke-width="11.5" stroke-linecap="round"/>
-    <circle cx="48" cy="48" r="11" fill="url(#nm-d)"/></svg>
+  <svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><g fill="#1D1D1F"><rect x="10" y="9" width="15" height="15" rx="2"/><rect x="10" y="40" width="15" height="15" rx="2"/><rect x="39" y="9" width="15" height="15" rx="2"/><rect x="39" y="40" width="15" height="15" rx="2"/></g><g fill="#2D8E7E"><rect x="10" y="24.5" width="15" height="15" rx="2"/><rect x="39" y="24.5" width="15" height="15" rx="2"/></g></svg>
   <span>AI Hub</span>
 </div>
 <h1>Everyone is confused. That is the honest starting line.</h1>

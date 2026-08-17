@@ -213,6 +213,14 @@ a:hover { text-decoration: underline; }
   }
 }
 
+
+/* The nav mark's accent, theme-aware. It was hardcoded to the light teal when the mark
+   was inlined, so on the dark nav it rendered at 4.38:1 — passing, but a different tone
+   from the standalone dark SVG, which lifts to #4fae9d (6.53:1). One mark should not
+   have two accents depending on which file drew it. */
+.nm-acc { fill: #2D8E7E }
+@media (prefers-color-scheme: dark) { .nm-acc { fill: #4fae9d } }
+
 /* ---------- hero ---------- */
 
 /* The mark's glow behind the hero — colour without clutter, and the one place
