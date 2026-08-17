@@ -89,8 +89,12 @@ for (const p of PAGES) {
   check(!!d, `${p}: no meta description`);
   if (d) check(d.length >= 60 && d.length <= 260, `${p}: meta description length ${d.length} (want 60-260)`);
 
-  check(/<link rel="stylesheet" href="assets\/style\.css">/.test(s), `${p}: does not load the shared stylesheet`);
-  check(/<script src="assets\/app\.js"><\/script>/.test(s), `${p}: does not load the shared script`);
+  /* The stamp is REQUIRED, not merely tolerated. hub's HTML and CSS are separate cache
+     entries; a browser holding old style.css with new HTML renders the nav mark's link
+     with no stroke rule and the crossbar disappears. Demanding ?v= here means a build
+     that forgets to stamp cannot pass. */
+  check(/<link rel="stylesheet" href="assets\/style\.css\?v=[0-9a-f]{8}">/.test(s), `${p}: stylesheet not loaded, or loaded without its content stamp`);
+  check(/<script src="assets\/app\.js\?v=[0-9a-f]{8}"><\/script>/.test(s), `${p}: script not loaded, or loaded without its content stamp`);
   check((s.match(/<h1[ >]/g) || []).length === 1, `${p}: must have exactly one <h1>`);
 
   /* Accessibility landmarks. Six nav links precede the content on every page;
@@ -192,7 +196,12 @@ for (const p of PAGES) {
       continue;
     }
 
-    const [file, frag] = href.split('#');
+    /* Strip a cache-busting query before resolving to disk. assets/style.css?v=abc123
+       is one URL and one file; without this the checker reports every stamped asset as
+       missing. The stamp is proven separately, against the file's real hash. */
+    const [file, frag] = href.split('#')[0].split('?')[0] === href.split('#')[0]
+      ? href.split('#')
+      : [href.split('#')[0].split('?')[0], href.split('#')[1]];
     const target = file || p;
     if (file) {
       check(fs.existsSync(path.join(ROOT, file)), `${p}: link to missing file "${file}"`);
